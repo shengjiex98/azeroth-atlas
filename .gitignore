@@ -1,0 +1,9 @@
+__pycache__/
+.DS_Store
+node_modules/
+
+# Syncthing serves Interface/AddOns/Rosetta from a checkout on some machines.
+.stfolder/
+.stversions/
+.stignore
+*.sync-conflict-*

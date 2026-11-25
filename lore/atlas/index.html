@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore the maps, places, and stories of Classic-era Azeroth.">
+  <title>The Azeroth Atlas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="data/world.js" defer></script>
+  <script src="data/geo.js" defer></script>
+  <script src="data/ui_map_bounds.js" defer></script>
+  <script src="journey.js" defer></script>
+  <script src="i18n.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a id="skip" class="skip" href="#reading">Skip to content</a>
+  <header id="site-header"></header>
+  <main id="atlas">
+    <svg class="crest-filters" width="0" height="0" aria-hidden="true" focusable="false">
+      <defs>
+        <!-- The emblems are brighter than the blue field and darker than the red field in the red channel. -->
+        <filter id="atlas-crest-alliance" color-interpolation-filters="sRGB">
+          <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  3.2 0 0 0 -.62" result="emblem"/>
+          <feFlood result="pigment"/>
+          <feComposite in="pigment" in2="emblem" operator="in"/>
+        </filter>
+        <filter id="atlas-crest-horde" color-interpolation-filters="sRGB">
+          <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  -4.25 0 0 1.75 0" result="emblem"/>
+          <feFlood result="pigment"/>
+          <feComposite in="pigment" in2="emblem" operator="in"/>
+        </filter>
+      </defs>
+    </svg>
+    <section id="map" tabindex="0">
+      <div id="map-frame">
+        <img id="map-art" class="map-image" alt="" draggable="false" hidden>
+        <div id="map-overlays"></div>
+      </div>
+      <div id="map-labels"></div>
+      <div id="zone-tip" class="zone-tip" role="tooltip" hidden></div>
+      <div id="map-controls"></div>
+      <aside id="map-popover" class="map-popover" aria-labelledby="place-title" hidden></aside>
+    </section>
+    <aside id="reading">
+      <button id="sheet-handle" type="button" aria-controls="reading-scroll"></button>
+      <div id="reading-scroll" tabindex="-1"></div>
+    </aside>
+  </main>
+  <dialog id="entry-dialog" aria-labelledby="dialog-title"></dialog>
+  <noscript>Enable JavaScript to explore the atlas.</noscript>
+</body>
+</html>

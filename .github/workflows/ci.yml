@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: Test atlas journey
+        run: node tests/atlas/journey_test.mjs
+      - name: Check JavaScript syntax
+        run: |
+          for file in lore/atlas/*.js; do
+            node --check "$file"
+          done
+      - name: Install Lua 5.1
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1
+      - name: Test Rosetta
+        run: |
+          for file in tests/rosetta/*_test.lua; do
+            lua5.1 "$file"
+          done
+      - name: Check addon Lua syntax
+        run: |
+          shopt -s globstar
+          luac5.1 -p Interface/AddOns/Rosetta/**/*.lua

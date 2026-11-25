@@ -1,0 +1,16 @@
+## Interface: 16001
+## Title: Rosetta
+## Notes: Bridge between the game and outside tools: exports character data for AI tools to read.
+## Author: shengjiex98
+## Version: 1.4.0
+## SavedVariables: RosettaDB
+## OptionalDeps: RXPGuides, QuestieDB
+
+Util.lua
+Collectors.lua
+Core.lua
+Summary.lua
+Journal.lua
+Backfill.lua
+Export.lua
+Settings.lua
