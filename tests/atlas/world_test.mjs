@@ -105,3 +105,49 @@ test('places with coordinates have both axes inside the map', () => {
   }
   assert.deepEqual(problems, []);
 });
+
+const { zones: gameZones } = JSON.parse(readFileSync(
+  new URL('../../tools/data/forever_maps.json', import.meta.url), 'utf8'
+));
+const capitalIds = new Set(['1453', '1454', '1455', '1456', '1457', '1458']);
+
+test('zone outlines stay inside the game rectangles with a one percent margin', () => {
+  const problems = [];
+  for (const [id, game] of Object.entries(gameZones)) {
+    const zone = GEO.zones[id];
+    if (!zone) {
+      problems.push(`Map ${id} is missing from the atlas`);
+      continue;
+    }
+    const [left, top, right, bottom] = game.rect.map(edge => edge * 100);
+    if (zone.continent !== String(game.continent) ||
+        zone.rect.some((edge, index) => Math.abs(edge - game.rect[index] * 100) > 0.00501)) {
+      problems.push(`Map ${id} does not match its game rectangle`);
+    }
+    if (capitalIds.has(id)) {
+      if (zone.path) problems.push(`Capital ${id} has a zone outline`);
+      continue;
+    }
+
+    const points = [...(zone.path || '').matchAll(/[ML](-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)/g)];
+    if (!points.length) {
+      problems.push(`Zone ${id} has no outline points`);
+      continue;
+    }
+    // The tracer uses 1% of each continent axis. Its SVG coordinates are rounded to two decimals.
+    const margin = 1.005;
+    const xs = points.map(point => Number(point[1]));
+    const ys = points.map(point => Number(point[2]));
+    const bounds = [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
+    if (bounds[0] < left - margin || bounds[1] < top - margin ||
+        bounds[2] > right + margin || bounds[3] > bottom + margin) {
+      problems.push(`Zone ${id} outline bounds (${bounds.join(', ')}) exceed its game rectangle`);
+    }
+  }
+  for (const [id, zone] of Object.entries(GEO.zones)) {
+    if (zone.path && !Object.hasOwn(gameZones, id)) {
+      problems.push(`Zone ${id} has an outline but no game rectangle`);
+    }
+  }
+  assert.deepEqual(problems, []);
+});

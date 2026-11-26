@@ -5,6 +5,17 @@
   'use strict';
   const L = (en, zh = '') => ({ en, zh });
   const sources = {
+    'hy-forever': { title: L('Mount Hyjal in Forever', '无限服的海加尔山'), url: 'https://www.wowhead.com/forever/zone=616/mount-hyjal', note: L('The zone and its Forever inhabitants and quests.', '无限服这一区域的居民和任务。') },
+    'hy-zones': { title: L('Forever’s new zones', '无限服的新区域'), url: 'https://www.wowhead.com/forever/guide/zones-maps-locations-rewards', note: L('The aftermath at Hyjal, and Shen’dralas’s ties to the centaur and Dire Maul.', '海加尔山战后的局势，以及辛德拉与半人马和厄运之槌的关系。') },
+    'hy-ashes': { title: L('Ashes of the Legion Ascent', '军团高地的灰烬'), url: 'https://www.wowhead.com/forever/quest=92335/ashes-of-the-legion-ascent', note: L('How Azgalor’s remains are used and where they were left after the battle.', '阿兹加洛的遗骸在战后留在何处，以及灰烬的用途。') },
+    'rg-forever': { title: L('Riverglades in Forever', '无限服的河林'), url: 'https://www.wowhead.com/forever/zone=16591/riverglades', note: L('The zone, its settlements, and their quests.', '这一区域及其聚落与任务。') },
+    'rg-settlements': { title: L('Riverglades settlements and factions', '河林的聚落与阵营'), url: 'https://www.wowhead.com/forever/guide/riverglades-zone-overview', note: L('Farholde Keep, the Horde outpost, and the Steamwheedle shipping route.', '法霍德要塞、部落哨所与热砂港集团的航线。') },
+    'rg-farm': { title: L('A farm after the Twilight attack', '暮光之锤袭击后的农庄'), url: 'https://www.wowhead.com/forever/quest=94858/all-thats-left', note: L('A farmer recounts the Twilight’s Hammer’s attack.', '一位农夫回忆暮光之锤的袭击。') },
+    'rg-stronghold': { title: L('Krol’dok Stronghold', '克罗多克要塞'), url: 'https://wow.blizzard.cn/news/24301455/index.html', note: L('Blizzard’s account of the ogre raids and the stronghold.', '暴雪对食人魔劫掠与要塞的介绍。') },
+    'sd-forever': { title: L('Shen’dralas in Forever', '无限服的辛德拉'), url: 'https://www.wowhead.com/forever/zone=16651/shendralas', note: L('The zone and its quests, inhabitants, and objects.', '这一区域的任务、居民与物件。') },
+    'sd-pylons': { title: L('Strange Pylons', '奇怪的水晶塔'), url: 'https://www.wowhead.com/forever/quest=92914/strange-pylons', note: L('The failing pylons, the elementals that guard them, and the brighter crystal inside the temple.', '逐渐失去力量的水晶塔、守护它们的元素生物，以及神殿内仍然明亮的水晶。') },
+    'sd-magister': { title: L('Meeting the Magister', '会见魔导师'), url: 'https://www.wowhead.com/forever/quest=93394/meeting-the-magister', note: L('Kirandis explains what the restored pylons mean for the temple’s inhabitants.', '基兰迪斯说明修复水晶塔对神殿居民意味着什么。') },
+    'forever-new-zones': { title: L('Blizzard’s Forever launch overview', '暴雪的《魔兽世界》：“无限”上线介绍'), url: 'https://wow.blizzard.cn/news/24315820/index.html', note: L('The new zones, their premises, and their Simplified Chinese names.', '新区域的故事背景及简体中文名称。') },
     'arthas-history': { title: L('The Lich King Triumphant', '巫妖王的胜利'), url: 'https://warcraft.wiki.gg/wiki/The_Lich_King_Triumphant', note: L('Classic in-game history of the plague, Stratholme and Lordaeron’s fall.', '经典旧世的游戏内史料，记述瘟疫、斯坦索姆与洛丹伦的陷落。') },
     'portal-history': { title: L('The Dark Portal and the Fall of Stormwind', '黑暗之门和暴风城的陷落'), url: 'https://warcraft.wiki.gg/wiki/The_Dark_Portal_and_the_Fall_of_Stormwind', note: L('Classic in-game history of the pact that opens the portal.', '经典旧世游戏内史料，记述促成黑暗之门开启的交易。') },
     'hakkar-history': { title: L('The Twin Empires', '双子帝国'), url: 'https://warcraft.wiki.gg/wiki/The_Twin_Empires', note: L('Classic in-game history of the old troll empires and the Gurubashi legacy.', '经典旧世游戏内史料，记述古代巨魔帝国及古拉巴什的历史背景。') },
@@ -432,8 +443,15 @@
   B('da-grain', L('Seeds from the enclave', '塞纳里奥区的种子'), L('Fandral wants to know more about morrowgrain, one of the plants grown from Tharlendris seeds in soil brought from Un’Goro. Mathrengyl Bearwalker handles the seeds. The enclave’s interest in cultivation extends from its own tree to a closed basin far to the south.', '范达尔想进一步了解晨光麦。它是用安戈洛泥土培育萨伦迪斯种子时长出的植物之一。玛斯雷·驭熊者负责分发种子。塞纳里奥区对栽培的兴趣从自己的大树一直延伸到南方遥远的盆地。'), [3781, 3785], { figureIds: ['fandral'], zoneIds: [1457, 1449], sourceIds: ['da-grain'] });
   B('da-messenger', L('A message for Tyrande', '送给泰兰德的消息'), L('In Ashenvale, Sentinel Thenysil sends a visitor to the Temple of the Moon. Tyrande receives news from the forest in the same halls where Elune’s priestesses gather.', '灰谷的哨兵塞恩希尔把一名来客引荐到月神殿。泰兰德在艾露恩的女祭司们聚集的大厅里接到森林传来的消息。'), [1081], { figureIds: ['tyrande'], zoneIds: [1457, 1440], sourceIds: ['da-temple', 'manual'] });
 
+  B('hy-azgalor', L('Remains of the battle', '战斗的遗迹'), L('Azgalor died alongside the Legion’s forces at Hyjal. His ashes still lie in the ruins of Dae’gun. Ketharas needs only a pinch to supply a steady source of energy for a difficult spell.', '阿兹加洛与燃烧军团的兵将一同战死在海加尔山。他的灰烬仍留在达尔苟废墟。凯萨拉斯只需一小撮，就能为一道复杂的法术提供稳定的力量。'), [92335], { edition: L('Forever addition', '无限服新增'), figureIds: ['azgalor', 'ketharas'], zoneIds: [2482], sourceIds: ['hy-ashes'] });
+  B('rg-elbrim', L('A family’s keepsakes', '一家人的遗物'), L('A farmer remembers hiding his family and others in the barn when the Twilight’s Hammer attacked. Afterward, he asks for the keepsakes he cannot bring himself to retrieve. The search turns up a discarded doll and a damaged locket.', '暮光之锤来袭时，一位农夫把家人和其他人藏进谷仓。事后，他请人取回自己不忍去找的遗物。谷仓里留下了被丢弃的玩偶和损坏的坠饰。'), [94829, 94858], { edition: L('Forever addition', '无限服新增'), factionIds: ['twilight'], zoneIds: [2548], sourceIds: ['rg-farm'] });
+  B('sd-restore-pylons', L('The fading crystals', '逐渐黯淡的水晶'), L('Mana elementals guard a fractured crystal among the elven ruins. Other pylons survive, including one still bright inside the temple. Once the failing crystals are restored, Magister Kirandis explains that their power anchors the temple’s inhabitants to Shen’dralas.', '精灵废墟中的一块水晶已经碎裂，法力元素仍在守护它。其他水晶塔也保留了下来，其中一座在神殿里依然明亮。衰弱的水晶恢复力量之后，魔导师基兰迪斯解释，正是这股力量让神殿里的居民得以留在辛德拉。'), [92914, 96018, 93394], { edition: L('Forever addition', '无限服新增'), figureIds: ['kirandis'], zoneIds: [2652], sourceIds: ['sd-pylons', 'sd-magister'] });
+
   const figures = {};
   function F(id, name, role, text, zoneIds, glossaryId = null) { figures[id] = { id, name, role, text, zoneIds, glossaryId }; }
+  F('azgalor', L('Azgalor', '阿兹加洛'), L('Archimonde’s lieutenant', '阿克蒙德的副将'), L('The Legion commander was slain at Hyjal. His ashes remain in the ruins of Dae’gun.', '这名燃烧军团的指挥官在海加尔山战死，灰烬仍留在达尔苟废墟。'), [2482]);
+  F('ketharas', L('Ketharas', '凯萨拉斯'), L('Spellcaster at Hyjal', '海加尔山的施法者'), L('He needs a steady source of magical energy and sends word for a sample of Azgalor’s ashes.', '他需要稳定的魔力来源，为此托人寻找阿兹加洛的灰烬。'), [2482]);
+  F('kirandis', L('Magister Kirandis', '魔导师基兰迪斯'), L('Magister of the temple', '神殿的魔导师'), L('He explains how the restored crystal pylons anchor the temple’s inhabitants to Shen’dralas.', '他解释了修复后的水晶塔如何让神殿的居民留在辛德拉。'), [2652]);
   F('magni', L('Magni Bronzebeard', '麦格尼·铜须'), L('King of Ironforge', '铁炉堡国王'), L('Ironforge’s Bronzebeard king in the Classic-era setting. He receives reports from the mountain defenses and the Hall of Thanes.', '经典旧世时期统治铁炉堡的铜须国王。山中守军的情报和领主大厅的消息都汇报给他。'), [1455, 1426], 'magni');
   F('mekkatorque', L('Gelbin Mekkatorque', '格尔宾·梅卡托克'), L('High Tinker', '大工匠'), L('Leader of the gnomes in exile. His people shelter in Ironforge while Gnomeregan remains occupied.', '流亡侏儒的领袖。诺莫瑞根仍被占据，他的族人在铁炉堡避难。'), [1455, 1426], 'gnomeregan');
   F('thermaplugg', L('Sicco Thermaplugg', '思科·瑟玛普拉格'), L('Usurper of Gnomeregan', '篡夺诺莫瑞根之人'), L('Mekkatorque’s treacherous former adviser, left ruling the irradiated gnome capital.', '梅卡托克从前的顾问。他背叛了梅卡托克，留在受辐射污染的侏儒都城掌权。'), [1426], 'gnomeregan');
@@ -671,6 +689,9 @@
   faction('qiraji', L('Qiraji', '其拉虫人'), L('The forces within Ahn’Qiraj, who command the silithid and threaten the desert beyond the walls.', '安其拉城中的势力，指挥异种虫，威胁城墙外的沙漠。'), 'qiraji');
   faction('timbermaw', L('Timbermaw Hold', '木喉要塞'), L('Furbolgs who defend their tunnels and seek aid against corrupted tribes nearby.', '守卫地下通道，并寻求援手对抗邻近腐化部族的熊怪。'), null);
 
+  faction('brotherhood-of-the-horse', L('Brotherhood of the Horse', '铁马兄弟会'), L('Former Stormwind cavalry who made a home at Farholde Keep in the Riverglades.', '暴风城昔日的骑兵，在河林的法霍德要塞安家。'), null);
+  faction('shendralar', L('Shen’dralar', '辛德拉'), L('The legacy of the Highborne of Eldre’Thalas links the temple at Shen’dralas to Dire Maul.', '埃雷萨拉斯上层精灵的遗产将辛德拉神殿与厄运之槌相连。'), null);
+
   const zones = {};
   function zone(id, name, region, levels, summary, extra = {}) {
     zones[id] = { id, name, region, continent: id === 1439 || id === 1440 || id === 1442 ? 'kalimdor' : 'eastern', levels: L(levels, levels === 'Capital city' ? '主城' : levels), map: 'maps/' + id + '.jpg', summary, complete: false, history: [], storylines: [], figureIds: [], factionIds: [], places: [], relatedZoneIds: [], sagaIds: [], sourceIds: [], ...extra };
@@ -832,7 +853,6 @@
   });
   zone(1416, L('Alterac Mountains', '奥特兰克山脉'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), '30–40', L('Ogres hold the ruined capital of Alterac, while spies in the mountain towns keep the ambitions of its old nobility alive.', '食人魔占据了奥特兰克的都城废墟，而山间城镇里的密探，仍在为旧日贵族的野心奔走。'), {
     complete: true,
-    map: null,
     overview: [L('The old kingdom survives in its walls, farmsteads and signet rings. The Crushridge ogres occupy the ruins, while the {Syndicate} operates out of Strahnbrad and reaches down toward Hillsbrad.', '古老王国留下了城墙、农舍和印戒。破碎岭食人魔占据都城废墟，{辛迪加}则以斯坦恩布莱德为据点，把势力伸向山下的希尔斯布莱德。'), L('The fallen kingdom’s reach can be read in the papers its agents carry. Even after the loss of its throne, the people organizing in its name are a concern as far away as Southshore and Stromgarde.', '从密探携带的文件里，仍可看见这个亡国的势力范围。王座早已失去，但以它的名义行事的人，依然让远至南海镇和激流堡的守军放心不下。')],
     history: [
       H(L('Second War', '第二次战争'), L('A king makes a bargain', '国王与部落达成交易'), L('King Aiden Perenolde betrays the Alliance. The defeat of his kingdom leaves its nobles without a throne to serve.', '艾登·匹瑞诺德国王背叛联盟。王国败亡，贵族从此失去了效忠的王座。')),
@@ -867,7 +887,6 @@
 
   zone(1418, L('Badlands', '荒芜之地'), L('Khaz Modan · Eastern Kingdoms', '卡兹莫丹 · 东部王国'), '35–45', L('Between dry canyons and makeshift camps, excavators in the Badlands uncover an archive left by the titans.', '在干旱峡谷与临时营地之间，荒芜之地的考古队发现了泰坦留下的档案。'), {
     complete: true,
-    map: null,
     overview: [L('Kargath gives the Horde a foothold in the west. On the other side of the badlands, black dragon whelps roam the ravine of Lethlor. An excavation at Uldaman opens into passages far larger than the camp above them.', '卡加斯是部落在西部的据点。荒地另一侧，黑色雏龙在莱瑟罗峡谷出没。奥达曼的挖掘场通向一片远比地面营地庞大的地下通道。'), L('The Explorers’ League has people in the ruins who need to come home. What remains below includes records about the beginnings of the earthen, a question that matters as much in Ironforge as in the dig.', '探险者协会还有队员滞留在遗迹里，等着回家。地下保存着关于土灵起源的记录，此事牵动着挖掘场，也同样牵动着铁炉堡。')],
     history: [
       H(L('Age of the titans', '泰坦时代'), L('An archive beneath the hills', '群山之下的档案库'), L('The facility at Uldaman preserves a titan record about the earthen long after its makers are gone.', '建造者离去许久之后，奥达曼仍保存着泰坦留下的土灵记录。')),
@@ -885,7 +904,6 @@
 
   zone(1419, L('Blasted Lands', '诅咒之地'), L('Southern Eastern Kingdoms', '东部王国南部'), '45–55', L('The Dark Portal stands above a demon-haunted crater. At the edge of the scar, Nethergarde keeps watch and a dead soldier tries to free his men.', '黑暗之门立在恶魔出没的巨坑上方。焦土边缘，守望堡仍在警戒，一名死去的士兵则试图解救自己的部下。'), {
     complete: true,
-    map: null,
     overview: [L('The orcs first came into Azeroth through the Dark Portal. In Classic the gateway stands silent above its crater and the land around it remains dangerous, long after the armies that first crossed it have left.', '兽人最初经由黑暗之门进入艾泽拉斯。经典旧世时期，大门仍寂静地立在巨坑上方，最初穿越它的军队早已远去，周围却依然险恶。'), L('Nethergarde is an Alliance watch on the northern heights. Farther south, demons bind their victims to stones, leaving a job that a soldier’s death did not end.', '联盟在北部高地的守望堡警戒。更往南，恶魔把受害者束缚在石头上。一名士兵虽然早已死去，仍没放下这件事。')],
     history: [
       H(L('First War', '第一次战争'), L('The way opens', '通道开启'), L('Medivh and Gul’dan help open the gateway that brings the orc Horde into Azeroth.', '麦迪文与古尔丹促成黑暗之门开启，兽人部落由此进入艾泽拉斯。')),
@@ -903,7 +921,6 @@
 
   zone(1420, L('Tirisfal Glades', '提瑞斯法林地'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), '1–10', L('The forests around Lordaeron’s ruined capital are the first home of many Forsaken. They share the old heartland with enemies who remember the kingdom very differently.', '洛丹伦王城废墟周围的林地，是许多被遗忘者最初的家园。昔日王国的腹地如今还有敌人出没，各方对洛丹伦的记忆大不相同。'), {
     complete: true,
-    map: null,
     overview: [L('Deathknell is a village of crypts and ruined homes. Brill is a working Forsaken settlement close to the capital, while the Scarlet Monastery is a reminder that armed survivors also claim the land.', '丧钟镇遍布墓穴和残破的房屋。布瑞尔是都城附近仍在运转的被遗忘者聚落，血色修道院则让人想起，拿起武器的幸存者也对这片土地有所主张。'), L('The people in Brill fight remnants of the Scourge and the Scarlet Crusade. Their apothecaries also work on a plague of their own, a project that links village laboratories to Undercity.', '布瑞尔的居民与天灾残部和血色十字军交战。镇上的药剂师也在研制自己的瘟疫，把村镇里的实验室与幽暗城联结起来。')],
     history: [
       H(L('Third War', '第三次战争'), L('The king’s city falls', '王都陷落'), L('Arthas returns to Lordaeron, kills King Terenas and brings ruin to the capital he was meant to inherit.', '阿尔萨斯回到洛丹伦，杀死泰瑞纳斯国王，使本该由他继承的都城沦为废墟。')),
@@ -921,7 +938,6 @@
 
   zone(1421, L('Silverpine Forest', '银松森林'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), '10–20', L('From the Sepulcher, the Forsaken push into a forest where the homes of the living and the stronghold of a mage have come under the shadow of the worgen.', '被遗忘者从瑟伯切尔深入森林。那里，活人的村庄与法师的要塞都笼罩在狼人的阴影之下。'), {
     complete: true,
-    map: null,
     overview: [L('The Sepulcher is the Forsaken’s foothold on the road south. At Pyrewood, the villagers change after sundown, while the old keep above them is held by Archmage Arugal.', '瑟伯切尔是被遗忘者在南下道路上的据点。焚木村的居民日落后就会变身，村子上方的旧城堡则落入大法师阿鲁高手中。'), L('The Greymane Wall closes the road into Gilneas. On this side of the wall, the Forsaken investigate a curse that has already undone a human community.', '格雷迈恩之墙封住了通往吉尔尼斯的道路。在墙的这一侧，被遗忘者正调查一种已经摧毁了一个人类村落的诅咒。')],
     history: [
       H(L('Third War', '第三次战争'), L('A desperate defense', '孤注一掷的防御'), L('Arugal unleashes worgen against the Scourge. They soon threaten the people he hoped to protect.', '阿鲁高放出狼人抵御天灾军团。很快，狼人就威胁到了他原本想保护的人。')),
@@ -939,7 +955,6 @@
 
   zone(1422, L('Western Plaguelands', '西瘟疫之地'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), '51–58', L('The grain fields of Lordaeron still stand around Andorhal. With the granaries ruined and Caer Darrow given over to necromancers, the Argent Dawn fights to contain what keeps spreading from them.', '洛丹伦的田地依然环绕着安多哈尔。粮仓荒废，凯尔达隆落入死灵法师之手，银色黎明奋力遏制仍在蔓延的瘟疫。'), {
     complete: true,
-    map: null,
     overview: [L('Andorhal once sent grain across Lordaeron. Now the farms nearby have their own plague cauldrons, and the camps to the west and south send investigators to learn what is feeding them.', '安多哈尔曾把谷物运往洛丹伦各处。如今附近农场里架起了瘟疫之锅，西面与南面的营地派人来查看锅里究竟有什么。'), L('There are two fortified centers beyond the farms. Scarlet soldiers still hold Hearthglen. Under the ruined keep on Caer Darrow lies Scholomance, a school of necromancy.', '田野之外，还有两处堡垒。血色十字军依然控制壁炉谷。湖上，往日辉煌的凯尔达隆已成废墟，要塞地下是教授死灵法术的通灵学院。')],
     history: [
       H(L('Third War', '第三次战争'), L('The grain carries the plague', '谷物带来瘟疫'), L('The Scourge uses Lordaeron’s grain supply to spread the plague among the living. Andorhal is one of the centers of the disaster.', '天灾军团利用洛丹伦的粮食供应，把瘟疫传给活人。安多哈尔是这场灾难的中心之一。')),
@@ -958,7 +973,6 @@
 
   zone(1423, L('Eastern Plaguelands', '东瘟疫之地'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), '53–60', L('Little living country remains between the burned streets of Stratholme and the chapel where the Argent Dawn still gathers supplies and testimony.', '从斯坦索姆焚毁的街巷到仍在收集物资与消息的圣光之愿礼拜堂，沿路能见到的生机已寥寥无几。'), {
     complete: true,
-    map: null,
     overview: [L('The road passes ruined towns, Scourge towers and the Scarlet fortress at Tyr’s Hand. Light’s Hope Chapel is a base for defenders who must work within reach of the dead.', '道路沿途是残破的城镇、天灾军团的高塔，以及提尔之手的血色要塞。圣光之愿礼拜堂则是守军的据点，他们就在亡者活动的地方附近坚持作战。'), L('The war left private losses as well as ruined cities. Near the Thondroril River, Tirion remembers the family he had before exile. In Darrowshire, survivors are scarce enough that the dead must speak for what happened there.', '战争除了毁去城镇，还夺走了许多人的亲友。索多里尔河畔，提里奥仍惦念流亡前的家人。在达隆郡，幸存者寥寥，往事只能由亡者来讲述。')],
     history: [
       H(L('Third War', '第三次战争'), L('The purge of Stratholme', '斯坦索姆大清洗'), L('Arthas orders the slaughter of Stratholme’s people after learning that plagued grain has reached the city.', '阿尔萨斯得知受瘟疫污染的谷物已经运进城，便下令屠杀斯坦索姆的居民。')),
@@ -994,7 +1008,6 @@
 
   zone(1425, L('The Hinterlands', '辛特兰'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), '40–50', L('Wildhammer gryphon riders hold Aerie Peak above a highland contested by forest trolls. At the coast, the Revantusk have made a home apart from their enemies inland.', '蛮锤狮鹫骑士居高守卫鹰巢山，林间则有不同的森林巨魔部族争斗。沿海的恶齿巨魔远离内陆敌人，自建家园。'), {
     complete: true,
-    map: null,
     overview: [L('After leaving Grim Batol, the Wildhammer clan found a home among the high ridges. Aerie Peak remains a base for riders and a place from which the dwarves look east toward the old troll sites.', '蛮锤氏族离开格瑞姆巴托之后，在山岭之间找到了家园。鹰巢山至今仍是骑士的据点，矮人从这里监视东边的巨魔古地。'), L('The Vilebranch hold the temple terraces of Jintha’Alor. Their enemies include the coastal Revantusk, who turn to Horde allies when their people are captured.', '邪枝巨魔占有辛萨罗层层叠叠的神庙。沿海的恶齿巨魔也是他们的敌人。族人被俘时，恶齿向部落盟友求援。')],
     history: [
       H(L('After the War of the Three Hammers', '三锤之战后'), L('A refuge on the high ridges', '高岭上的新家'), L('The Wildhammers leave cursed Grim Batol and make a new home at Aerie Peak.', '蛮锤矮人离开受诅咒的格瑞姆巴托，在鹰巢山安家。')),
@@ -1012,7 +1025,6 @@
 
   zone(1427, L('Searing Gorge', '灼热峡谷'), L('Blackrock region · Eastern Kingdoms', '黑石山一带 · 东部王国'), '43–50', L('On the north side of Blackrock Mountain, the Dark Irons dig into land that Ragnaros burned. A brotherhood of their own artisans keeps a separate forge above the pits.', '黑石山北侧，黑铁矮人挖掘着被拉格纳罗斯烧焦的土地。矿坑上方，一群同为黑铁矮人的工匠另立工坊。'), {
     complete: true,
-    map: null,
     overview: [L('Tracks and scaffolds cross the Cauldron, the great pit worked by the Dark Irons. Their mining and smelting give the burned country a purpose for the rulers down in Blackrock Mountain.', '铁轨与脚手架纵横交错，跨过黑铁矮人开掘的大熔炉。对黑石山深处的统治者来说，焦土上的采矿和冶炼依然大有用处。'), L('Thorium Point is the Thorium Brotherhood’s post. Work at its forge stands apart from the labor in the pit below. The gorge shows the Dark Irons divided over who commands their craft.', '瑟银哨塔是瑟银兄弟会的据点。哨塔的工坊与下方矿坑的劳作各有归属。同是黑铁矮人，却已各自决定为谁打铁。')],
     history: [
       H(L('War of the Three Hammers', '三锤之战'), L('Fire comes out of the earth', '烈焰从地下涌出'), L('Thaurissan summons Ragnaros. The eruption destroys his city and scars the country on both sides of Blackrock Mountain.', '索瑞森召出拉格纳罗斯。喷涌的烈焰摧毁了他的城，也在黑石山两侧的土地上留下伤痕。')),
@@ -1030,7 +1042,6 @@
 
   zone(1428, L('Burning Steppes', '燃烧平原'), L('Blackrock region · Eastern Kingdoms', '黑石山一带 · 东部王国'), '50–58', L('Blackrock Mountain looms over the southern ash plain. Orc strongholds and dragonkin threaten the human watch at Morgan’s Vigil, where word arrives of a marshal imprisoned inside the mountain.', '黑石山俯瞰南面的灰烬平原。兽人据点和龙人威胁着摩根的岗哨。就在这里，人们得知一名元帅被囚于山中。'), {
     complete: true,
-    map: null,
     overview: [L('Morgan’s Vigil watches the road toward the Redridge Mountains. Flame Crest looks out from the northern ridge. Between them are the ruins of Thaurissan’s city and the Blackrock orcs’ stronghold at Blackrock Stronghold.', '摩根的岗哨监视通往赤脊山的道路，烈焰峰则在北部山脊上俯瞰平原。两地之间是索瑞森城的废墟和兽人占据的黑石要塞。'), L('Inside Blackrock Mountain, the Dark Irons rule the depths while the Blackrock orcs and the black dragonflight operate above. The garrison in the steppes learns how far these powers reach when its search for Windsor leads back toward Stormwind.', '黑石山内部，黑铁矮人掌控深渊，黑石兽人与黑龙军团则占据上层。燃烧平原的驻军追寻温德索尔时，发现线索竟一路通向暴风城。')],
     history: [
       H(L('War of the Three Hammers', '三锤之战'), L('A city burns on the plain', '平原上的城市焚毁'), L('The eruption brought on by Ragnaros’s summoning destroys Thaurissan’s city and blackens the surrounding land.', '召唤拉格纳罗斯引发的爆发摧毁了索瑞森城，也烧焦了周围的土地。')),
@@ -1049,7 +1060,6 @@
 
   zone(1430, L('Deadwind Pass', '逆风小径'), L('Southern Eastern Kingdoms', '东部王国南部'), '55–60', L('A narrow road crosses empty hills between Duskwood and the swamp. At the end of the valley stands Karazhan, the tower from which Medivh changed Azeroth’s history.', '暮色森林与沼泽之间，一条狭路穿过空寂的山岭。谷底矗立着卡拉赞，麦迪文曾在这座塔里改变艾泽拉斯的历史。'), {
     complete: true,
-    map: null,
     overview: [L('The pass has few inhabitants. Ogres hold caves near the road, and the country around Karazhan is haunted. In Classic the tower stands closed above the abandoned village at its foot.', '小径一带人口稀少。食人魔占据路边洞穴，卡拉赞周围则闹鬼。经典旧世时期，高塔大门紧闭，脚下的村庄早已荒废。')],
     history: [
       H(L('First War', '第一次战争'), L('The last Guardian’s seat', '末代守护者的居所'), L('Medivh lives at Karazhan. His pact with Gul’dan helps the first orc armies cross into Azeroth.', '麦迪文住在卡拉赞。他与古尔丹达成交易，使最早的兽人军队得以进入艾泽拉斯。')),
@@ -1085,7 +1095,6 @@
 
   zone(1435, L('Swamp of Sorrows', '悲伤沼泽'), L('Southern Eastern Kingdoms', '东部王国南部'), '35–45', L('Stonard keeps a Horde watch among the reeds. Beneath the waters of the Pool of Tears, the exiles who worship Hakkar still guard their temple.', '斯通纳德的部落守军在芦苇间警戒。泪水之池的水下，崇拜哈卡的流亡者依然守着自己的神庙。'), {
     complete: true,
-    map: null,
     overview: [L('The road into the swamp runs past Stonard and the remnants at the Fallow Sanctuary. Off the road, the Pool of Tears covers much of the Temple of Atal’Hakkar, where trolls and green dragonkin still meet in conflict.', '沼泽里的道路经过斯通纳德和农田避难所的残存建筑。远离道路，泪水之池淹没了阿塔哈卡神庙的大半，巨魔与绿龙军团的龙人依然在那里争斗。'), L('The temple’s story reaches beyond the swamp. An egg from the Hinterlands and a request in Tanaris give the sunk halls a role in Hakkar’s return, long after the place was first sealed under water.', '神庙的故事并不局限于沼泽。一枚来自辛特兰的卵和一项在塔纳利斯提出的委托，让沉入水下多年的大厅卷入了哈卡归来的事件。')],
     history: [
       H(L('In the time of the exiles', '流亡者时代'), L('The Atal’ai build a temple', '阿塔莱建起神庙'), L('Driven out for their worship of Hakkar, the Atal’ai raise a sanctuary and continue their rites in the swamp.', '阿塔莱因崇拜哈卡被放逐，于是在沼泽建起神庙，继续举行仪式。')),
@@ -1103,7 +1112,6 @@
 
   zone(1458, L('Undercity', '幽暗城'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), 'Capital city', L('The ruined court of Lordaeron stands above another capital. Below it, Sylvanas rules the free undead from a city of ringed passages, sewers and workshops.', '洛丹伦宫廷的废墟下方，还有一座都城。希尔瓦娜斯在这片由环形通道、下水道与工坊组成的地下城市统领自由亡灵。'), {
     complete: true,
-    map: null,
     overview: [L('The throne room above ground keeps the memory of Terenas and Arthas. The city underneath is busy with a new government. Trade fills its central ring, and beyond it the quarters house soldiers, mages, rogues and the Royal Apothecary Society.', '地面上的王座厅留着泰瑞纳斯与阿尔萨斯的记忆，地下城则忙着运转新的政权。中央环道商贸繁忙，外围各区分别有士兵、法师、潜行者与皇家药剂师协会活动。'), L('From the Royal Quarter, Sylvanas holds together a people whose freedom is still recent. The apothecaries have their own far-reaching network, from the test sites of Hillsbrad to allies and prospective partners across the sea.', '希尔瓦娜斯在皇家区统领这些重获自由不久的亡灵。药剂师们另有一套延伸甚远的网络，既包括希尔斯布莱德的试验地点，也包括海对岸的盟友和潜在伙伴。')],
     history: [
       H(L('Third War', '第三次战争'), L('The old court falls', '旧宫廷陷落'), L('Arthas kills Terenas on his return to Lordaeron. The city and its people fall to the Scourge.', '阿尔萨斯回到洛丹伦，杀死泰瑞纳斯。王城和城中居民落入天灾军团之手。')),
@@ -1122,7 +1130,6 @@
   zone(1411, L('Durotar', '杜隆塔尔'), L('Central Kalimdor', '卡利姆多中部'), '1–10', L('The orcs of the new Horde settle among red ridges, and the Darkspear make a home on the coast. Both have to defend their first homes in Kalimdor.', '新部落的兽人在红色山脊间定居，暗矛巨魔则在沿海安家。两族都得守住他们在卡利姆多最早的家园。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('The dry ravines of the Valley of Trials give way to the road through Razor Hill. On the southern coast, Sen’jin Village looks out at the Echo Isles, where the Darkspear’s immediate troubles have followed them home.', '试炼谷的干燥沟壑通向剃刀岭的道路。南部海岸上，森金村正对着回音群岛，暗矛巨魔回到家门口也依然有麻烦。'), L('Razor Hill’s defenders watch Northwatch men who remain in Tiragarde Keep. The guard’s evidence also points to trouble closer to the Horde, among the spellcasters in the inland caves.', '剃刀岭的守军留意仍据守提拉加德城堡的北方城堡士兵。守军掌握的消息还指向内陆洞穴里的施法者，那是离部落更近的麻烦。')],
     history: [
       H(L('After the Third War', '第三次战争之后'), L('A new home named for Durotan', '以杜隆坦命名的新家园'), L('Thrall settles the orcs in Kalimdor and names the land for his father. The Darkspear share its coast.', '萨尔让兽人在卡利姆多定居，以父亲的名字命名这片土地。暗矛则在同一片海岸落脚。')),
@@ -1141,7 +1148,6 @@
   zone(1412, L('Mulgore', '莫高雷'), L('Central Kalimdor', '卡利姆多中部'), '1–10', L('After years of flight from the centaur, the tauren have grassland to call home. Protecting Mulgore means defending the herds and the earth on which their new settlements depend.', '多年躲避半人马之后，牛头人终于有了自己的草原。守卫莫高雷，就是保护新聚落赖以生存的兽群和土地。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('Bloodhoof Village stands beside Stonebull Lake below Thunder Bluff. The grasslands are hunting grounds and a place where young tauren learn obligations to the land and the people who live on it.', '血蹄村坐落在雷霆崖下的石牛湖畔。草原是猎场，年轻的牛头人也在这里学习自己对土地和乡邻负有的责任。'), L('Sites in the hills make different claims on the land. The Venture Company sets up a mine and works with machines, while the tauren also object to dwarven digging at Bael’dun.', '丘陵上的各方对土地各有打算。风险投资公司建矿动用机器，矮人在巴尔丹的挖掘也招致牛头人反对。')],
     history: [
       H(L('Third War', '第三次战争'), L('An alliance on the plains', '草原上的盟约'), L('Cairne and Thrall make common cause as the tauren seek a defensible home away from centaur attacks.', '牛头人饱受半人马袭击，寻找可以守住的家园。凯恩于是与萨尔并肩作战。')),
@@ -1160,7 +1166,6 @@
   zone(1413, L('The Barrens', '贫瘠之地'), L('Central Kalimdor', '卡利姆多中部'), '10–25', L('The Horde’s inland roads meet in a vast dry grassland. Goblin ships tie it to another continent, and below the dust a druid tries to make the Barrens green.', '部落的内陆道路汇于广袤干燥的草原。地精的航船把它同另一块大陆相连，尘土之下则有德鲁伊试图让贫瘠之地恢复绿意。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('The Crossroads holds the meeting of the inland routes. Camp Taurajo watches the southern road, and Ratchet offers a port where the cartel trades with people from both sides.', '十字路口扼守内陆道路的交会处。陶拉祖营地看护南路，棘齿城则是地精财团同时与双方做生意的港口。'), L('The grassland around the oases is under pressure from centaur, quilboar and other raiders. In the Wailing Caverns, the struggle over the Barrens takes a different shape when a druid’s dream changes the life around him.', '绿洲周围的草原受到半人马、野猪人等袭击者威胁。哀嚎洞穴中，德鲁伊的一场梦改变了周围的生灵，贫瘠之地也因此面临别样的纷争。')],
     history: [
       H(L('Third War', '第三次战争'), L('The crossing of the plains', '横穿草原'), L('Thrall aids Cairne and the tauren as they cross the Barrens, strengthening the alliance that takes hold in Kalimdor.', '萨尔帮助凯恩和牛头人穿过贫瘠之地，巩固了后来在卡利姆多扎根的同盟。')),
@@ -1179,7 +1184,6 @@
   zone(1438, L('Teldrassil', '泰达希尔'), L('Northern Kalimdor', '卡利姆多北部'), '1–10', L('The night elves have a new home in the boughs of Teldrassil. The moonwells sustain the settlements, even as trouble appears among the creatures living on the young World Tree.', '暗夜精灵在泰达希尔的枝干上有了新家。月亮井滋养着各处聚落，新生世界之树上的一些生灵却开始出现异状。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('Shadowglen lies apart from the busy road through Dolanaar to Darnassus. Below the boughs, Rut’theran Village gives the tree access to the sea and to Darkshore.', '幽影谷远离经过多兰纳尔、通往达纳苏斯的繁忙道路。枝干下方的鲁瑟兰村，则让岛上居民得以出海前往黑海岸。'), L('The new tree has sacred wells and villages, yet some of its furbolgs and other inhabitants have become dangerous. A druid’s investigation and a moonwell ceremony tell different parts of the story of a home still taking root.', '新树上有圣井和村庄，但一些熊怪与其他生灵已变得危险。德鲁伊的调查与月亮井的仪式，从不同方面讲述了一个刚刚扎根的家园。')],
     history: [
       H(L('Third War', '第三次战争'), L('The cost at Nordrassil', '诺达希尔的代价'), L('The night elves stop Archimonde at Mount Hyjal, and the battle costs them the blessing that sustained their immortality.', '暗夜精灵在海加尔山阻止了阿克蒙德，也在这一战中失去了维系永生的祝福。')),
@@ -1198,7 +1202,6 @@
   zone(1441, L('Thousand Needles', '千针石林'), L('Central Kalimdor', '卡利姆多中部'), '25–35', L('The canyon’s stone columns hold bridges and tauren settlements. Down on the dry floor, roads lead from centaur territory to a racetrack on the salt flats.', '峡谷的石柱托起桥梁和牛头人聚落。干燥的谷底有路穿过半人马的地盘，一直通到盐滩上的赛道。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('Freewind Post sits high above the canyon floor, where centaur raids keep the garrison busy. The mesas are not all friendly to the Horde. The Grimtotem use their own heights at Darkcloud Pinnacle.', '乱风岗高踞谷底之上，守军忙于应付半人马的袭击。台地上的势力并非都与部落交好，恐怖图腾便在黑云峰据有自己的高地。'), L('To the east, the Shimmering Flats open bright and level. The Mirage Raceway brings goblin and gnome engineers into competition, with the bodies of local creatures serving as sources of materials for their machines.', '向东走便是闪光平原，明亮而平坦。沙漠赛道上，地精与侏儒工程师一较高下，当地生物的甲壳也成了赛车的材料。')],
     history: [
       H(L('Before the settlements', '聚落建立之前'), L('A dry canyon of stone needles', '石柱林立的干谷'), L('The waters that once covered the flats leave a broad bed of salt below the cliffs.', '曾经覆盖平原的水退去，在岩壁下留下辽阔的盐滩。')),
@@ -1217,7 +1220,6 @@
   zone(1443, L('Desolace', '凄凉之地'), L('Central Kalimdor', '卡利姆多中部'), '30–40', L('Centaur clans divide the pale, dry country of Desolace. Its coast holds settlements and old ruins, and the caverns of Maraudon hold a much older story of the centaurs’ beginnings.', '半人马部族瓜分了凄凉之地灰白干燥的原野。海岸散布聚落与古老废墟，玛拉顿洞穴里则保留着半人马起源的更古老故事。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('From the heights of Nijel’s Point or the coast at Shadowprey Village, travelers look onto land divided between the centaur clans. The Gelkis and Magram both seek help against the other.', '无论从尼耶尔前哨站的高处，还是从葬影村的海边望去，都能看到半人马部族各据一方的土地。吉尔吉斯和玛格拉姆都在找人助战，以对付另一方。'), L('Mannoroc Coven is occupied by demons. Maraudon is sacred to centaur, and its inner caverns keep the story of a family that has as much to do with the land as with the clans’ fighting.', '玛诺洛克集会所盘踞着恶魔。玛拉顿则是半人马的圣地，洞穴深处保留着一个家族的故事，同这片土地和部族间的战争都有关联。')],
     history: [
       H(L('Early centaur history', '半人马的早期历史'), L('The family beneath the valley', '谷地之下的家族'), L('Zaetar, a son of Cenarius, and Princess Theradras are remembered as the parents of the centaur. The story of Zaetar’s death is bound to Maraudon.', '塞纳留斯之子扎尔塔与瑟莱德丝公主被认为是半人马的父母。扎尔塔之死的故事与玛拉顿紧密相连。')),
@@ -1236,7 +1238,6 @@
   zone(1444, L('Feralas', '菲拉斯'), L('Southern Kalimdor', '卡利姆多南部'), '40–50', L('Feralas has roads shaded by enormous trees. Its living settlements surround an ancient city where ogres and surviving Highborne shelter in different wings of the ruins.', '菲拉斯的道路被参天巨树遮蔽。仍有居民的聚落环绕着一座古城，食人魔与幸存的上层精灵各自占据废墟的一角。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('Feathermoon Stronghold stands on an island off the western coast. Camp Mojache is a tauren settlement on the inland road. Between them lies Dire Maul, the ruin of Eldre’Thalas, which still holds very different communities behind its walls.', '羽月要塞位于西海岸外的岛上，莫沙彻营地则是内陆道路边的牛头人聚落。两地之间是埃雷萨拉斯的废墟厄运之槌，城墙内仍住着迥然不同的族群。'), L('Even the coast near Feathermoon holds pieces of the night elves’ older world. The naga on nearby islands make it difficult to treat those ruins simply as places of memory.', '连羽月要塞附近的海岸都留有暗夜精灵旧世界的遗迹。邻岛上活动的纳迦，使这些废墟成了必须防守的地方。')],
     history: [
       H(L('Before the Sundering', '大分裂之前'), L('The city of Eldre’Thalas', '埃雷萨拉斯城'), L('Highborne build and occupy Eldre’Thalas. Some of them endure in the forest city long after the Sundering.', '上层精灵建造并居住在埃雷萨拉斯。大分裂很久以后，仍有一部分人在林中古城生活。')),
@@ -1255,7 +1256,6 @@
   zone(1445, L('Dustwallow Marsh', '尘泥沼泽'), L('Central Kalimdor', '卡利姆多中部'), '35–45', L('Theramore’s harbor holds refugees and soldiers behind its walls, while the Horde maintains a village in the marsh. Beyond those settlements, someone has burned an inn and black dragons have claimed the deeper swamp.', '塞拉摩的城墙内住着难民和士兵，部落也在沼泽里维持着一座村庄。两处聚落之外，有人烧毁了一家旅店，而黑龙占据了沼泽深处。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('Theramore looks out over the sea and Brackenwall Village faces the inland reeds. At the western entrance to the marsh, the remains of the Shady Rest Inn are a mystery the people on both sides have reason to investigate.', '塞拉摩面朝大海，蕨墙村则面向内陆芦苇荡。沼泽西口的树荫旅店已成废墟，双方都有理由追查这桩谜案。'), L('In the south, the black dragons at the Wyrmbog live amid deep water, mud and dense vegetation. The causeway leads to Theramore itself, while reports about the dragons lead into country that its walls cannot protect.', '南部巨龙沼泽里，黑龙栖息于深水、泥泞与茂密草木之间。堤道通向塞拉摩岛城，但有关巨龙的消息，却把调查引向城墙护不到的地方。')],
     history: [
       H(L('Third War', '第三次战争'), L('An eastern people settles in Kalimdor', '东部王国的居民在卡利姆多定居'), L('Jaina leads refugees across the Great Sea. Theramore becomes their fortified home.', '吉安娜率难民渡过无尽之海。塞拉摩成为这群人在城墙庇护下的家园。')),
@@ -1275,7 +1275,6 @@
   zone(1446, L('Tanaris', '塔纳利斯'), L('Southern Kalimdor', '卡利姆多南部'), '40–50', L('The roads through the dunes meet at Gadgetzan. Beyond the trading town lie a Sandfury city, a pirate coast and caves where the bronze dragons guard older concerns.', '沙丘间的道路汇于加基森。商镇外有沙怒巨魔的城市、海盗出没的海岸，以及青铜龙守护着古老秘密的洞穴。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('Gadgetzan is an inland market with walls around its wells. At Steamwheedle Port, fishing and shipping share the coast with an active pirate threat. The Sandfury hold Zul’Farrak in the northwestern desert.', '加基森是内陆市镇，城墙围住了水井。热砂港的捕鱼与航运都受海盗威胁。沙漠西北方，沙怒巨魔占据祖尔法拉克。'), L('People bring very different questions to the desert. Yeh’kinya seeks knowledge of Hakkar at the coast. At the Caverns of Time, Anachronos remembers why the desert to the west had to be sealed off.', '来到沙漠的人各有疑问。叶基亚在海岸探寻哈卡的事，而时光之穴里的阿纳克洛斯仍记得，沙漠西边为何必须被封起来。')],
     history: [
       H(L('After the troll empires', '巨魔帝国之后'), L('The Sandfury in the desert', '沙漠里的沙怒巨魔'), L('Zul’Farrak remains a Sandfury stronghold in the dry country.', '祖尔法拉克在干旱的土地上延续为沙怒巨魔的据点。')),
@@ -1295,7 +1294,6 @@
   zone(1447, L('Azshara', '艾萨拉'), L('Northern Kalimdor', '卡利姆多北部'), '45–55', L('Ruined night elf halls line a broken coast. Naga move through the shallows, and far from the road a water elemental sends word of a war against fire.', '破碎的海岸上，暗夜精灵的古老厅堂已经坍塌。纳迦在浅水间活动，远离大路的地方，一名水元素向外传达对抗烈火的战事。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('The road through Azshara passes the ruins of Eldarath and looks down toward the Bay of Storms. Naga hold ground near the flooded ruins, while the inland hills and camps offer other dangers.', '艾萨拉的道路经过埃达拉斯废墟，俯瞰风暴海湾。纳迦占据水淹遗迹附近的地面，内陆丘陵与营地则另有危险。'), L('Old objects bring people here from both continents. The bay also brings the coast into the fight against the forces of Ragnaros through the work of Duke Hydraxis.', '古老器物把两块大陆上的人引到这里。海湾里的海达克西斯公爵，也让这片海岸牵涉进对抗拉格纳罗斯势力的战事。')],
     history: [
       H(L('The Sundering', '大分裂'), L('The old coast breaks', '旧日海岸断裂'), L('The Sundering tears through the old night elf lands. Eldarath’s ruins remain beside the broken coastline.', '大分裂撕裂暗夜精灵的旧领地。埃达拉斯的废墟仍留在破碎海岸边。')),
@@ -1314,7 +1312,6 @@
   zone(1448, L('Felwood', '费伍德森林'), L('Northern Kalimdor', '卡利姆多北部'), '48–55', L('Felwood is a forest hurt by the Burning Legion. Druids tend what still grows, and the Timbermaw fight to hold their underground refuge against neighboring furbolgs.', '费伍德森林遭受燃烧军团的破坏。德鲁伊照料尚能生长的草木，木喉熊怪则奋力抵御邻近的熊怪，守住地下避难所。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('The road north passes corrupted groves and pools before it reaches Timbermaw Hold. Furbolgs in the forest’s old villages now attack outsiders. The Timbermaw still offer a chance to talk to those willing to help them.', '北上的道路穿过受污染的树林与水池，最后抵达木喉要塞。森林旧村里的熊怪如今攻击外来者，木喉熊怪却仍愿意与肯相助的人谈一谈。'), L('The Emerald Sanctuary and the setting around Bloodvenom Post show different ways of keeping a hold in this country. The druids’ work includes treating individual plants in woods that cannot yet support their own recovery.', '翡翠圣地和血毒岗哨周围的环境，显示了人们如何用不同的办法在此立足。森林尚难自行恢复，德鲁伊于是从救治一株株植物做起。')],
     history: [
       H(L('Third War', '第三次战争'), L('The Legion enters the forest', '燃烧军团进入森林'), L('The Burning Legion’s campaign leaves the forest corrupted, with demons still active among the old groves.', '燃烧军团的攻势使森林遭到腐化，战后仍有恶魔在古老的林地活动。')),
@@ -1333,7 +1330,6 @@
   zone(1449, L('Un’Goro Crater', '安戈洛环形山'), L('Southern Kalimdor', '卡利姆多南部'), '48–55', L('A wet jungle fills the crater between deserts. The expedition at its edge studies giant animals, colored crystals and the machinery set among them.', '两片沙漠之间的环形山里，长满湿润茂密的丛林。在盆地边缘扎营的考察队研究巨兽、彩色水晶，以及安置在它们之间的装置。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('Tar pits, rivers and jungle rise around Fire Plume Ridge. The paths between them can hide giant creatures from view, even close to the northern camp where scholars try to understand the crater.', '沥青池、河流与丛林环绕火羽山。穿行其间时，哪怕离北方学者营地不远，巨兽也可能藏在视野之外。'), L('At Marshal’s Refuge, the experimenters compare loose crystals with large pylons standing elsewhere in the crater. Soil from the same country is useful in Darnassus, where it can be used to grow unfamiliar herbs.', '马绍尔营地的研究者把散落的水晶与盆地各处的大型水晶塔相比较。来自这里的泥土在达纳苏斯也派得上用场，可以用来栽培陌生的草药。')],
     history: [
       H(L('Long before the expedition', '考察队来到之前'), L('The old pylons', '古老的水晶塔'), L('Large crystal pylons stand around the crater, evidence of builders whose machinery has survived among the plants and animals.', '巨大的水晶塔分布在盆地四周。建造者留下的装置在动植物间存留至今。')),
@@ -1352,7 +1348,6 @@
   zone(1450, L('Moonglade', '月光林地'), L('Northern Kalimdor', '卡利姆多北部'), '55–60', L('Around Lake Elune’ara, druids maintain a sanctuary shared across faction lines. The grove also gives them a place to face the troubles that come out of the Emerald Dream.', '艾露恩湖四周，德鲁伊照料着一处两大阵营都能使用的圣地。林地也是他们面对翡翠梦境中出现的祸患之处。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('Nighthaven looks out over the lake, and Keeper Remulos tends a shrine to the west. The quiet of the valley contrasts with the dangers that druids encounter while working beyond it.', '永夜港俯瞰湖面，守护者雷姆洛斯照料西面的神殿。山谷里宁静无声，德鲁伊在外面工作时却会遭遇种种危险。')],
     history: [
       H(L('Before the Third War', '第三次战争之前'), L('A sanctuary for druids', '德鲁伊的圣地'), L('The grove is sacred to the druids, who gather here around the lake.', '这片林地是德鲁伊的圣地，他们在湖边集会。')),
@@ -1370,7 +1365,6 @@
   zone(1451, L('Silithus', '希利苏斯'), L('Southern Kalimdor', '卡利姆多南部'), '55–60', L('Silithid burrow through the desert north of Ahn’Qiraj. At Cenarion Hold, the druids grapple with a danger older than their outpost and prepare for what waits behind the sealed gate.', '异种虫在安其拉以北的沙漠里掘穴。塞纳里奥要塞的德鲁伊应付着远比据点古老的威胁，并为封闭大门后的敌人做准备。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('Cenarion Hold overlooks the roads between three silithid hives. Twilight’s Hammer camps occupy the desert as well. At the southern edge, the Scarab Wall separates the outpost’s day-to-day fighting from the city behind it.', '塞纳里奥要塞俯瞰连接三处异种虫巢的道路。暮光之锤也在沙漠中扎营。南缘的甲虫之墙，把前哨日常应付的战斗与墙后的城市隔开。'), L('The gate was closed in a war remembered by elves and dragons. Fighting near the hives leads back to their unfinished business, and eventually to a new gathering of armies in the sand.', '这扇门是在一场精灵与巨龙都还记得的战争中关闭的。虫巢附近的战斗牵出那一战留下的未竟之事，后来又有大军在沙地上集结。')],
     history: [
       H(L('War of the Shifting Sands', '流沙之战'), L('The wall rises', '城墙升起'), L('Fandral Staghelm and his allies fight the {Qiraji}. The bronze dragon Anachronos raises the Scarab Wall with the aid of the other dragons and seals off Ahn’Qiraj.', '范达尔·鹿盔与盟友对抗{其拉虫人}。青铜龙阿纳克洛斯在其他巨龙协助下升起甲虫之墙，把安其拉封了起来。')),
@@ -1389,7 +1383,6 @@
   zone(1452, L('Winterspring', '冬泉谷'), L('Northern Kalimdor', '卡利姆多北部'), '55–60', L('The road from Timbermaw Hold emerges into a snowy valley. Furbolgs fight over its western reaches, while Everlook offers a place for merchants and specialists to work.', '从木喉要塞出来，道路进入一片雪谷。熊怪在西部争斗，永望镇则为商人和匠人提供了做事的地方。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('Hot springs break through the snow in the west, close to the Timbermaw tunnels. The Winterfall furbolgs hold ground farther east, where travelers from Everlook have reason to watch their movements.', '西部温泉穿过积雪涌出，离木喉隧道不远。冬泉熊怪据守更东边的土地，从永望镇来的人得留意他们的动向。'), L('Everlook connects isolated settlements with outside trade. A craftsman there takes an interest in materials brought out of Blackrock Mountain, so events in a distant dungeon reach a workshop in a snowy town.', '永望镇让偏远聚落得以和外界交易。镇上一名匠人对从黑石山带出来的材料产生兴趣，于是遥远地下城里发生的事，传到了雪镇的一间工坊。')],
     history: [
       H(L('Before Classic', '经典旧世之前'), L('Furbolg country', '熊怪的土地'), L('Furbolgs make their homes in the valley and the tunnels leading west. Their communities take different courses in the face of corruption.', '熊怪在谷中和通往西边的隧道里安家。面对腐化，各部族走上不同的道路。')),
@@ -1408,7 +1401,6 @@
   zone(1454, L('Orgrimmar', '奥格瑞玛'), L('Central Kalimdor', '卡利姆多中部'), 'Capital city', L('Orgrimmar gathers the new Horde inside Durotar’s ravines. Thrall governs from the Valley of Wisdom while an inquiry into cultists leads beneath the city itself.', '奥格瑞玛把新部落聚集在杜隆塔尔的峡谷间。萨尔从智慧谷主持政务，一项追查邪教徒的调查却延伸到了城市下方。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('The Valley of Strength receives trade through the southern gate, and the Valley of Honor makes room for the city’s martial life. Thrall’s hall stands in the Valley of Wisdom. Darkspear and other allies have a place in the new capital alongside the orc clans.', '力量谷通过南门接纳商旅，荣誉谷则为城中习武的人提供场地。萨尔的大厅坐落在智慧谷。除了兽人各氏族，暗矛等盟友也在新都里有自己的位置。'), L('In the Cleft of Shadow, warlocks work near the entrance to Ragefire Chasm. The ravine’s tunnels hold dangers of their own, within reach of a warchief who has to think about enemies inside his walls as well as outside.', '暗影裂口的术士在怒焰裂谷入口附近活动。峡谷的隧道另有险情，大酋长在留意城外敌人的同时，也得提防近在城内的威胁。')],
     history: [
       H(L('After the Third War', '第三次战争之后'), L('A capital named for Doomhammer', '以毁灭之锤命名的都城'), L('Thrall’s people build their capital in Durotar and name it for Orgrim Doomhammer.', '萨尔的族人在杜隆塔尔建起都城，以奥格瑞姆·毁灭之锤的名字命名。')),
@@ -1427,7 +1419,6 @@
   zone(1456, L('Thunder Bluff', '雷霆崖'), L('Central Kalimdor', '卡利姆多中部'), 'Capital city', L('Thunder Bluff brings the tauren’s tents, councils and sacred places together above Mulgore. The city also looks outward, sending help to the Barrens and hearing offers from the Forsaken.', '雷霆崖把牛头人的帐篷、议事处与圣地聚在莫高雷上方。城里的人也关心外面的事，既向贫瘠之地派出援手，也听取被遗忘者的提议。'), {
     complete: true,
     continent: 'kalimdor',
-    map: null,
     overview: [L('Bridges join the occupied mesas. The central bluff holds the main market, while Elder Rise and Spirit Rise give the city space for different kinds of counsel and ceremony.', '桥梁把各座有人居住的台地连接起来。中央台地有主要市集，长者高地与灵魂高地则容纳各类议事与仪式。'), L('Cairne’s leadership grows out of the alliance that brought his people to this land. The city also gives Hamuul a place to guide druids and Magatha a place to voice the concerns of the Grimtotem.', '凯恩的领导源于当初将族人带来这片土地的同盟。城中也有哈缪尔指导德鲁伊、玛加萨代表恐怖图腾发言的地方。')],
     history: [
       H(L('Third War', '第三次战争'), L('The passage to Mulgore', '迁往莫高雷'), L('Cairne and the orcs make common cause against the centaur and the tauren cross to a new homeland.', '凯恩与兽人联手对抗半人马，牛头人得以迁往新的家园。')),
@@ -1459,6 +1450,48 @@
       { id: 'warriors-terrace', name: L('Warrior’s Terrace', '战士区'), text: L('The Sentinels gather near the Hall of Justice.', '哨兵在正义大厅附近集结。') }
     ],
     relatedZoneIds: [1438, 1439, 1450, 1449], sagaIds: ['corrupted-forests'], sourceIds: ['da-classic', 'da-grain', 'da-temple', 'manual', 'mount-hyjal', 'te-crown']
+  });
+
+  zone(2482, L('Mount Hyjal', '海加尔山'), L('Northern Kalimdor', '卡利姆多北部'), '55–60', L('The mountain is recovering after Archimonde’s defeat. The ruins still hold traces of the Legion’s dead.', '阿克蒙德败亡后，海加尔山正在恢复生机，废墟里仍留有燃烧军团的遗骸。'), {
+    complete: true,
+    continent: 'kalimdor',
+    map: 'maps/2482.jpg',
+    overview: [L('Darkwhisper Gorge connects the high country with Winterspring. Above it, the land around Nordrassil bears the marks of the Third War. The Forever quests return to old battle sites and follow people dealing with what the Legion left behind.', '暗语峡谷把高山与冬泉谷相连。峡谷上方，诺达希尔周围仍有第三次战争留下的伤痕。无限服的任务重访昔日战场，讲述当地的人如何应对燃烧军团留下的威胁。')],
+    places: [
+      { id: 'darkwhisper-gorge', name: L('Darkwhisper Gorge', '暗语峡谷'), text: L('The ravine between Winterspring and the recovering mountain.', '连接冬泉谷与正在复苏的海加尔山的峡谷。') },
+      { id: 'dae-gun', name: L('Ruins of Dae’gun', '达尔苟废墟'), text: L('The ruins hold the ashes of Archimonde’s lieutenant Azgalor.', '阿克蒙德的副将阿兹加洛的灰烬仍留在这片废墟。') }
+    ],
+    history: [H(L('Third War', '第三次战争'), L('The battle at Nordrassil', '诺达希尔之战'), L('Archimonde falls at Mount Hyjal. The night elves lose the immortality that Nordrassil had granted them.', '阿克蒙德在海加尔山败亡。暗夜精灵失去了诺达希尔曾赋予他们的永生。'))],
+    storylines: [S('hy-legion-legacy', L('What the Legion left behind', '燃烧军团留下的痕迹'), ['hy-azgalor'])],
+    figureIds: ['azgalor', 'ketharas'], relatedZoneIds: [1452, 1448, 1457], sourceIds: ['hy-forever', 'hy-zones', 'mount-hyjal', 'hy-ashes', 'forever-new-zones']
+  });
+
+  zone(2548, L('Riverglades', '河林'), L('Eastern Kingdoms', '东部王国'), '36–44', L('Farms, garrisons, and a goblin port share a river frontier where settlers are still trying to make a home.', '农庄、驻军和地精港口分布在河流沿岸，定居者仍在努力在这片边疆安家。'), {
+    complete: true,
+    map: 'maps/2548.jpg',
+    overview: [L('The Brotherhood of the Horse, former riders of Stormwind, makes its home at Farholde Keep. The Horde holds Rog’mar, and the Steamwheedle route connects Powderfuse Port with Tanaris. Twilight’s Hammer attacks reach the farms, while ogre raiders strike from Krol’dok Stronghold.', '暴风城昔日的骑兵组成铁马兄弟会，在法霍德要塞安家。部落据守洛格玛，热砂港集团的航线将爆破引线港与塔纳利斯相连。暮光之锤袭击农庄，克罗多克要塞的食人魔也四处劫掠。')],
+    places: [
+      P('farholde', L('Farholde Keep', '法霍德要塞'), 60.6, 81.6, L('The southern stronghold of the Brotherhood of the Horse.', '铁马兄弟会在南部的据点。')),
+      P('rogmar', L('Rog’mar', '洛格玛'), 59.6, 45.0, L('The Horde outpost in the middle of the frontier.', '部落设在边疆腹地的哨所。')),
+      P('powderfuse', L('Powderfuse Port', '爆破引线港'), 80.6, 54.6, L('The goblin docks serve the route from Steamwheedle Port.', '地精在此经营码头，船只往返于这里与热砂港。'))
+    ],
+    history: [H(L('Before the local quests', '当地任务开始前'), L('The riders settle on the frontier', '骑兵在边疆落脚'), L('Outcasts from Stormwind’s cavalry found a new home on the east coast and build trade ties there. The zone sources give little detail on the date or the stages of the settlement.', '离开暴风城骑兵队的流亡者在东海岸建立新家，并在当地拓展贸易往来。现有区域资料很少提及定居的时间和经过。'))],
+    storylines: [S('rg-frontier-families', L('The cost of the raids', '袭击的代价'), ['rg-elbrim'])],
+    factionIds: ['brotherhood-of-the-horse', 'steamwheedle', 'twilight'], relatedZoneIds: [1433, 1418, 1428, 1446], sourceIds: ['rg-forever', 'rg-settlements', 'rg-farm', 'rg-stronghold']
+  });
+
+  zone(2652, L("Shen'dralas", '辛德拉'), L('Western Kalimdor', '卡利姆多西部'), '38–45', L('A temple and its fading crystal pylons preserve a remnant of the Shen’dralar amid the centaur country south of Desolace.', '凄凉之地以南是半人马的领地。一座神殿与逐渐衰弱的水晶塔，让一部分辛德拉族人得以留在这里。'), {
+    complete: true,
+    continent: 'kalimdor',
+    map: 'maps/2652.jpg',
+    overview: [L('Beyond the Valley of Bones, old elven buildings stand in country contested by centaur clans. The temple’s inhabitants connect the ruins to the Highborne of Eldre’Thalas and Dire Maul. The published quest text leaves much of the settlement’s early history unclear.', '越过白骨之谷，古老的精灵建筑矗立在半人马部族争夺的土地上。神殿的居民将废墟的历史与埃雷萨拉斯和厄运之槌的上层精灵联系起来。公开的任务文本对聚落早期的历史着墨不多。')],
+    places: [
+      { id: 'sd-temple', name: L('Temple of Shen’dralas', '辛德拉神殿'), text: L('Magister Kirandis and other Shen’dralar remain here, near the crystal that still shines.', '魔导师基兰迪斯和其他辛德拉族人仍守在这里，神殿里的水晶依然发光。') },
+      { id: 'sd-pylon-ruins', name: L('Pylon ruins', '水晶塔废墟'), text: L('Mana elementals watch over the dwindling crystals outside the temple.', '法力元素守护着神殿外逐渐失去力量的水晶。') }
+    ],
+    history: [H(L('Before Forever’s restoration', '无限服修复晶塔之前'), L('Crystals among the ruins', '废墟中的水晶'), L('Ancient crystal pedestals were built over older elven ruins. By the time the story opens, the temple’s pylon still shines while others are running out of power.', '古老的水晶基座建在更早的精灵废墟上。故事开始时，神殿里的水晶塔依然明亮，其他晶塔的力量却已所剩无几。'))],
+    storylines: [S('sd-temple-pylons', L('Restoring the pylons', '修复水晶塔'), ['sd-restore-pylons'])],
+    figureIds: ['kirandis'], factionIds: ['shendralar'], relatedZoneIds: [1443, 1412, 1444], sourceIds: ['sd-forever', 'hy-zones', 'sd-pylons', 'sd-magister', 'forever-new-zones']
   });
 
   const sagas = {
@@ -1589,7 +1622,10 @@
     1452: Z('', 'Snowy valleys of furbolgs, frostsabers and Everlook’s goblins.', '熊怪、霜刃豹与永望镇地精所在的雪谷。'),
     1454: Z('', 'Thrall’s capital, built for the new Horde.', '萨尔为新部落建立的都城。'),
     1456: Z('', 'The tauren city on the mesas above Mulgore.', '建于莫高雷台地之上的牛头人城市。'),
-    1457: Z('', 'The night elf city in Teldrassil’s branches.', '坐落于泰达希尔枝干间的暗夜精灵城市。')
+    1457: Z('', 'The night elf city in Teldrassil’s branches.', '坐落于泰达希尔枝干间的暗夜精灵城市。'),
+    2482: Z('', 'The site of Archimonde’s defeat, where the mountain is still recovering.', '阿克蒙德败亡之地，群山仍在恢复生机。'),
+    2548: Z('', 'Farms, old grudges, and a goblin port on the eastern coast.', '东部海岸的农庄、宿怨与地精港口。'),
+    2652: Z('', 'A temple whose fading crystals sustain the Shen’dralar.', '逐渐黯淡的水晶维系着神殿里的辛德拉族人。')
   };
 
   root.WORLD = { version: 1, title: L('Azeroth, in context', '艾泽拉斯全景'), setting: L('Classic-era world · Forever additions identified', '经典旧世的艾泽拉斯 · 标注无限服新增内容'), zones, briefs, sagas, beats, figures, factions, sources, glossary: {} };
