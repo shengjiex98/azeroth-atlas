@@ -595,10 +595,13 @@ summary { cursor: pointer; min-height: 40px; padding-block: 8px; }
 [data-status="active"] { --chain-tone: #b4d9ef; --chain-fill: #264352; }
 [data-status="next"] { --chain-tone: #f2d895; --chain-fill: #523d20; }
 [data-status="locked"] { --chain-tone: #d2d0c8; --chain-fill: #3a3836; }
-.chain-pin { width: 32px; height: 32px; }
+.chain-pin { min-width: 32px; width: auto; height: 32px; }
 .chain-pin > span {
-  width: 25px;
+  min-width: 25px;
+  width: auto;
   height: 25px;
+  padding: 0 5px;
+  border-radius: 13px;
   border-color: var(--chain-tone, #cfb88b);
   background: var(--chain-fill, #25231f);
   color: var(--chain-tone, #fff0cb);

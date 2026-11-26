@@ -802,7 +802,44 @@
         pins.push({ step: step.id, n, position, status, title: u('chainPin', { n, place: labels.join(' · ') }) });
       }
     }
-    return { pins, points, stops, otherContinents };
+    return { pins: zone ? mergeChainPins(pins) : pins, points, stops, otherContinents };
+  }
+
+  // A hub such as Darkshire is the giver or turn-in for many steps. Separate pins
+  // there would fan out into an unreadable ring, so nearby pins share one label.
+  function mergeChainPins(pins) {
+    const merged = [];
+    for (const pin of pins) {
+      const near = merged.find(other =>
+        Math.hypot(other.position[0] - pin.position[0], other.position[1] - pin.position[1]) < 2.5);
+      if (!near) {
+        merged.push({ ...pin, steps: [pin.step], ns: [pin.n], statuses: [pin.status], titles: [pin.title] });
+        continue;
+      }
+      if (!near.steps.includes(pin.step)) {
+        near.steps.push(pin.step);
+        near.ns.push(pin.n);
+        near.statuses.push(pin.status);
+      }
+      near.titles.push(pin.title);
+    }
+    return merged.map(pin => ({
+      ...pin,
+      n: stepRanges(pin.ns),
+      status: ['next', 'active', 'locked', 'done'].find(status => pin.statuses.includes(status)) || pin.status,
+      title: pin.titles.join('\n')
+    }));
+  }
+
+  function stepRanges(numbers) {
+    const sorted = [...numbers].sort((a, b) => a - b);
+    const ranges = [];
+    for (const n of sorted) {
+      const last = ranges[ranges.length - 1];
+      if (last && n === last[1] + 1) last[1] = n;
+      else ranges.push([n, n]);
+    }
+    return ranges.map(([a, b]) => a === b ? a : a + (b === a + 1 ? ',' : '–') + b).join(',');
   }
 
   function syncChainStep() {
@@ -812,7 +849,8 @@
       element.closest('.chain-step').classList.toggle('is-selected', selected);
     }
     for (const element of labels.querySelectorAll('[data-chain-pin]')) {
-      element.setAttribute('aria-pressed', String(Number(element.dataset.chainPin) === state.chainStep));
+      const steps = element.dataset.chainSteps.split(' ').map(Number);
+      element.setAttribute('aria-pressed', String(steps.includes(state.chainStep)));
     }
   }
 
@@ -937,7 +975,7 @@
         ${badges.map(badge => `<span class="zone-badge journey-${journeyStyle}" aria-hidden="true">${badge.text}</span>`).join('')}
         ${zone ? '' : cityMarkers(continent, chainLayer ? '' : journeyStyle)}
         ${pins.map(pin => pin.step ? `<button class="map-pin journey-pin chain-pin" data-chain-pin="${pin.step}"
-          data-status="${pin.status}" aria-controls="chain-step-${pin.step}" aria-pressed="false"
+          data-chain-steps="${(pin.steps || [pin.step]).join(' ')}" data-status="${pin.status}" aria-controls="chain-step-${pin.step}" aria-pressed="false"
           aria-label="${esc(pin.title)}" title="${esc(pin.title)}"><span aria-hidden="true">${pin.n}</span></button>`
           : `<button class="map-pin ${pin.journey ? 'journey-pin' : 'lore-pin'}" data-pin="${pin.key}"
           aria-label="${esc(pin.title)}" aria-controls="map-popover" aria-expanded="false">
