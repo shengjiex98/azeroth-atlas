@@ -18,7 +18,7 @@
     journey: L('Your journey', '你的旅程'),
     loadJourney: L('Load your journey', '加载你的旅程'),
     loadAnotherJourney: L('Load another summary', '加载另一份摘要'),
-    journeyHowTo: L('In game, run /rosetta export. Copy the summary and paste it below.', '在游戏中输入 /rosetta export，复制摘要并粘贴到下方。'),
+    journeyHowTo: L('In game, run /rosetta export (shortcut: /rx). Copy the summary and paste it below.', '在游戏中输入 /rosetta export（快捷命令：/rx），复制摘要并粘贴到下方。'),
     journeySummary: L('Rosetta summary', 'Rosetta 摘要'),
     journeyCharacter: L('Character', '角色'),
     journeyUnknownCharacter: L('Unknown character', '未知角色'),
