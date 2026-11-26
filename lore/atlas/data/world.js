@@ -5,6 +5,77 @@
   'use strict';
   const L = (en, zh = '') => ({ en, zh });
   const sources = {
+    'arthas-history': { title: L('The Lich King Triumphant', '巫妖王的胜利'), url: 'https://warcraft.wiki.gg/wiki/The_Lich_King_Triumphant', note: L('Classic in-game history of the plague, Stratholme and Lordaeron’s fall.', '经典旧世的游戏内史料，记述瘟疫、斯坦索姆与洛丹伦的陷落。') },
+    'portal-history': { title: L('The Dark Portal and the Fall of Stormwind', '黑暗之门和暴风城的陷落'), url: 'https://warcraft.wiki.gg/wiki/The_Dark_Portal_and_the_Fall_of_Stormwind', note: L('Classic in-game history of the pact that opens the portal.', '经典旧世游戏内史料，记述促成黑暗之门开启的交易。') },
+    'hakkar-history': { title: L('The Twin Empires', '双子帝国'), url: 'https://warcraft.wiki.gg/wiki/The_Twin_Empires', note: L('Classic in-game history of the old troll empires and the Gurubashi legacy.', '经典旧世游戏内史料，记述古代巨魔帝国及古拉巴什的历史背景。') },
+    'hakkar-wrath': { title: L('Wrath of Soulflayer', '夺灵者的愤怒'), url: 'https://warcraft.wiki.gg/wiki/Wrath_of_Soulflayer', note: L('Classic in-game history of Hakkar and the exile of the Atal’ai.', '经典旧世游戏内史料，记述哈卡与阿塔莱流亡的经过。') },
+    'horde-exodus': { title: L('Exodus of the Horde', '部落的远征'), url: 'https://warcraft.wiki.gg/wiki/Exodus_of_the_Horde', note: L('Warcraft III’s account of Thrall’s departure for Kalimdor.', '《魔兽争霸III》中萨尔率部前往卡利姆多的故事。') },
+    'al-classic': { title: L('Alterac Mountains in Classic', '经典旧世的奥特兰克山脉'), url: 'https://www.wowhead.com/classic/zone=36/alterac-mountains', note: L('The ogre-held ruins, Strahnbrad and Dalaran’s barrier.', '食人魔占据的废墟、斯坦恩布莱德和达拉然的屏障。') },
+    'al-kingdom': { title: L('Alterac’s kingdom', '奥特兰克王国'), url: 'https://warcraft.wiki.gg/wiki/Alterac_(kingdom)', note: L('Perenolde’s betrayal and the rise of the Syndicate.', '匹瑞诺德的背叛与辛迪加的崛起。') },
+    'al-plans': { title: L('Foreboding Plans', '预备行动计划'), url: 'https://www.wowhead.com/classic/quest=510/foreboding-plans', note: L('Maleb’s discovery of the Syndicate’s papers.', '马雷布查出辛迪加文件的经过。') },
+    'al-rings': { title: L('Noble Deaths', '贵族之死'), url: 'https://www.wowhead.com/classic/quest=512/noble-deaths', note: L('The signet rings and the lords who once betrayed the Alliance.', '印戒，以及曾经背叛联盟的贵族。') },
+    'ar-classic': { title: L('Arathi Highlands in Classic', '经典旧世的阿拉希高地'), url: 'https://warcraft.wiki.gg/wiki/Arathi_Highlands_(original)', note: L('Stromgarde, the internment camp and the opposing footholds.', '激流堡、兽人囚营及双方的据点。') },
+    'ar-badges': { title: L('Stromgarde Badges', '激流堡徽章'), url: 'https://www.wowhead.com/classic/quest=682/stromgarde-badges', note: L('Captain Nials’s campaign against the Syndicate inside Stromgarde.', '尼艾丝队长在激流堡城内对抗辛迪加的行动。') },
+    'ar-call': { title: L('Call to Arms', '短兵相接'), url: 'https://www.wowhead.com/classic/quest=677/call-to-arms', note: L('Drum Fel identifies the threat to Hammerfall.', '德拉姆·费尔查明了落锤镇面临的威胁。') },
+    'ar-lords': { title: L('Call to Arms', '短兵相接'), url: 'https://www.wowhead.com/classic/quest=679/call-to-arms', note: L('The ogre leaders are traced to Stromgarde.', '袭击的食人魔首领藏身激流堡。') },
+    'ba-classic': { title: L('Badlands in Classic', '经典旧世的荒芜之地'), url: 'https://www.wowhead.com/classic/zone=3/badlands', note: L('The original outpost, terrain, dragon ravine and excavation.', '旧世的前哨、地貌、龙群峡谷与挖掘场。') },
+    'ba-lost': { title: L('The Lost Dwarves', '失踪的矮人'), url: 'https://www.wowhead.com/classic/quest=2398/the-lost-dwarves', note: L('The League’s missing party inside Uldaman.', '探险者协会滞留在奥达曼的队伍。') },
+    'ba-discs': { title: L('The Platinum Discs', '白金圆盘'), url: 'https://www.wowhead.com/classic/quest=2278/the-platinum-discs', note: L('The watcher’s account and a copy of the discs.', '看守者的讲述与圆盘的抄本。') },
+    'bl-classic': { title: L('Blasted Lands in Classic', '经典旧世的诅咒之地'), url: 'https://www.wowhead.com/classic/zone=4/blasted-lands', note: L('Nethergarde, the portal crater and the Tainted Scar.', '守望堡、黑暗之门所在的巨坑和腐烂之痕。') },
+    'bl-grace': { title: L('Fall From Grace', '失落的荣耀'), url: 'https://www.wowhead.com/classic/quest=2784/fall-from-grace', note: L('The fallen officer’s account of his command.', '阵亡军官对部下遭遇的讲述。') },
+    'bl-stones': { title: L('The Stones That Bind Us', '禁锢我们的石头'), url: 'https://www.wowhead.com/classic/quest=2681/the-stones-that-bind-us', note: L('The binding stones and the names of the servants held by them.', '禁锢之石，以及被它束缚的仆从。') },
+    'bl-demon': { title: L('You Are Rakh’likh, Demon', '恶魔拉瑟莱克'), url: 'https://www.wowhead.com/classic/quest=3628/you-are-rakhlikh-demon', note: L('The confrontation on the rise above the Blasted Lands.', '诅咒之地高台上的最后对决。') },
+    'ti-classic': { title: L('Tirisfal Glades in Classic', '经典旧世的提瑞斯法林地'), url: 'https://www.wowhead.com/classic/zone=85/tirisfal-glades', note: L('Deathknell, Brill and the Scarlet holdings around Lordaeron.', '丧钟镇、布瑞尔与洛丹伦周围血色十字军的据点。') },
+    'ti-awakening': { title: L('Rude Awakening', '突然醒来'), url: 'https://www.wowhead.com/classic/quest=363/rude-awakening', note: L('The first welcome in Deathknell.', '丧钟镇给予新苏醒亡灵的第一次接引。') },
+    'ti-scarlet': { title: L('At War With The Scarlet Crusade', '与血色十字军的战争'), url: 'https://www.wowhead.com/classic/quest=370/at-war-with-the-scarlet-crusade', note: L('The Deathguard’s account of Scarlet operations near Brill.', '亡灵卫兵讲述血色十字军在布瑞尔附近的活动。') },
+    'ti-plague': { title: L('A New Plague', '新的瘟疫'), url: 'https://www.wowhead.com/classic/quest=367/a-new-plague', note: L('Johaan’s initial account of the apothecaries’ project.', '约翰首次说明药剂师们的计划。') },
+    'sp-classic': { title: L('Silverpine Forest in Classic', '经典旧世的银松森林'), url: 'https://www.wowhead.com/classic/zone=130/silverpine-forest', note: L('The Sepulcher, Pyrewood and the closed road to Gilneas.', '瑟伯切尔、焚木村和封闭的吉尔尼斯道路。') },
+    'sp-shackles': { title: L('Arugal’s Folly', '阿鲁高的愚行'), url: 'https://www.wowhead.com/classic/quest=99/arugals-folly', note: L('Dawnweaver describes the nightly change in Pyrewood.', '道恩维沃描述焚木村每夜的变化。') },
+    'sp-keep': { title: L('Arugal Must Die', '除掉阿鲁高'), url: 'https://www.wowhead.com/classic/quest=1014/arugal-must-die', note: L('Hadrec’s account of Arugal and the stronghold.', '哈德瑞克对阿鲁高和要塞的讲述。') },
+    'wp-classic': { title: L('Western Plaguelands in Classic', '经典旧世的西瘟疫之地'), url: 'https://www.wowhead.com/classic/zone=28/western-plaguelands', note: L('The cauldron farms, Andorhal, Caer Darrow and Hearthglen.', '架着瘟疫之锅的农场、安多哈尔、凯尔达隆与壁炉谷。') },
+    'wp-cauldrons': { title: L('The Scourge Cauldrons', '瘟疫之锅'), url: 'https://www.wowhead.com/classic/quest=5215/the-scourge-cauldrons', note: L('The Argent Dawn’s inquiry into the Scourge’s use of the farms.', '银色黎明调查天灾军团如何利用农场。') },
+    'wp-felstone': { title: L('Target: Felstone Field', '目标：费尔斯通农场'), url: 'https://www.wowhead.com/classic/quest=5216/target-felstone-field', note: L('The cauldron lord and the sample from the farm.', '农场里的护锅领主和样本。') },
+    'wp-araj': { title: L('Alas, Andorhal', '啊，安多哈尔！'), url: 'https://www.wowhead.com/classic/quest=211/alas-andorhal', note: L('The confrontation with Araj in the old grain town.', '在昔日粮镇与阿拉基的对抗。') },
+    'wp-order': { title: L('In Dreams', '在梦中'), url: 'https://www.wowhead.com/classic/quest=5944/in-dreams', note: L('The end of Taelan’s journey and Tirion’s response.', '泰兰旅程的结局与提里奥的回应。') },
+    'ep-classic': { title: L('Eastern Plaguelands in Classic', '经典旧世的东瘟疫之地'), url: 'https://www.wowhead.com/classic/zone=139/eastern-plaguelands', note: L('The chapel, ruined towns and Scarlet fortress in the original zone.', '旧世的礼拜堂、城镇废墟与血色要塞。') },
+    'ep-doll': { title: L('Pamela’s Doll', '帕米拉的洋娃娃'), url: 'https://www.wowhead.com/classic/quest=5149/pamelas-doll', note: L('Pamela’s account of her life among the ruins.', '帕米拉讲述自己在废墟中的生活。') },
+    'ep-battle': { title: L('The Battle of Darrowshire', '达隆郡的战斗'), url: 'https://www.wowhead.com/classic/quest=5721/the-battle-of-darrowshire', note: L('The recovered relics permit the battle to be seen again.', '找回的遗物让昔日战斗得以重现。') },
+    'ep-redpath': { title: L('Return to Chromie', '返回克罗米身边'), url: 'https://www.wowhead.com/classic/quest=5941/return-to-chromie', note: L('The aftermath of the battle and Redpath’s release.', '战斗的余波与雷德帕斯的解脱。') },
+    'ep-family': { title: L('Of Forgotten Memories', '遗忘的记忆'), url: 'https://www.wowhead.com/classic/quest=5781/of-forgotten-memories', note: L('Tirion’s effort to reach his son through reminders of their past.', '提里奥试图借往事唤醒儿子的记忆。') },
+    'hi-classic': { title: L('Hillsbrad Foothills in Classic', '经典旧世的希尔斯布莱德丘陵'), url: 'https://warcraft.wiki.gg/wiki/Hillsbrad_Foothills_(Classic)', note: L('Southshore, Tarren Mill and the intact farms and estates.', '南海镇、塔伦米尔和尚未毁去的农场与庄园。') },
+    'hi-fields': { title: L('Battle of Hillsbrad', '希尔斯布莱德之战'), url: 'https://www.wowhead.com/classic/quest=527/battle-of-hillsbrad', note: L('Darthalia’s orders against the farming community.', '达萨利亚下令袭击农庄。') },
+    'hi-elixir': { title: L('Elixir of Pain', '痛苦药剂'), url: 'https://www.wowhead.com/classic/quest=502/elixir-of-pain', note: L('Lydon’s trial of the elixir on Stanley.', '林度恩用斯坦雷试验药剂。') },
+    'ht-classic': { title: L('The Hinterlands in Classic', '经典旧世的辛特兰'), url: 'https://www.wowhead.com/classic/zone=47/the-hinterlands', note: L('The Wildhammer and troll settlements of the original highlands.', '旧世高地上的蛮锤和巨魔聚落。') },
+    'ht-elder': { title: L('Kidnapped Elder Torntusk!', '断齿长者被绑架了！'), url: 'https://www.wowhead.com/classic/quest=7845/kidnapped-elder-torntusk', note: L('The Revantusk elder held in Jintha’Alor.', '被关押在辛萨罗的恶齿长者。') },
+    'ht-sharpbeak': { title: L('Saving Sharpbeak', '拯救沙普比克'), url: 'https://www.wowhead.com/classic/quest=2994/saving-sharpbeak', note: L('The gryphon held at the top of Jintha’Alor.', '被关在辛萨罗高处的狮鹫。') },
+    'sg-classic': { title: L('Searing Gorge in Classic', '经典旧世的灼热峡谷'), url: 'https://www.wowhead.com/classic/zone=51/searing-gorge', note: L('The Cauldron, the Slag Pit and the independent smiths at Thorium Point.', '大熔炉、熔渣之池与瑟银哨塔独立的铁匠。') },
+    'sg-brotherhood': { title: L('Gaining Acceptance', '获得信任'), url: 'https://www.wowhead.com/classic/quest=7737/gaining-acceptance', note: L('Burninate’s materials and the Brotherhood’s standing.', '博恩奈特所需的材料与瑟银兄弟会的态度。') },
+    'sg-flame': { title: L('The Flawless Flame', '无瑕之焰'), url: 'https://www.wowhead.com/classic/quest=3442/the-flawless-flame', note: L('Kalaran’s search for a flame.', '卡拉然寻找火种的经过。') },
+    'sg-ablaze': { title: L('Set Them Ablaze!', '放火烧他们！'), url: 'https://www.wowhead.com/classic/quest=3463/set-them-ablaze', note: L('Kalaran’s torch is used against the Dark Iron watchtowers.', '卡拉然的火炬被用来对付黑铁哨塔。') },
+    'sg-shaft': { title: L('Forging the Shaft', '铸造火炬杆'), url: 'https://www.wowhead.com/classic/quest=3443/forging-the-shaft', note: L('Dark Iron material for the torch.', '打造火炬所需的黑铁材料。') },
+    'sg-reveal': { title: L('Kalaran’s disguise', '卡拉然的伪装'), url: 'https://warcraft.wiki.gg/wiki/Kalaran', note: L('The end of the Classic torch chain reveals the drake’s identity.', '经典旧世火炬任务线的结尾揭示了这头龙的身份。') },
+    'bs-classic': { title: L('Burning Steppes in Classic', '经典旧世的燃烧平原'), url: 'https://www.wowhead.com/classic/zone=46/burning-steppes', note: L('The old ruins, Blackrock Mountain and the outposts on the plain.', '昔日废墟、黑石山与平原上的据点。') },
+    'bs-lair': { title: L('Blackwing Lair', '黑翼之巢'), url: 'https://warcraft.wiki.gg/wiki/Blackwing_Lair', note: L('The original raid’s ruler and experiments.', '原版团队副本中的统治者及其实验。') },
+    'bs-menace': { title: L('Dragonkin Menace', '黑龙的威胁'), url: 'https://www.wowhead.com/classic/quest=4182/dragonkin-menace', note: L('The report by Helendis Riverhorn at Morgan’s Vigil.', '摩根的岗哨中赫林迪斯·河角的报告。') },
+    'bs-true': { title: L('The True Masters', '真正的主人'), url: 'https://www.wowhead.com/classic/quest=4183/the-true-masters', note: L('The report reaches Solomon in Lakeshire.', '报告送到了湖畔镇的所罗门手中。') },
+    'bs-marshal': { title: L('Marshal Windsor', '温德索尔元帅'), url: 'https://www.wowhead.com/classic/quest=4241/marshal-windsor', note: L('The search for the missing marshal leads into Blackrock Depths.', '寻找失踪元帅的行动通往黑石深渊。') },
+    'bs-note': { title: L('A Crumpled Up Note', '弄皱的便笺'), url: 'https://www.wowhead.com/classic/quest=4264/a-crumpled-up-note', note: L('The evidence that gives the investigation new life.', '让调查得以继续的证据。') },
+    'bs-jail': { title: L('Jail Break!', '冲破牢笼！'), url: 'https://www.wowhead.com/classic/quest=4322/jail-break', note: L('Windsor finally leaves the Dark Iron prison.', '温德索尔终于离开黑铁矮人的监狱。') },
+    'bs-rend': { title: L('Oculus Illusions', '黑龙幻象'), url: 'https://www.wowhead.com/classic/quest=6569/oculus-illusions', note: L('The tale of the Blackrock claim to the Horde leadership.', '黑石氏族争夺部落领导权的故事。') },
+    'bs-orders': { title: L('Blackhand’s Command', '黑手的命令'), url: 'https://www.wowhead.com/classic/quest=7761/blackhands-command', note: L('The orb and the hidden way to Blackwing Lair.', '宝珠和通往黑翼之巢的隐秘道路。') },
+    'dw-classic': { title: L('Deadwind Pass in Classic', '经典旧世的逆风小径'), url: 'https://warcraft.wiki.gg/wiki/Deadwind_Pass_(Classic)', note: L('The pass, its ogres and the closed tower above the deserted village.', '小径、食人魔，以及废弃村庄上方大门紧闭的高塔。') },
+    'dw-guardian': { title: L('The Last Guardian', '最后的守护者'), url: 'https://warcraft.wiki.gg/wiki/The_Last_Guardian_(History_of_Warcraft)', note: L('Classic in-game history of Sargeras’s influence on Medivh.', '经典旧世游戏内史料，记述萨格拉斯对麦迪文的影响。') },
+    'dw-staff': { title: L('Atiesh, Greatstaff of the Guardian', '埃提耶什，守护者的传说之杖'), url: 'https://www.wowhead.com/classic/item=22589/atiesh-greatstaff-of-the-guardian', note: L('The restored staff and its portal to Karazhan.', '修复后的法杖与通往卡拉赞的传送门。') },
+    'dw-cleansing': { title: L('Atiesh, the Befouled Greatstaff', '埃提耶什，被玷污的传说之杖'), url: 'https://www.wowhead.com/classic/quest=9251/atiesh-the-befouled-greatstaff', note: L('The quest to cleanse the Guardian’s staff.', '净化守护者法杖的任务。') },
+    'sv-classic': { title: L('Stranglethorn Vale in Classic', '经典旧世的荆棘谷'), url: 'https://warcraft.wiki.gg/wiki/Stranglethorn_Vale_(Classic)', note: L('The undivided jungle, its ports and old troll settlements.', '尚未分割的丛林、港口与巨魔旧聚落。') },
+    'sv-pirates': { title: L('The Bloodsail Buccaneers', '血帆海盗'), url: 'https://www.wowhead.com/classic/quest=597/the-bloodsail-buccaneers', note: L('Fleet plans recovered near Booty Bay.', '在藏宝海湾附近缴获的海盗舰队计划。') },
+    'sv-heart': { title: L('The Heart of Hakkar', '哈卡之心'), url: 'https://www.wowhead.com/classic/quest=8183/the-heart-of-hakkar', note: L('Molthor recognizes the remains brought back to Yojamba Isle.', '莫托尔认出带回尤亚姆巴岛的遗骸。') },
+    'ss-classic': { title: L('Swamp of Sorrows in Classic', '经典旧世的悲伤沼泽'), url: 'https://warcraft.wiki.gg/wiki/Swamp_of_Sorrows_(Classic)', note: L('Stonard, the Pool of Tears and the original sunken temple.', '斯通纳德、泪水之池与旧世的沉没神庙。') },
+    'ss-temple': { title: L('Into The Temple of Atal’Hakkar', '进入阿塔哈卡神庙'), url: 'https://www.wowhead.com/classic/quest=1475/into-the-temple-of-atalhakkar', note: L('The Explorers’ League seeks the tablets in the submerged temple.', '探险者协会寻找水下神庙里的石板。') },
+    'ss-avatar': { title: L('The God Hakkar', '神灵哈卡'), url: 'https://www.wowhead.com/classic/quest=3528/the-god-hakkar', note: L('The invocation of Hakkar’s avatar in the temple.', '在神庙召唤哈卡化身。') },
+    'uc-classic': { title: L('Undercity and its quarters', '幽暗城及其城区'), url: 'https://warcraft.wiki.gg/wiki/Undercity_(original)', note: L('The underground city, its founding and the original rulers.', '地下城市的创建、布局和最初的统治者。') },
+    'uc-report': { title: L('Battle of Hillsbrad', '希尔斯布莱德之战'), url: 'https://www.wowhead.com/classic/quest=550/battle-of-hillsbrad', note: L('Darthalia forwards her report to Varimathras.', '达萨利亚把战报送给瓦里玛萨斯。') },
+    'uc-allies': { title: L('Forsaken Aid', '被遗忘者的援助'), url: 'https://www.wowhead.com/classic/quest=1064/forsaken-aid', note: L('Magatha arranges contact with Apothecary Zamah.', '玛加萨安排与药剂师扎玛联络。') },
     history: { title: L('War of the Three Hammers — in-game history', '三锤之战（游戏内史料）'), url: 'https://warcraft.wiki.gg/wiki/War_of_the_Three_Hammers_(book)', note: L('Classic historical account; later retail developments are outside this atlas.', '记录的是经典旧世的历史，正式服后续情节超出本图志的范围。') },
     clans: { title: L('War of the Three Hammers — historical overview', '三锤之战（历史概述）'), url: 'https://warcraft.wiki.gg/wiki/War_of_the_Three_Hammers', note: L('Cross-check for the two phases of the war and the fate of Grim Batol.', '用于核对战争的两个阶段及格瑞姆巴托的结局。') },
     manual: { title: L('World of Warcraft — original manual', '《魔兽世界》原版手册'), url: 'https://assets.blz-contentstack.com/v3/assets/blt3452e3b114fab0cd/blt2e9295db02a222fc/6025bcbb6968b53d529edb2a/media_manual_classic_enUS.pdf', note: L('Gnome exile, Gnomeregan, and the starting world.', '侏儒的流亡、诺莫瑞根，以及游戏初期的世界。') },
@@ -204,6 +275,45 @@
   B('st-seeds', L('What can grow again', '什么还能重新长出来'), L('Tammra Windfield sees the damage caused by war and industry and asks for Gaea seeds found beside Mirkfallon Lake. She blesses them in the name of the Earthmother. The seeds are planted in the Charred Vale so that other plants will have a foothold in the burned ground.', '塔姆拉·荒原看到战争与工业留下的破坏，请人去暗色湖畔寻找盖亚之种。她以大地母亲的名义为种子祈福。种子被播进焦炭谷，希望其他植物也能在焦土中扎下根。'), [6301, 6381], { figureIds: ['tammra'], zoneIds: [1442], sourceIds: ['st-seeds', 'st-new-life'] });
   B('st-supplies', L('The shipment that never reached the peak', '没有送上山峰的补给'), L('In Forever, a night elf courier bound for Stonetalon Peak dies near Mirkfallon Lake. The Pridewing wyverns take the supplies, and a note names Innkeeper Faralia as the intended recipient. The inn waits at the top of a mountain whose roads and slopes can be as dangerous to its neighbors as the burned vale below.', '无限服中，一名要去石爪峰的暗夜精灵信使死在暗色湖附近，补给被巨翼双足飞龙叼走。便笺注明，收件人是旅店老板法拉莉亚。旅店在山顶等待货物，而上山的路和山坡，对附近居民来说并不比下方的焦谷安全。'), [86574], { edition: L('Forever addition', '无限服新增'), figureIds: ['faralia'], zoneIds: [1442], sourceIds: ['st-supplies'] });
 
+  B('al-papers', L('Plans on the mountain road', '山路上的密谋'), L('Magistrate Henry Maleb sends scouts after Syndicate spies. Papers found at a camp give Southshore grounds to treat the mountain groups as an organized threat.', '赫尼·马雷布镇长派人调查辛迪加密探。营地里搜出的文件让南海镇有理由相信，山里的团伙正在有组织地威胁当地。'), [505, 510], { figureIds: ['henry-maleb'], zoneIds: [1416, 1424], sourceIds: ['al-plans'] });
+  B('al-rings', L('The signets of Alterac', '奥特兰克印戒'), L('Maleb asks for the rings carried by Syndicate members. He recognizes the seals as those of Alterac’s nobles and remembers how those lords betrayed the Alliance. The family insignia tie a present danger to a war Southshore has already lived through.', '马雷布要查验辛迪加成员随身携带的印戒。他认出那是奥特兰克贵族的纹章，也记得那些贵族曾背叛联盟。这些家族印记让眼前的威胁与南海镇经历过的战争连在了一起。'), [512], { figureIds: ['henry-maleb'], zoneIds: [1416, 1424], sourceIds: ['al-rings'] });
+  B('ar-badges', L('The badges of the Syndicate', '辛迪加的徽章'), L('Captain Nials at Refuge Pointe learns that the Syndicate is paying a bounty for badges taken from Stromgarde’s militiamen. She asks for those badges to be recovered from the Syndicate inside the old Alliance city.', '避难谷地的尼艾丝队长得知，辛迪加出钱收购从激流堡民兵身上夺来的徽章。她要求从联盟古城内的辛迪加手里夺回这些徽章。'), [681, 682], { figureIds: ['nials'], zoneIds: [1417], sourceIds: ['ar-badges'] });
+  B('ar-call', L('An outpost under pressure', '受到围攻的前哨'), L('Drum Fel sees a joint threat from the Witherbark and Boulderfist. The leaders behind the ogre attacks have made their lair in Stromgarde, drawing the Horde into a ruin that the Alliance wants back for itself.', '德拉姆·费尔察觉到枯木巨魔与石拳食人魔的联手威胁。带头进攻的食人魔躲在激流堡，把部落也扯进了联盟想要夺回的废墟。'), [677, 679], { figureIds: ['drum-fel'], zoneIds: [1417], sourceIds: ['ar-call', 'ar-lords'] });
+  B('ba-lost', L('Three dwarves underground', '留在地下的三名矮人'), L('The Explorers’ League has lost contact with three dwarves in Uldaman. The missing party is a reminder that the ruins are still being explored and that the people doing the work can disappear inside them.', '探险者协会与深入奥达曼的三名矮人失去了联系。考察队的失踪让人意识到，这座遗迹远未探明，进来调查的人随时可能没了消息。'), [2398], { figureIds: [], zoneIds: [1418, 1455], sourceIds: ['ba-lost'] });
+  B('ba-discs', L('The watcher’s archive', '看守者的档案'), L('The Discs of Norgannon and their watcher preserve an account of the earthen. A copy makes it possible to carry that account out of the ruins and compare it with what the peoples of Azeroth know of their own beginnings.', '诺甘农圆盘及其看守者保存了一份土灵的记录。抄本让这份史料得以离开遗迹，也让艾泽拉斯的族群可以拿它与自己的起源传说对照。'), [2278], { figureIds: [], zoneIds: [1418, 1455], sourceIds: ['ba-discs'] });
+  B('bl-stones', L('The stones that hold the dead', '束缚亡者的石头'), L('A fallen Horde officer remains near the border with the swamp. In his account, the men he led are still bound to demonic stones. Breaking that hold is the first part of setting right what happened to his command.', '一名阵亡的部落军官留在沼泽边界附近。他说，自己带领的部下至今仍被恶魔的石头束缚。要弥补这支队伍遭遇的灾难，得先打破束缚。'), [2784, 2681], { figureIds: [], zoneIds: [1419, 1435], sourceIds: ['bl-grace', 'bl-stones'] });
+  B('bl-demon', L('Spoiler · The master on the rise', '剧透 · 高地上的主谋'), L('The officer’s story leads to the dreadlord Razelikh, known as the Defiler. His lieutenants’ amulets open the way to the demon, and with Razelikh’s death the fallen officer at last counts his debt paid.', '循着军官讲出的往事，线索指向恐惧魔王污染者拉瑟莱克。其手下的护符打开了通往恶魔的道路。拉瑟莱克死后，阵亡军官终于得偿所愿。'), [3628], { figureIds: [], zoneIds: [1419], sourceIds: ['bl-demon'] });
+  B('ti-awakening', L('The crypt opens', '墓穴开启'), L('At Deathknell, Undertaker Mordo greets the newly awakened and directs them to Shadow Priest Sarvis. The welcome is the first contact many of the free undead have with the community that calls itself the {Forsaken}.', '在丧钟镇，看护者莫多迎接刚苏醒的亡灵，让他们去找暗影牧师萨维斯。许多获得自由的亡灵，就这样第一次接触自称{被遗忘者}的同胞。'), [363], { figureIds: [], zoneIds: [1420], sourceIds: ['ti-awakening'] });
+  B('ti-scarlet', L('Spies near the capital', '都城近郊的密探'), L('Deathguard Simmer reports that Scarlet zealots have sent spies close to Brill. The fighting stretches from village watch posts toward the monastery, where the Crusade still holds a base in the former kingdom.', '亡灵卫兵希米尔报告说，血色十字军的狂热信徒已把密探派到布瑞尔附近。战线从村镇岗哨延伸到修道院，十字军在那里保有一处据点。'), [370], { figureIds: [], zoneIds: [1420], sourceIds: ['ti-scarlet'] });
+  B('ti-plague', L('A plague of their own', '他们自己的瘟疫'), L('Apothecary Johaan gathers ingredients for a new plague, meant to be turned against the Forsaken’s enemies. Brill’s experiments are part of the same undertaking that the Royal Apothecary Society directs from below the capital.', '药剂师约翰搜集研制新瘟疫的材料，打算用它对付被遗忘者的敌人。布瑞尔的实验与都城地下皇家药剂师协会主持的研究同属一项计划。'), [367, 368, 369, 492], { figureIds: ['johaan'], zoneIds: [1420, 1458], sourceIds: ['ti-plague'] });
+  B('sp-shackles', L('The enchanted shackles', '带有魔法的镣铐'), L('From the Sepulcher, Dalar Dawnweaver studies the change that comes over Pyrewood after sunset. The shackles Arugal has enchanted on the townspeople give him a way to examine the spell behind the nightly transformation.', '达拉尔·道恩维沃在瑟伯切尔研究焚木村日落后发生的变故。阿鲁高施在村民身上的附魔镣铐，让他得以查究每夜变身背后的法术。'), [99], { figureIds: [], zoneIds: [1421], sourceIds: ['sp-shackles'] });
+  B('sp-keep', L('The mage in the keep', '城堡里的法师'), L('High Executor Hadrec follows Arugal’s crimes back to Shadowfang Keep and calls for the archmage’s death. The stronghold stands above the village as a visible reminder of how close the source of its curse has been.', '高级执行官哈德瑞克追查阿鲁高的罪行，一路查到影牙城堡，要求处死这位大法师。要塞就在村庄上方，诅咒的源头原来一直近在眼前。'), [1014], { figureIds: ['arugal'], zoneIds: [1421], sourceIds: ['sp-keep'] });
+  B('wp-cauldrons', L('From the granaries to the cauldrons', '从粮仓到瘟疫之锅'), L('Investigators set out to learn how the Scourge spreads its plague from the farms. The cauldrons supply samples, and the presence of cauldron lords makes it clear that the Scourge is still tending them.', '调查者要弄清天灾军团如何从农场散播瘟疫。瘟疫之锅提供了样本，而锅边的护锅领主表明，天灾军团还在照看这些锅。'), [5215, 5216, 5217, 5219], { figureIds: [], zoneIds: [1422], sourceIds: ['wp-cauldrons', 'wp-felstone'] });
+  B('wp-araj', L('A lich in the ruined town', '废城里的巫妖'), L('Araj the Summoner holds Andorhal, and his phylactery holds a shard sought by those who confront him. The ruined grain town is still a seat of Scourge power.', '召唤者阿拉基占据着安多哈尔。讨伐他的人要取走他护命匣上的碎片。昔日粮镇虽已成废墟，仍是天灾军团的据点。'), [211], { figureIds: ['araj'], zoneIds: [1422], sourceIds: ['wp-araj'] });
+  B('wp-order', L('Spoiler · A son leaves the Scarlet Order', '剧透 · 儿子离开血色十字军'), L('Tirion’s mementos reach Taelan in Hearthglen. Taelan casts off his Scarlet allegiance, but Grand Inquisitor Isillien intercepts him on the road. Tirion loses his son and vows to return to the fight against the Scourge.', '提里奥的纪念物送到了壁炉谷的泰兰手中。泰兰决意离开血色十字军，却在路上遭到大检察官伊森利恩截杀。提里奥失去了儿子，立誓重新投身对抗天灾军团的战斗。'), [5862, 5944], { figureIds: ['tirion', 'taelan'], zoneIds: [1422, 1423], sourceIds: ['wp-order'] });
+  B('ep-doll', L('A child’s doll', '一个孩子的洋娃娃'), L('Pamela Redpath still waits in Darrowshire and asks about her doll. Her small concern leads to the record of the battle in which the village and its families were lost.', '帕米拉·雷德帕斯仍在达隆郡等待，惦记着自己的洋娃娃。从这件小事追查下去，便会读到那场战斗的记载。村庄和许多家庭都毁在那一战中。'), [5149], { figureIds: ['pamela'], zoneIds: [1423], sourceIds: ['ep-doll'] });
+  B('ep-redpath', L('Spoiler · Captain Redpath’s return', '剧透 · 雷德帕斯队长归来'), L('A reenactment of the battle shows how Captain Joseph Redpath was corrupted and turned on his own defenders. When his corrupted spirit is defeated, he can ask forgiveness, and Pamela finally hears from her father.', '重现的战斗揭示了约瑟夫·雷德帕斯队长如何遭到腐化，转而攻击自己人。堕落的灵魂被击败后，他得以请求宽恕，帕米拉也终于收到了父亲的消息。'), [5721, 5941], { figureIds: ['pamela'], zoneIds: [1423], sourceIds: ['ep-battle', 'ep-redpath'] });
+  B('ep-mementos', L('A father’s keepsakes', '父亲的纪念物'), L('Tirion lives in exile near the river. He recounts the loss of his standing and asks for objects that might remind his son Taelan of the family and the life he knew before the Scarlet Crusade.', '提里奥流亡在河边。他讲述了自己失去地位的经过，想找回几样旧物，好让儿子泰兰想起家人，以及加入血色十字军之前的生活。'), [5742, 5781, 5845, 5846], { figureIds: ['tirion', 'taelan'], zoneIds: [1423, 1422], sourceIds: ['ep-family'] });
+  B('hi-fields', L('Orders from Tarren Mill', '塔伦米尔的命令'), L('High Executor Darthalia says she acts under Varimathras. Her first target is the food supply and the people who tend the farms. The orders show how quickly a dispute over the foothills reaches the households that feed them.', '高级执行官达萨利亚自称奉瓦里玛萨斯的命令行事。她先瞄准粮食供应和耕作的人。围绕丘陵的争夺很快波及了养活当地人的农户。'), [527], { figureIds: ['varimathras', 'darthalia'], zoneIds: [1424], sourceIds: ['hi-fields'] });
+  B('hi-plague', L('A trial on a living farmer', '在活人身上试药'), L('Apothecary Lydon’s work produces an elixir tested on Stanley, the farmer at Hillsbrad Fields. The experiments that began as ingredient gathering in Tirisfal have reached a living person in the foothills.', '药剂师林度恩配出一种药剂，拿希尔斯布莱德农场的农夫斯坦雷试药。研究最初只是在提瑞斯法搜集材料，如今却已用在丘陵的活人身上。'), [502], { figureIds: [], zoneIds: [1424, 1420, 1458], sourceIds: ['hi-elixir'] });
+  B('ht-elder', L('An elder taken in a raid', '在袭击中被掳走的长者'), L('Primal Torntusk at Revantusk Village seeks her mate, Elder Torntusk, after a midnight raid. Scouts discover him alive at Jintha’Alor, where Vile Priestess Hexx means to offer him to Hakkar.', '恶齿村在午夜遇袭，原始者图斯克随后四处寻找自己的伴侣断齿长者。侦察员发现他还活着，被囚在辛萨罗。邪恶祭司海克斯打算把他献给哈卡。'), [7845, 7846, 7847], { figureIds: [], zoneIds: [1425, 1434], sourceIds: ['ht-elder'] });
+  B('ht-kidnapped', L('A gryphon held in the temple', '困在神庙里的狮鹫'), L('The Wildhammer dwarves look for Sharpbeak, a young gryphon taken from the highlands. The search reaches Jintha’Alor, where the Vilebranch hold him in a cage above the valley.', '蛮锤矮人寻找在高地失踪的幼年狮鹫沙普比克。调查一路追到辛萨罗，邪枝巨魔把它关在谷地上方的笼子里。'), [2989, 2994], { figureIds: [], zoneIds: [1425], sourceIds: ['ht-sharpbeak'] });
+  B('sg-brotherhood', L('Supplies for the Brotherhood', '送给兄弟会的物资'), L('At Thorium Point, Master Smith Burninate exchanges supplies for favor with the Brotherhood. The list includes Incendosaur scales and coal, materials the forge needs to keep working.', '瑟银哨塔的大铁匠博恩奈特收取物资，兄弟会也因此对提供物资的人多一分信任。所需物资包括熏火龙的鳞片与煤，工坊少不了这些材料。'), [7737], { figureIds: [], zoneIds: [1427], sourceIds: ['sg-brotherhood'] });
+  B('sg-flame', L('The fire for a new implement', '打造器具的火'), L('Kalaran Windblade waits by the road beside a stone monument. He has the means to make a torch, but needs a flame and a shaft suited to the work. The materials he seeks come from the gorge and its Dark Iron workings.', '卡拉然·温布雷在路旁的石碑边等候。他有办法打造火炬，却缺少合用的火种和火炬杆，只能从峡谷和黑铁矿场里寻找材料。'), [3442, 3443], { figureIds: ['kalaran'], zoneIds: [1427], sourceIds: ['sg-flame', 'sg-shaft'] });
+  B('sg-torch', L('Spoiler · The dragon at the monument', '剧透 · 石碑旁的龙'), L('Kalaran’s torch is used to set the Dark Irons’ watchtowers ablaze. Afterward the traveler sheds his disguise, revealing himself to be a drake of the black dragonflight. The job that seemed to belong to a lone traveler was the business of a dragon.', '卡拉然的火炬点燃了黑铁矮人的哨塔。随后旅人卸下伪装，现出黑龙的原形。先前看似一名旅人的私事，竟是一头龙的安排。'), [3454, 3463, 3481], { figureIds: ['kalaran'], zoneIds: [1427], sourceIds: ['sg-ablaze', 'sg-reveal'] });
+  B('bs-dragonkin', L('A report from the frontier', '边境传来的报告'), L('Helendis Riverhorn at Morgan’s Vigil calls attention to the black dragonkin in the steppes. His report goes to Lakeshire, where Magistrate Solomon turns to Stormwind for help.', '摩根的岗哨里，赫林迪斯·河角发出关于燃烧平原黑龙人的警讯。报告送到湖畔镇，所罗门镇长随即向暴风城求援。'), [4182, 4183], { figureIds: ['solomon', 'helendis'], zoneIds: [1428, 1433, 1453], sourceIds: ['bs-menace', 'bs-true'] });
+  B('bs-windsor', L('The marshal’s lost evidence', '元帅丢失的证据'), L('Windsor is found inside Blackrock Depths. A crumpled note renews his resolve and points toward information taken by Dark Iron officers. Recovering his evidence gives him reason to leave the prison and take the case back to the capital.', '人们在黑石深渊找到温德索尔。一张弄皱的便笺让他重拾斗志，也指出黑铁军官夺走的情报下落。找回证据后，他决意出狱，把这件事带回都城。'), [4241, 4264, 4282, 4322], { figureIds: ['windsor'], zoneIds: [1428, 1453, 1445], sourceIds: ['bs-marshal', 'bs-note', 'bs-jail'] });
+  B('bs-spire', L('Blackrock Spire and its masters', '黑石塔与它的主人'), L('The orcs in Blackrock Spire look to Rend Blackhand as their warchief. Farther inside the mountain, the black dragon Nefarian rules from Blackwing Lair. His experiments with the blood of different dragonflights drive a conflict beyond the armies massed outside.', '黑石塔的兽人奉雷德·黑手为大酋长。山中更深处，黑龙奈法利安坐镇黑翼之巢。他用不同龙族的血进行试验，山里的冲突早已超出平原上的战事。'), [6569, 7761], { figureIds: ['nefarian'], zoneIds: [1428], sourceIds: ['bs-rend', 'bs-orders', 'bs-lair'] });
+  B('dw-portal', L('Spoiler · The Guardian’s bargain', '剧透 · 守护者的交易'), L('Sargeras’s influence reaches Azeroth through Medivh. The Guardian works with Gul’dan to open the Dark Portal, and Khadgar and Lothar take a stand against him. The tower above the pass survives the death of its master.', '萨格拉斯借麦迪文之手影响艾泽拉斯。守护者与古尔丹合作开启黑暗之门，卡德加与洛萨则奋起阻止他。主人死去后，高塔依旧矗立在小径上方。'), [], { figureIds: ['medivh', 'lothar'], zoneIds: [1430, 1419, 1453], sourceIds: ['dw-guardian', 'portal-history'] });
+  B('dw-staff', L('A staff returns to the pass', '法杖重回小径'), L('Atiesh, Medivh’s staff, is broken and scattered. In Classic its recovery leads to Anachronos and to a cleansing in Stratholme. The restored staff can once again open a way to the old tower.', '麦迪文的法杖埃提耶什断裂散失。经典旧世时期，修复它的过程牵涉到阿纳克洛斯与斯坦索姆的一场净化。修复后的法杖又能开启通往旧塔的道路。'), [9250, 9251], { figureIds: ['medivh'], zoneIds: [1430, 1423, 1446], sourceIds: ['dw-staff', 'dw-cleansing'] });
+  B('sv-pirates', L('Plans against Booty Bay', '针对藏宝海湾的计划'), L('First Mate Crazz receives word of the Bloodsail Buccaneers gathered near Booty Bay. The papers recovered from their camps show a fleet organized for an attack on the port.', '大副克拉兹接到消息，血帆海盗已在藏宝海湾附近集结。从营地缴获的文件显示，一支舰队正准备袭击港口。'), [595, 597], { figureIds: [], zoneIds: [1434], sourceIds: ['sv-pirates'] });
+  B('sv-heart', L('Spoiler · The heart of the Soulflayer', '剧透 · 夺灵者的心'), L('Hakkar falls in Zul’Gurub. Molthor on Yojamba Isle recognizes the heart brought from the city as proof that the Soulflayer has been slain. For the Zandalar who made camp at sea, the danger they crossed it to fight has finally ended.', '哈卡在祖尔格拉布倒下。尤亚姆巴岛上的莫托尔认出从城里带回的心脏，确认夺灵者已经被杀。赞达拉人渡海来此对抗的威胁，终于在此刻告终。'), [8183], { figureIds: ['hakkar'], zoneIds: [1434, 1435], sourceIds: ['sv-heart'] });
+  B('ss-discovery', L('The exiles’ sanctuary', '流亡者的圣所'), L('The Explorers’ League seeks the stone tablets kept inside the temple. The site is evidence that the Atal’ai built a lasting home for the worship that drove them from their own people.', '探险者协会要寻找保存在神庙里的石板。遗迹表明，阿塔莱为那种使他们遭族人驱逐的信仰，建起了一座长久的圣所。'), [1448, 1475], { figureIds: [], zoneIds: [1435], sourceIds: ['ss-temple'] });
+  B('ss-avatar', L('Spoiler · Hakkar’s avatar takes form', '剧透 · 哈卡的化身现形'), L('Yeh’kinya’s investigation culminates beneath the temple. The flames that hold Hakkar’s spirit are put out, allowing his avatar to take shape. It is defeated there, and its essence is carried away in the ancient egg.', '叶基亚的调查在神庙地下迎来结局。禁锢哈卡灵体的火焰熄灭，化身随即现形。化身被击败，精华则装进古老的卵中带走。'), [3528], { figureIds: ['hakkar'], zoneIds: [1435, 1446, 1425], sourceIds: ['ss-avatar'] });
+  B('uc-free', L('The claim of the free undead', '自由亡灵夺取王城'), L('While control over some of the undead weakens, Sylvanas gathers the newly free. She defeats rival dreadlords and claims Lordaeron. Varimathras serves in her new government, which takes shape under the old throne room.', '当天灾军团对部分亡灵的控制减弱，希尔瓦娜斯召集重获自由的人。她击败争夺地盘的恐惧魔王，夺取洛丹伦。瓦里玛萨斯在她的新政权中效力，而这个政权就在旧王座厅下扎下了根。'), [], { figureIds: ['sylvanas', 'varimathras'], zoneIds: [1458, 1420], sourceIds: ['manual', 'uc-classic'] });
+  B('uc-hillsbrad', L('A field report comes home', '前线送回的报告'), L('After the fighting near Tarren Mill, Darthalia sends a report to Varimathras. The officer who ordered raids on the farming community answers to the capital beneath Lordaeron.', '塔伦米尔附近的战事过后，达萨利亚把报告送给瓦里玛萨斯。那名下令突袭农庄的军官，听命于洛丹伦地下的新都。'), [550], { figureIds: ['varimathras', 'darthalia'], zoneIds: [1458, 1424], sourceIds: ['uc-report'] });
+  B('uc-allies', L('An agreement on the bluff', '高崖上的协议'), L('Magatha Grimtotem takes an interest in what Forsaken apothecaries can do. She sends an envoy to Apothecary Zamah at the Pools of Vision. Word can travel from there to the apothecaries in the Eastern Kingdoms.', '玛加萨·恐怖图腾对被遗忘者药剂师的本领感兴趣。她派信使到预见之池会见药剂师扎玛，消息可以从那里传给东部王国的药剂师。'), [1064, 1065], { figureIds: ['magatha'], zoneIds: [1458, 1456], sourceIds: ['uc-allies'] });
+
   const figures = {};
   function F(id, name, role, text, zoneIds, glossaryId = null) { figures[id] = { id, name, role, text, zoneIds, glossaryId }; }
   F('magni', L('Magni Bronzebeard', '麦格尼·铜须'), L('King of Ironforge', '铁炉堡国王'), L('Ironforge’s Bronzebeard king in the Classic-era setting. He receives reports from the mountain defenses and the Hall of Thanes.', '经典旧世时期统治铁炉堡的铜须国王。山中守军的情报和领主大厅的消息都汇报给他。'), [1455, 1426], 'magni');
@@ -340,6 +450,29 @@
   F('bloodfury-ripper', L('Bloodfury Ripper', '血怒撕裂者'), L('Harpy of the Charred Vale', '焦炭谷的鹰身人'), L('Maggran wants her killed to break the power of the Bloodfury in the vale.', '马格兰希望杀死她，好瓦解血怒鹰身人在谷内的势力。'), [1442]);
   F('faralia', L('Innkeeper Faralia', '旅店老板法拉莉亚'), L('Innkeeper at Stonetalon Peak', '石爪峰的旅店老板'), L('In Forever, her shipment goes missing after wyverns attack the courier.', '无限服中，信使被双足飞龙袭击，给她送的那批货也不见了。'), [1442]);
 
+  F('henry-maleb', L('Magistrate Henry Maleb', '赫尼·马雷布镇长'), L('Magistrate of Southshore', '南海镇镇长'), L('Tracks the Syndicate from reports and papers to the signets of the old Alterac lords.', '根据情报与文件追查辛迪加，又查到奥特兰克旧贵族的印戒。'), [1416, 1424], 'syndicate');
+  F('nials', L('Captain Nials', '尼艾丝队长'), L('Officer at Refuge Pointe', '避难谷地的军官'), L('Seeks the badges Syndicate agents have taken from Stromgarde’s defenders.', '追查辛迪加从激流堡守军手中夺走的徽章。'), [1417]);
+  F('drum-fel', L('Drum Fel', '德拉姆·费尔'), L('Defender of Hammerfall', '落锤镇的守卫者'), L('Warns that Witherbark trolls and Boulderfist ogres are working together.', '警告枯木巨魔与石拳食人魔正在联手。'), [1417]);
+  F('johaan', L('Apothecary Johaan', '药剂师约翰'), L('Researcher at Brill', '布瑞尔的研究者'), L('Uses local ingredients in the Forsaken effort to develop a plague.', '采集当地的材料，为被遗忘者研制瘟疫。'), [1420]);
+  F('araj', L('Araj the Summoner', '召唤者阿拉基'), L('Lich of Andorhal', '安多哈尔的巫妖'), L('Rules the Scourge in Andorhal; his phylactery is sought by his opponents.', '统领安多哈尔的天灾军团，敌人想夺走他的护命匣。'), [1422], 'scourge');
+  F('pamela', L('Pamela Redpath', '帕米拉·雷德帕斯'), L('Child of Darrowshire', '达隆郡的孩子'), L('Her ghost waits in Darrowshire for news of her family.', '她的幽灵在达隆郡等待家人的消息。'), [1423]);
+  F('darthalia', L('High Executor Darthalia', '高级执行官达萨利亚'), L('Forsaken commander at Tarren Mill', '塔伦米尔的被遗忘者指挥官'), L('Orders attacks on Hillsbrad and reports to Varimathras in Undercity.', '下令袭击希尔斯布莱德，向幽暗城的瓦里玛萨斯报告。'), [1424, 1458], 'forsaken');
+  F('kalaran', L('Kalaran Windblade', '卡拉然·温布雷'), L('Smith beside the monument', '石碑旁的工匠'), L('Knows how to make a torch with the materials found in the gorge.', '知道如何用峡谷里的材料制成一支火炬。'), [1427]);
+  F('helendis', L('Helendis Riverhorn', '赫林迪斯·河角'), L('Defender of Morgan’s Vigil', '摩根的岗哨的守卫者'), L('Sends news of the black dragonkin to Solomon in Lakeshire.', '把黑龙人的消息送给湖畔镇的所罗门。'), [1428, 1433]);
+  F('sylvanas', L('Lady Sylvanas Windrunner', '希尔瓦娜斯·风行者'), L('Leader of the Forsaken', '被遗忘者的领袖'), L('Once a ranger-general of Quel’Thalas, she leads the undead who won their freedom and took Lordaeron’s ruins.', '曾任奎尔萨拉斯的游侠将军，如今领导夺回自由、占据洛丹伦废墟的亡灵。'), [1420, 1458], 'forsaken');
+  F('arthas', L('Arthas Menethil', '阿尔萨斯·米奈希尔'), L('Fallen prince of Lordaeron', '洛丹伦的堕落王子'), L('The prince who ordered the purge of Stratholme later brought the Scourge into his own capital.', '下令清洗斯坦索姆的王子，后来率天灾军团攻入自己的都城。'), [1420, 1423, 1458], 'scourge');
+  F('thrall', L('Thrall', '萨尔'), L('Warchief of the Horde', '部落的大酋长'), L('He leads the orcs out of captivity and establishes their new capital in Kalimdor.', '他带领兽人摆脱囚禁，在卡利姆多建立新都。'), [1416, 1417, 1411, 1454], 'horde');
+  F('hakkar', L('Hakkar the Soulflayer', '夺灵者哈卡'), L('Blood god of the Hakkari', '哈卡莱信奉的血神'), L('His followers seek to bring him into the world again. Their old sanctuaries in the jungle and in the swamp both have a part in his return.', '信徒试图将他再次带到这个世界。丛林和沼泽中的古老圣所，都与他的归来有关。'), [1434, 1435]);
+  F('medivh', L('Medivh', '麦迪文'), L('The last Guardian of Tirisfal', '提瑞斯法的末代守护者'), L('The mage who lived in Karazhan and helped open the Dark Portal.', '曾住在卡拉赞、参与开启黑暗之门的法师。'), [1430, 1419]);
+  F('tirion', L('Tirion Fordring', '提里奥·弗丁'), L('Exiled paladin', '流亡的圣骑士'), L('Lives by the Thondroril River and watches his son Taelan’s life from a distance.', '隐居在索多里尔河边，牵挂着远在别处的儿子泰兰。'), [1422, 1423]);
+  F('taelan', L('Taelan Fordring', '泰兰·弗丁'), L('Highlord at Hearthglen', '壁炉谷的大领主'), L('Tirion’s son serves the Scarlet Crusade at the fortress once ruled by his father.', '提里奥的儿子，在父亲曾治理的要塞中为血色十字军效力。'), [1422]);
+  F('arugal', L('Archmage Arugal', '大法师阿鲁高'), L('Master of Shadowfang Keep', '影牙城堡的主人'), L('The worgen and the enchantment on Pyrewood Village lead investigators to his stronghold.', '狼人与焚木村的诅咒将调查引向他的据点。'), [1421]);
+  F('faranell', L('Master Apothecary Faranell', '大药剂师法拉尼尔'), L('Apothecary in Undercity', '幽暗城的药剂师'), L('He receives reports from field researchers and works in the Apothecarium.', '他在炼金房工作，接收各地研究者的报告。'), [1420, 1424, 1458]);
+  F('varimathras', L('Varimathras', '瓦里玛萨斯'), L('Dreadlord in the Royal Quarter', '皇家区的恐惧魔王'), L('Sylvanas accepts his service after defeating him. In Classic he gives orders to Forsaken officers.', '希尔瓦娜斯击败他后接受了他的效忠。经典旧世时期，他向被遗忘者军官下达命令。'), [1424, 1458]);
+  F('finkle', L('Finkle Einhorn', '芬克·恩霍尔'), L('Explorer of Blackrock Spire', '黑石塔的探险者'), L('Survives an encounter with the Beast and works with Malyfous Darkhammer to make use of its hide.', '在遭遇比斯巨兽后活了下来，并与玛雷弗斯·暗锤合作研究如何利用它的兽皮。'), [1428, 1452]);
+  F('magatha', L('Magatha Grimtotem', '玛加萨·恐怖图腾'), L('Grimtotem elder', '恐怖图腾长者'), L('Represents the Grimtotem in Thunder Bluff and seeks help against the Venture Company from Apothecary Zamah.', '在雷霆崖代表恐怖图腾，向药剂师扎玛寻求援助对抗风险投资公司。'), [1456, 1458]);
+  F('nefarian', L('Nefarian', '奈法利安'), L('Lord of Blackwing Lair', '黑翼之巢的主人'), L('Rules from the top of Blackrock Mountain and experiments with the blood of other dragonflights.', '在黑石山顶掌权，用其他龙族的血进行实验。'), [1428]);
+
   const factions = {};
   function faction(id, name, text, glossaryId) { factions[id] = { id, name, text, glossaryId }; }
   faction('bronzebeard', L('Bronzebeard clan', '铜须氏族'), L('The ruling clan of Ironforge, responsible for the mountain kingdom’s defense.', '统治铁炉堡的氏族，负责保卫山中王国。'), 'bronzebeard');
@@ -379,6 +512,18 @@
   faction('venture', L('Venture Company', '风险投资公司'), L('A company that cuts the forests of Windshear Crag with workers and mechanical shredders.', '派工人和机械伐木机在狂风峭壁砍伐森林的公司。'), null);
   faction('grimtotem', L('Grimtotem tribe', '恐怖图腾部族'), L('The tauren faction whose raiders destroy Camp Aparaje.', '派袭击者摧毁阿帕拉耶营地的牛头人派系。'), null);
   faction('bloodfury', L('Bloodfury harpies', '血怒鹰身人'), L('Harpies nesting in the Charred Vale and drawing the attention of both nearby settlements.', '在焦炭谷筑巢，引起附近两处聚落警惕的鹰身人。'), null);
+
+  faction('horde', L('Horde', '部落'), L('Thrall’s coalition has its capital in Durotar and holds outposts throughout Kalimdor and the Eastern Kingdoms.', '萨尔领导的联盟以杜隆塔尔为中心，在卡利姆多与东部王国多地设有据点。'), 'horde');
+  faction('forsaken', L('Forsaken', '被遗忘者'), L('Free undead under Sylvanas, based beneath ruined Lordaeron.', '效忠希尔瓦娜斯的自由亡灵，以洛丹伦废墟地下为据点。'), 'forsaken');
+  faction('scourge', L('Scourge', '天灾军团'), L('The Lich King’s undead armies still occupy large parts of Lordaeron.', '巫妖王的亡灵大军仍占据洛丹伦大片土地。'), 'scourge');
+  faction('syndicate', L('Syndicate', '辛迪加'), L('Alterac’s dispossessed nobles and their agents seek to recover power in Lordaeron.', '失势的奥特兰克贵族及其手下试图在洛丹伦重夺权势。'), 'syndicate');
+  faction('scarlet-crusade', L('Scarlet Crusade', '血色十字军'), L('An order fighting the undead from fortified holdings in Lordaeron. Its zeal makes even living outsiders suspect.', '从洛丹伦的堡垒出击、与亡灵作战的组织。狂热的成员对活人外来者也不信任。'), null);
+  faction('royal-apothecary', L('Royal Apothecary Society', '皇家药剂师协会'), L('Forsaken researchers in Undercity who develop a new plague and draw on work from their outposts.', '幽暗城的被遗忘者研究者，利用各地前哨的研究成果研制新的瘟疫。'), null);
+  faction('thorium-brotherhood', L('Thorium Brotherhood', '瑟银兄弟会'), L('Dark Iron artisans who maintain their own forge and settlement at Thorium Point.', '在瑟银哨塔拥有自己工坊与据点的黑铁工匠。'), null);
+  faction('zandalar', L('Zandalar Tribe', '赞达拉部族'), L('Trolls who establish a camp off Stranglethorn to oppose Hakkar.', '在荆棘谷近海扎营、反抗哈卡的巨魔。'), null);
+  faction('steamwheedle', L('Steamwheedle Cartel', '热砂港集团'), L('The goblin cartel ties ports and trading towns such as Booty Bay, Ratchet, Gadgetzan and Everlook together.', '这个地精财团把藏宝海湾、棘齿城、加基森和永望镇等港口与商镇联结起来。'), null);
+  faction('black-dragonflight', L('Black dragonflight', '黑龙军团'), L('The dragonflight whose brood holds strongholds at Blackrock Spire and in Dustwallow Marsh.', '其龙群在黑石塔和尘泥沼泽拥有据点的龙族。'), null);
+  faction('green-dragonflight', L('Green dragonflight', '绿龙军团'), L('Dragons charged with guarding the Emerald Dream, whose kin watch the sunken temple in the Swamp of Sorrows.', '守护翡翠梦境的龙族，其同族看守悲伤沼泽的沉没神庙。'), null);
 
   const zones = {};
   function zone(id, name, region, levels, summary, extra = {}) {
@@ -539,9 +684,294 @@
     ],
     relatedZoneIds: [1440, 1439], sagaIds: ['corrupted-forests'], sourceIds: ['stonetalon', 'st-kaya', 'st-logging', 'st-vale', 'st-seeds', 'st-new-life', 'st-standstill', 'st-supplies']
   });
-  // Additional cross-reference destinations; no map is claimed where no local asset exists.
-  zone(1427, L('Searing Gorge', '灼热峡谷'), L('Blackrock region · Eastern Kingdoms', '黑石山一带 · 东部王国'), '43–50', L('The gorge is part of the land burned by Ragnaros’s summoning at the end of the dwarven civil war. Dark Iron industry and the approaches to Blackrock Mountain make that old catastrophe a present political reality.', '矮人内战末期，召唤拉格纳罗斯烧焦了周围土地，这道峡谷也在其中。黑铁矮人的工业设施与通往黑石山的道路，让远古的灾难至今仍影响着当地的政治局势。'), { map: null, relatedZoneIds: [1428], sagaIds: ['three-hammers'] });
-  zone(1428, L('Burning Steppes', '燃烧平原'), L('Blackrock region · Eastern Kingdoms', '黑石山一带 · 东部王国'), '50–58', L('The blackened country south of Blackrock Mountain preserves the aftermath of Thaurissan’s disastrous summoning. Orc strongholds and the powers inside the mountain make it a frontier of several conflicts beyond the original dwarven feud.', '黑石山以南的焦土仍留有索瑞森那场灾难性召唤的痕迹。兽人要塞和山中势力把这里变成了多场冲突的边境，早已超出矮人的宿怨。'), { map: null, relatedZoneIds: [1433, 1427], sagaIds: ['three-hammers'] });
+  zone(1416, L('Alterac Mountains', '奥特兰克山脉'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), '30–40', L('Ogres hold the ruined capital of Alterac, while spies in the mountain towns keep the ambitions of its old nobility alive.', '食人魔占据了奥特兰克的都城废墟，而山间城镇里的密探，仍在为旧日贵族的野心奔走。'), {
+    complete: true,
+    map: null,
+    overview: [L('The old kingdom survives in its walls, farmsteads and signet rings. The Crushridge ogres occupy the ruins, while the {Syndicate} operates out of Strahnbrad and reaches down toward Hillsbrad.', '古老王国留下了城墙、农舍和印戒。破碎岭食人魔占据都城废墟，{辛迪加}则以斯坦恩布莱德为据点，把势力伸向山下的希尔斯布莱德。'), L('The fallen kingdom’s reach can be read in the papers its agents carry. Even after the loss of its throne, the people organizing in its name are a concern as far away as Southshore and Stromgarde.', '从密探携带的文件里，仍可看见这个亡国的势力范围。王座早已失去，但以它的名义行事的人，依然让远至南海镇和激流堡的守军放心不下。')],
+    history: [
+      H(L('Second War', '第二次战争'), L('A king makes a bargain', '国王与部落达成交易'), L('King Aiden Perenolde betrays the Alliance. The defeat of his kingdom leaves its nobles without a throne to serve.', '艾登·匹瑞诺德国王背叛联盟。王国败亡，贵族从此失去了效忠的王座。')),
+      H(L('Classic era', '经典旧世时期'), L('Two heirs to the ruins', '废墟里的两股势力'), L('The Crushridge settle in the capital’s ruins. The Syndicate claims the legacy of the old nobility from other parts of the mountains.', '破碎岭食人魔在都城废墟定居。辛迪加则从山中别处活动，以旧日贵族的继承人自居。'))
+    ],
+    storylines: [S('alterac-inheritance', L('The lords who lost a kingdom', '失去王国的贵族'), ['al-papers', 'al-rings'])],
+    figureIds: ['thrall', 'henry-maleb'], factionIds: ['syndicate'],
+    places: [
+      { id: 'alterac-ruins', name: L('Ruins of Alterac', '奥特兰克废墟'), text: L('The old capital’s walls now shelter Crushridge ogres.', '旧都的城墙如今庇护着破碎岭食人魔。') },
+      { id: 'strahnbrad', name: L('Strahnbrad', '斯坦恩布莱德'), text: L('Syndicate spies and wizards gather in the mountain town.', '辛迪加密探和巫师聚集在这座山间城镇。') },
+      { id: 'dalaran-crater', name: L('Dalaran', '达拉然'), text: L('Dalaran’s surviving mages keep the ruined city behind a violet barrier.', '达拉然幸存的法师用紫色屏障围住了城市废墟。') }
+    ],
+    relatedZoneIds: [1424, 1417], sagaIds: [], sourceIds: ['al-classic', 'al-kingdom', 'al-plans', 'al-rings']
+  });
+
+  zone(1417, L('Arathi Highlands', '阿拉希高地'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), '30–40', L('In the old lands of Arathor, Stromgarde’s survivors hope to recover their city while the Horde builds a home out of a former prison.', '在古老的阿拉索故地，激流堡的幸存者希望收复家园，部落则把昔日的囚营建成新的据点。'), {
+    complete: true,
+    overview: [L('Refuge Pointe shelters the Alliance in a fold in the highlands. Hammerfall keeps the memory of the orcs’ imprisonment and escape. Stromgarde, where the Syndicate and Boulderfist ogres occupy parts of the city, shows how much land its old defenders have lost.', '避难谷地藏在山间，庇护着联盟。落锤镇保留着兽人被囚与脱困的记忆。辛迪加和石拳食人魔占据了激流堡的部分城区，让人看清旧日守军已经失去了多少土地。'), L('The danger to Hammerfall comes from nearby hills as well as the Alliance frontier. Drum Fel finds the Witherbark trolls and Boulderfist ogres cooperating against the outpost.', '落锤镇既面对联盟，也得提防附近山地。德拉姆·费尔发现枯木巨魔与石拳食人魔联起手来，准备把部落赶出高地。')],
+    history: [
+      H(L('Arathor', '阿拉索时期'), L('The old human kingdom', '古老的人类王国'), L('Strom was the home of Arathor. Stromgarde carried on the name and fought for the Alliance in the Second War.', '斯特罗姆曾是阿拉索的都城。激流堡承继其名，在第二次战争中为联盟而战。')),
+      H(L('After the Second War', '第二次战争之后'), L('From camp to outpost', '囚营变成前哨'), L('The eastern settlement becomes a camp for captive orcs. The Horde later holds it and calls it Hammerfall in memory of Orgrim Doomhammer.', '东部聚落被改成关押兽人的营地。部落随后占领这里，为纪念奥格瑞姆·毁灭之锤，将它命名为落锤镇。'))
+    ],
+    storylines: [S('ar-strom', L('The struggle for Stromgarde', '争夺激流堡'), ['ar-badges']), S('ar-hammerfall', L('The defense of Hammerfall', '落锤镇的防卫'), ['ar-call'])],
+    figureIds: ['thrall', 'nials', 'drum-fel'], factionIds: ['horde', 'syndicate'],
+    places: [
+      P('refuge-pointe', L('Refuge Pointe', '避难谷地'), 45.8, 46.1, L('The Alliance keeps its refuge in a sheltered hollow north of Stromgarde.', '联盟在激流堡以北一处隐蔽山谷内立足。')),
+      P('hammerfall', L('Hammerfall', '落锤镇'), 73.1, 32.6, L('The former internment camp has become a Horde outpost.', '昔日的兽人囚营已成为部落前哨。')),
+      P('stromgarde', L('Stromgarde Keep', '激流堡'), 26.2, 65.1, L('Rival groups occupy separate parts of the old stronghold. The Syndicate operates in this part of the ruins.', '几股势力各自占据了这座旧要塞的一部分。辛迪加就在这片废墟里活动。'))
+    ],
+    relatedZoneIds: [1416, 1424, 1425, 1437], sagaIds: [], sourceIds: ['ar-classic', 'ar-badges', 'ar-call', 'ar-lords']
+  });
+
+  zone(1418, L('Badlands', '荒芜之地'), L('Khaz Modan · Eastern Kingdoms', '卡兹莫丹 · 东部王国'), '35–45', L('Between dry canyons and makeshift camps, excavators in the Badlands uncover an archive left by the titans.', '在干旱峡谷与临时营地之间，荒芜之地的考古队发现了泰坦留下的档案。'), {
+    complete: true,
+    map: null,
+    overview: [L('Kargath gives the Horde a foothold in the west. On the other side of the badlands, black dragon whelps roam the ravine of Lethlor. An excavation at Uldaman opens into passages far larger than the camp above them.', '卡加斯是部落在西部的据点。荒地另一侧，黑色雏龙在莱瑟罗峡谷出没。奥达曼的挖掘场通向一片远比地面营地庞大的地下通道。'), L('The Explorers’ League has people in the ruins who need to come home. What remains below includes records about the beginnings of the earthen, a question that matters as much in Ironforge as in the dig.', '探险者协会还有队员滞留在遗迹里，等着回家。地下保存着关于土灵起源的记录，此事牵动着挖掘场，也同样牵动着铁炉堡。')],
+    history: [
+      H(L('Age of the titans', '泰坦时代'), L('An archive beneath the hills', '群山之下的档案库'), L('The facility at Uldaman preserves a titan record about the earthen long after its makers are gone.', '建造者离去许久之后，奥达曼仍保存着泰坦留下的土灵记录。')),
+      H(L('Classic era', '经典旧世时期'), L('The doors open again', '石门再度开启'), L('Dwarven expeditions uncover rooms and mechanisms. Troggs and other occupants make the investigation dangerous.', '矮人考察队发现了封存的石室和机关，穴居人等盘踞者让调查险象环生。'))
+    ],
+    storylines: [S('ba-uldaman', L('Under the excavation', '挖掘场之下'), ['ba-lost', 'ba-discs'])],
+    figureIds: [], factionIds: ['league', 'dark-iron'],
+    places: [
+      { id: 'kargath', name: L('Kargath', '卡加斯'), text: L('A Horde outpost at the western edge of the basin.', '位于盆地西缘的部落前哨。') },
+      { id: 'uldaman', name: L('Uldaman', '奥达曼'), text: L('The excavation gives way to old stone halls and a sealed record chamber.', '穿过挖掘场，便是古老的石厅与封闭的档案室。') },
+      { id: 'lethlor', name: L('Lethlor Ravine', '莱瑟罗峡谷'), text: L('Black whelps roam this eastern canyon.', '黑色雏龙在东部这条峡谷出没。') }
+    ],
+    relatedZoneIds: [1432, 1427, 1426], sagaIds: [], sourceIds: ['ba-classic', 'ba-lost', 'ba-discs']
+  });
+
+  zone(1419, L('Blasted Lands', '诅咒之地'), L('Southern Eastern Kingdoms', '东部王国南部'), '45–55', L('The Dark Portal stands above a demon-haunted crater. At the edge of the scar, Nethergarde keeps watch and a dead soldier tries to free his men.', '黑暗之门立在恶魔出没的巨坑上方。焦土边缘，守望堡仍在警戒，一名死去的士兵则试图解救自己的部下。'), {
+    complete: true,
+    map: null,
+    overview: [L('The orcs first came into Azeroth through the Dark Portal. In Classic the gateway stands silent above its crater and the land around it remains dangerous, long after the armies that first crossed it have left.', '兽人最初经由黑暗之门进入艾泽拉斯。经典旧世时期，大门仍寂静地立在巨坑上方，最初穿越它的军队早已远去，周围却依然险恶。'), L('Nethergarde is an Alliance watch on the northern heights. Farther south, demons bind their victims to stones, leaving a job that a soldier’s death did not end.', '联盟在北部高地的守望堡警戒。更往南，恶魔把受害者束缚在石头上。一名士兵虽然早已死去，仍没放下这件事。')],
+    history: [
+      H(L('First War', '第一次战争'), L('The way opens', '通道开启'), L('Medivh and Gul’dan help open the gateway that brings the orc Horde into Azeroth.', '麦迪文与古尔丹促成黑暗之门开启，兽人部落由此进入艾泽拉斯。')),
+      H(L('After the Second War', '第二次战争之后'), L('A fortress keeps watch', '堡垒守望'), L('The Alliance builds Nethergarde to watch the rift after the original portal is destroyed.', '最初的黑暗之门被毁后，联盟建起守望堡，监视留下的裂隙。'))
+    ],
+    storylines: [S('bl-fallen', L('The dead soldier and his men', '阵亡的战士与他的部下'), ['bl-stones', 'bl-demon'])],
+    figureIds: ['medivh'], factionIds: ['stormwind-army'],
+    places: [
+      { id: 'nethergarde', name: L('Nethergarde Keep', '守望堡'), text: L('The Alliance garrison watches the approaches to the portal from the north.', '联盟驻军从北面监视通往黑暗之门的道路。') },
+      { id: 'dark-portal', name: L('The Dark Portal', '黑暗之门'), text: L('The stone gateway stands in the crater left by the old wars.', '石门立在昔日战争留下的巨坑中。') },
+      { id: 'tainted-scar', name: L('The Tainted Scar', '腐烂之痕'), text: L('Demons occupy the blasted hollow in the southwest.', '恶魔盘踞在西南方满目疮痍的谷地。') }
+    ],
+    relatedZoneIds: [1435, 1430, 1453], sagaIds: [], sourceIds: ['bl-classic', 'bl-grace', 'bl-stones', 'bl-demon', 'portal-history', 'manual']
+  });
+
+  zone(1420, L('Tirisfal Glades', '提瑞斯法林地'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), '1–10', L('The forests around Lordaeron’s ruined capital are the first home of many Forsaken. They share the old heartland with enemies who remember the kingdom very differently.', '洛丹伦王城废墟周围的林地，是许多被遗忘者最初的家园。昔日王国的腹地如今还有敌人出没，各方对洛丹伦的记忆大不相同。'), {
+    complete: true,
+    map: null,
+    overview: [L('Deathknell is a village of crypts and ruined homes. Brill is a working Forsaken settlement close to the capital, while the Scarlet Monastery is a reminder that armed survivors also claim the land.', '丧钟镇遍布墓穴和残破的房屋。布瑞尔是都城附近仍在运转的被遗忘者聚落，血色修道院则让人想起，拿起武器的幸存者也对这片土地有所主张。'), L('The people in Brill fight remnants of the Scourge and the Scarlet Crusade. Their apothecaries also work on a plague of their own, a project that links village laboratories to Undercity.', '布瑞尔的居民与天灾残部和血色十字军交战。镇上的药剂师也在研制自己的瘟疫，把村镇里的实验室与幽暗城联结起来。')],
+    history: [
+      H(L('Third War', '第三次战争'), L('The king’s city falls', '王都陷落'), L('Arthas returns to Lordaeron, kills King Terenas and brings ruin to the capital he was meant to inherit.', '阿尔萨斯回到洛丹伦，杀死泰瑞纳斯国王，使本该由他继承的都城沦为废墟。')),
+      H(L('After the Third War', '第三次战争之后'), L('The Forsaken take root', '被遗忘者扎根'), L('Sylvanas and the undead who follow her claim the city ruins. In the surrounding countryside they find enemies as well as others newly freed from the Scourge.', '希尔瓦娜斯和追随她的亡灵夺取王城废墟。他们在周边乡间遇到了敌人，也遇到更多刚摆脱天灾军团的同胞。'))
+    ],
+    storylines: [S('ti-allegiances', L('A new allegiance in the old kingdom', '旧王国里的新归属'), ['ti-awakening', 'ti-scarlet']), S('ti-plague', L('The laboratory at Brill', '布瑞尔的实验室'), ['ti-plague'])],
+    figureIds: ['sylvanas', 'arthas', 'faranell', 'johaan'], factionIds: ['forsaken', 'scourge', 'scarlet-crusade', 'royal-apothecary'],
+    places: [
+      { id: 'deathknell', name: L('Deathknell', '丧钟镇'), text: L('Newly awakened undead emerge from the crypts of the ruined village.', '新近苏醒的亡灵从废弃村庄的墓穴里走出来。') },
+      { id: 'brill', name: L('Brill', '布瑞尔'), text: L('Forsaken officers and apothecaries work out of the town near the capital.', '被遗忘者的军官与药剂师在靠近都城的镇上办事。') },
+      { id: 'scarlet-monastery', name: L('Scarlet Monastery', '血色修道院'), text: L('The Scarlet Crusade holds a fortified monastery in the northeastern hills.', '血色十字军在东北部的山丘上据守这座设防的修道院。') }
+    ],
+    relatedZoneIds: [1458, 1421, 1422, 1423], sagaIds: [], sourceIds: ['ti-classic', 'ti-awakening', 'ti-scarlet', 'ti-plague', 'manual', 'arthas-history']
+  });
+
+  zone(1421, L('Silverpine Forest', '银松森林'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), '10–20', L('From the Sepulcher, the Forsaken push into a forest where the homes of the living and the stronghold of a mage have come under the shadow of the worgen.', '被遗忘者从瑟伯切尔深入森林。那里，活人的村庄与法师的要塞都笼罩在狼人的阴影之下。'), {
+    complete: true,
+    map: null,
+    overview: [L('The Sepulcher is the Forsaken’s foothold on the road south. At Pyrewood, the villagers change after sundown, while the old keep above them is held by Archmage Arugal.', '瑟伯切尔是被遗忘者在南下道路上的据点。焚木村的居民日落后就会变身，村子上方的旧城堡则落入大法师阿鲁高手中。'), L('The Greymane Wall closes the road into Gilneas. On this side of the wall, the Forsaken investigate a curse that has already undone a human community.', '格雷迈恩之墙封住了通往吉尔尼斯的道路。在墙的这一侧，被遗忘者正调查一种已经摧毁了一个人类村落的诅咒。')],
+    history: [
+      H(L('Third War', '第三次战争'), L('A desperate defense', '孤注一掷的防御'), L('Arugal unleashes worgen against the Scourge. They soon threaten the people he hoped to protect.', '阿鲁高放出狼人抵御天灾军团。很快，狼人就威胁到了他原本想保护的人。')),
+      H(L('Classic era', '经典旧世时期'), L('A forest under watch', '受到监视的森林'), L('The Forsaken hold the Sepulcher, while Arugal commands worgen from Shadowfang Keep.', '被遗忘者据守瑟伯切尔，阿鲁高则在影牙城堡指挥狼人。'))
+    ],
+    storylines: [S('sp-curse', L('The trouble at Pyrewood', '焚木村的祸事'), ['sp-shackles', 'sp-keep'])],
+    figureIds: ['arugal'], factionIds: ['forsaken', 'royal-apothecary'],
+    places: [
+      { id: 'sepulcher', name: L('The Sepulcher', '瑟伯切尔'), text: L('The Forsaken keep a garrison among the old graves.', '被遗忘者在昔日的墓地间驻扎守军。') },
+      { id: 'pyrewood', name: L('Pyrewood Village', '焚木村'), text: L('Human by day, the villagers become Moonrage worgen at night.', '居民白天看似人类，夜晚则变成月怒狼人。') },
+      { id: 'shadowfang', name: L('Shadowfang Keep', '影牙城堡'), text: L('The old stronghold houses Arugal and his worgen.', '这座旧要塞如今住着阿鲁高和他的狼人。') }
+    ],
+    relatedZoneIds: [1420, 1424, 1458, 1431], sagaIds: [], sourceIds: ['sp-classic', 'sp-shackles', 'sp-keep']
+  });
+
+  zone(1422, L('Western Plaguelands', '西瘟疫之地'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), '51–58', L('The grain fields of Lordaeron still stand around Andorhal. With the granaries ruined and Caer Darrow given over to necromancers, the Argent Dawn fights to contain what keeps spreading from them.', '洛丹伦的田地依然环绕着安多哈尔。粮仓荒废，凯尔达隆落入死灵法师之手，银色黎明奋力遏制仍在蔓延的瘟疫。'), {
+    complete: true,
+    map: null,
+    overview: [L('Andorhal once sent grain across Lordaeron. Now the farms nearby have their own plague cauldrons, and the camps to the west and south send investigators to learn what is feeding them.', '安多哈尔曾把谷物运往洛丹伦各处。如今附近农场里架起了瘟疫之锅，西面与南面的营地派人来查看锅里究竟有什么。'), L('There are two fortified centers beyond the farms. Scarlet soldiers still hold Hearthglen. Under the ruined keep on Caer Darrow lies Scholomance, a school of necromancy.', '田野之外，还有两处堡垒。血色十字军依然控制壁炉谷。湖上，往日辉煌的凯尔达隆已成废墟，要塞地下是教授死灵法术的通灵学院。')],
+    history: [
+      H(L('Third War', '第三次战争'), L('The grain carries the plague', '谷物带来瘟疫'), L('The Scourge uses Lordaeron’s grain supply to spread the plague among the living. Andorhal is one of the centers of the disaster.', '天灾军团利用洛丹伦的粮食供应，把瘟疫传给活人。安多哈尔是这场灾难的中心之一。')),
+      H(L('Classic era', '经典旧世时期'), L('The plague outlasts the kingdom', '瘟疫在王国覆灭后仍在蔓延'), L('The Argent Dawn studies the cauldrons and confronts the Scourge in a land still dotted with farms and old fortresses.', '银色黎明调查瘟疫之锅，在仍遍布农场与旧堡垒的土地上对抗天灾军团。'))
+    ],
+    storylines: [S('wp-contagion', L('What keeps the plague spreading', '瘟疫为何仍在蔓延'), ['wp-cauldrons', 'wp-araj']), S('wp-family', L('The Highlord of Hearthglen', '壁炉谷的大领主'), ['ep-mementos', 'wp-order'])],
+    figureIds: ['tirion', 'taelan', 'araj'], factionIds: ['scourge', 'argent-dawn', 'scarlet-crusade'],
+    places: [
+      { id: 'andorhal', name: L('Andorhal', '安多哈尔'), text: L('The old grain hub is a ruined town held by the Scourge and its lich, Araj the Summoner.', '昔日的粮食集散地已成废墟，由天灾军团及其巫妖召唤者阿拉基占据。') },
+      { id: 'felstone', name: L('Felstone Field', '费尔斯通农场'), text: L('Its plague cauldron becomes an early subject of the investigation.', '农场里的瘟疫之锅是最先受到调查的几口之一。') },
+      { id: 'scholomance', name: L('Scholomance', '通灵学院'), text: L('The school beneath Caer Darrow trains the Scourge’s necromancers.', '凯尔达隆地下的学校为天灾军团培养死灵法师。') },
+      { id: 'hearthglen', name: L('Hearthglen', '壁炉谷'), text: L('A fortified Scarlet town where Taelan Fordring serves as Highlord.', '血色十字军据守的城镇，由大领主泰兰·弗丁坐镇。') }
+    ],
+    relatedZoneIds: [1423, 1420, 1458, 1424], sagaIds: [], sourceIds: ['wp-classic', 'wp-cauldrons', 'wp-felstone', 'wp-araj', 'wp-order', 'arthas-history', 'ep-family']
+  });
+
+  zone(1423, L('Eastern Plaguelands', '东瘟疫之地'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), '53–60', L('Little living country remains between the burned streets of Stratholme and the chapel where the Argent Dawn still gathers supplies and testimony.', '从斯坦索姆焚毁的街巷到仍在收集物资与消息的圣光之愿礼拜堂，沿路能见到的生机已寥寥无几。'), {
+    complete: true,
+    map: null,
+    overview: [L('The road passes ruined towns, Scourge towers and the Scarlet fortress at Tyr’s Hand. Light’s Hope Chapel is a base for defenders who must work within reach of the dead.', '道路沿途是残破的城镇、天灾军团的高塔，以及提尔之手的血色要塞。圣光之愿礼拜堂则是守军的据点，他们就在亡者活动的地方附近坚持作战。'), L('The war left private losses as well as ruined cities. Near the Thondroril River, Tirion remembers the family he had before exile. In Darrowshire, survivors are scarce enough that the dead must speak for what happened there.', '战争除了毁去城镇，还夺走了许多人的亲友。索多里尔河畔，提里奥仍惦念流亡前的家人。在达隆郡，幸存者寥寥，往事只能由亡者来讲述。')],
+    history: [
+      H(L('Third War', '第三次战争'), L('The purge of Stratholme', '斯坦索姆大清洗'), L('Arthas orders the slaughter of Stratholme’s people after learning that plagued grain has reached the city.', '阿尔萨斯得知受瘟疫污染的谷物已经运进城，便下令屠杀斯坦索姆的居民。')),
+      H(L('Classic era', '经典旧世时期'), L('The defense at Light’s Hope', '圣光之愿礼拜堂的防卫'), L('The Argent Dawn maintains a base in the east while Scourge forces hold Stratholme and reach into the surrounding country.', '天灾军团占据斯坦索姆，势力深入周边地区。银色黎明仍在东部坚守据点。'))
+    ],
+    storylines: [S('ep-darrow', L('A family in Darrowshire', '达隆郡的一家人'), ['ep-doll', 'ep-redpath']), S('ep-exile', L('The exile on the river', '河畔的流亡者'), ['ep-mementos'])],
+    figureIds: ['arthas', 'tirion', 'taelan', 'pamela'], factionIds: ['scourge', 'argent-dawn', 'scarlet-crusade'],
+    places: [
+      { id: 'stratholme', name: L('Stratholme', '斯坦索姆'), text: L('The city still bears the marks of the purge and is occupied by the dead and the Scarlet Crusade.', '城里仍留着大清洗的痕迹，亡灵与血色十字军分别占据街区。') },
+      { id: 'lights-hope', name: L('Light’s Hope Chapel', '圣光之愿礼拜堂'), text: L('The Argent Dawn’s refuge and meeting place in the eastern reaches.', '银色黎明在东部的避难所和集结地。') },
+      { id: 'darrowshire', name: L('Darrowshire', '达隆郡'), text: L('The ghost of Pamela Redpath waits in the ruined village.', '帕米拉·雷德帕斯的幽灵在村庄废墟中等待。') },
+      { id: 'tyrs-hand', name: L('Tyr’s Hand', '提尔之手'), text: L('The Scarlet Crusade holds the fortified settlement in the southeast.', '血色十字军据守东南方这座设防的聚落。') }
+    ],
+    relatedZoneIds: [1422, 1420, 1425], sagaIds: [], sourceIds: ['ep-classic', 'ep-doll', 'ep-battle', 'ep-redpath', 'ep-family', 'arthas-history', 'manual']
+  });
+
+  zone(1424, L('Hillsbrad Foothills', '希尔斯布莱德丘陵'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), '20–30', L('Southshore still looks out over Lordaeron’s old farms. Inland at Tarren Mill, the Forsaken prepare for a war that puts those farms on the front line.', '南海镇仍守望着洛丹伦昔日的农田。内陆的塔伦米尔，被遗忘者正在备战，而那些农田就在最前线。'), {
+    complete: true,
+    overview: [L('Southshore holds the coast for the Alliance. Tarren Mill gives the Forsaken a base among the northern hills. Between them are estates and fields whose people are still living much as they did before the new border cut across the foothills.', '南海镇为联盟守住海岸，塔伦米尔则让被遗忘者得以在北部丘陵立足。两地之间散布着庄园和农田，那里的人还过着一如往昔的日子，而丘陵间已经划出新的战线。'), L('Other conflicts cross that line. The Syndicate works from Durnholde Keep, and in Southshore magistrates track its agents north into Alterac.', '还有别的纷争跨过这条战线。辛迪加以敦霍尔德城堡为据点，南海镇的官员则追着他们的密探一路查到北边的奥特兰克。')],
+    history: [
+      H(L('After the Second War', '第二次战争之后'), L('Durnholde and the prisoners', '敦霍尔德与兽人囚徒'), L('The Alliance imprisons orcs after the war. Durnholde is the stronghold where Thrall grows up in captivity.', '战后，联盟囚禁兽人。萨尔便是在敦霍尔德城堡的囚禁中长大的。')),
+      H(L('Classic era', '经典旧世时期'), L('The foothills become a front', '丘陵成了前线'), L('With Lordaeron fallen, the Alliance holds Southshore and Forsaken officers direct attacks on Hillsbrad from Tarren Mill.', '洛丹伦陷落后，联盟坚守南海镇，被遗忘者的军官则从塔伦米尔指挥对希尔斯布莱德的袭击。'))
+    ],
+    storylines: [S('hi-front', L('The war comes to the farms', '战火烧到农田'), ['hi-fields', 'hi-plague']), S('hi-syndicate', L('The road to Alterac', '通往奥特兰克的路'), ['al-papers', 'al-rings'])],
+    figureIds: ['faranell', 'varimathras', 'henry-maleb', 'darthalia'], factionIds: ['forsaken', 'royal-apothecary', 'syndicate'],
+    places: [
+      P('southshore', L('Southshore', '南海镇'), 49.4, 52.1, L('The Alliance port still gives the old farms a town to turn to.', '联盟港镇依然是周围老农庄可以投奔的地方。')),
+      P('tarren-mill', L('Tarren Mill', '塔伦米尔'), 60.2, 18.8, L('Forsaken officers and apothecaries maintain an inland base here.', '被遗忘者的军官和药剂师在这里经营内陆据点。')),
+      { id: 'durnholde', name: L('Durnholde Keep', '敦霍尔德城堡'), text: L('The Syndicate occupies the stronghold associated with Thrall’s captivity.', '这座关押过萨尔的要塞如今被辛迪加占据。') }
+    ],
+    relatedZoneIds: [1416, 1417, 1421, 1425, 1458], sagaIds: [], sourceIds: ['hi-classic', 'hi-fields', 'hi-elixir', 'manual', 'al-kingdom', 'al-plans', 'al-rings']
+  });
+
+  zone(1425, L('The Hinterlands', '辛特兰'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), '40–50', L('Wildhammer gryphon riders hold Aerie Peak above a highland contested by forest trolls. At the coast, the Revantusk have made a home apart from their enemies inland.', '蛮锤狮鹫骑士居高守卫鹰巢山，林间则有不同的森林巨魔部族争斗。沿海的恶齿巨魔远离内陆敌人，自建家园。'), {
+    complete: true,
+    map: null,
+    overview: [L('After leaving Grim Batol, the Wildhammer clan found a home among the high ridges. Aerie Peak remains a base for riders and a place from which the dwarves look east toward the old troll sites.', '蛮锤氏族离开格瑞姆巴托之后，在山岭之间找到了家园。鹰巢山至今仍是骑士的据点，矮人从这里监视东边的巨魔古地。'), L('The Vilebranch hold the temple terraces of Jintha’Alor. Their enemies include the coastal Revantusk, who turn to Horde allies when their people are captured.', '邪枝巨魔占有辛萨罗层层叠叠的神庙。沿海的恶齿巨魔也是他们的敌人。族人被俘时，恶齿向部落盟友求援。')],
+    history: [
+      H(L('After the War of the Three Hammers', '三锤之战后'), L('A refuge on the high ridges', '高岭上的新家'), L('The Wildhammers leave cursed Grim Batol and make a new home at Aerie Peak.', '蛮锤矮人离开受诅咒的格瑞姆巴托，在鹰巢山安家。')),
+      H(L('Classic era', '经典旧世时期'), L('Fighting over the old temples', '争夺古老神庙'), L('The Vilebranch occupy Jintha’Alor, while the Revantusk maintain their own settlement on the eastern shore.', '邪枝巨魔盘踞辛萨罗，恶齿巨魔则在东海岸维持自己的聚落。'))
+    ],
+    storylines: [S('ht-captive', L('Captives of Jintha’Alor', '辛萨罗的俘虏'), ['ht-elder', 'ht-kidnapped'])],
+    figureIds: ['khardros'], factionIds: ['wildhammer', 'horde'],
+    places: [
+      { id: 'aerie-peak', name: L('Aerie Peak', '鹰巢山'), text: L('Gryphon riders watch the highlands from the Wildhammer stronghold.', '狮鹫骑士从蛮锤要塞守望高地。') },
+      { id: 'jintha-alor', name: L('Jintha’Alor', '辛萨罗'), text: L('The terraced temple city is a center of Vilebranch power.', '这座层台式神庙城是邪枝巨魔的重镇。') },
+      { id: 'revantusk', name: L('Revantusk Village', '恶齿村'), text: L('The coastal settlement gives the Horde a foothold and the Revantusk a place of their own.', '这座海滨聚落既是部落的据点，也是恶齿巨魔自己的家园。') }
+    ],
+    relatedZoneIds: [1437, 1417, 1424], sagaIds: ['three-hammers'], sourceIds: ['ht-classic', 'ht-elder', 'ht-sharpbeak', 'history', 'clans', 'grim-history', 'hakkar-wrath']
+  });
+
+  zone(1427, L('Searing Gorge', '灼热峡谷'), L('Blackrock region · Eastern Kingdoms', '黑石山一带 · 东部王国'), '43–50', L('On the north side of Blackrock Mountain, the Dark Irons dig into land that Ragnaros burned. A brotherhood of their own artisans keeps a separate forge above the pits.', '黑石山北侧，黑铁矮人挖掘着被拉格纳罗斯烧焦的土地。矿坑上方，一群同为黑铁矮人的工匠另立工坊。'), {
+    complete: true,
+    map: null,
+    overview: [L('Tracks and scaffolds cross the Cauldron, the great pit worked by the Dark Irons. Their mining and smelting give the burned country a purpose for the rulers down in Blackrock Mountain.', '铁轨与脚手架纵横交错，跨过黑铁矮人开掘的大熔炉。对黑石山深处的统治者来说，焦土上的采矿和冶炼依然大有用处。'), L('Thorium Point is the Thorium Brotherhood’s post. Work at its forge stands apart from the labor in the pit below. The gorge shows the Dark Irons divided over who commands their craft.', '瑟银哨塔是瑟银兄弟会的据点。哨塔的工坊与下方矿坑的劳作各有归属。同是黑铁矮人，却已各自决定为谁打铁。')],
+    history: [
+      H(L('War of the Three Hammers', '三锤之战'), L('Fire comes out of the earth', '烈焰从地下涌出'), L('Thaurissan summons Ragnaros. The eruption destroys his city and scars the country on both sides of Blackrock Mountain.', '索瑞森召出拉格纳罗斯。喷涌的烈焰摧毁了他的城，也在黑石山两侧的土地上留下伤痕。')),
+      H(L('Classic era', '经典旧世时期'), L('Mines in the burned country', '焦土上的矿坑'), L('The Dark Irons work the gorge near Blackrock Mountain, and the Thorium Brotherhood holds Thorium Point.', '黑铁矮人在黑石山附近的峡谷挖矿，瑟银兄弟会则据守瑟银哨塔。'))
+    ],
+    storylines: [S('sg-feud', L('Fire and the people who work it', '烈焰与炉火旁的人'), ['hammers-fire', 'sg-brotherhood']), S('sg-torch', L('The work at the stone', '石碑旁的打造'), ['sg-flame', 'sg-torch'])],
+    figureIds: ['thaurissan', 'ragnaros', 'dagran', 'kalaran'], factionIds: ['dark-iron', 'thorium-brotherhood'],
+    places: [
+      { id: 'thorium-point', name: L('Thorium Point', '瑟银哨塔'), text: L('The Thorium Brotherhood trades supplies and keeps its own forge above the gorge.', '瑟银兄弟会在峡谷上方交易物资，经营自己的工坊。') },
+      { id: 'the-cauldron', name: L('The Cauldron', '大熔炉'), text: L('Dark Iron workings cut deep into the floor of the gorge.', '黑铁矮人的矿井深深切进谷底。') },
+      { id: 'slag-pit', name: L('The Slag Pit', '熔渣之池'), text: L('Tunnels and platforms carry the Dark Iron operation under the open pit.', '隧道和平台把黑铁矮人的矿场延伸到露天矿坑之下。') }
+    ],
+    relatedZoneIds: [1428, 1418, 1432, 1455], sagaIds: ['three-hammers'], sourceIds: ['sg-classic', 'sg-brotherhood', 'sg-flame', 'sg-ablaze', 'sg-shaft', 'sg-reveal', 'history', 'clans']
+  });
+
+  zone(1428, L('Burning Steppes', '燃烧平原'), L('Blackrock region · Eastern Kingdoms', '黑石山一带 · 东部王国'), '50–58', L('Blackrock Mountain looms over the southern ash plain. Orc strongholds and dragonkin threaten the human watch at Morgan’s Vigil, where word arrives of a marshal imprisoned inside the mountain.', '黑石山俯瞰南面的灰烬平原。兽人据点和龙人威胁着摩根的岗哨。就在这里，人们得知一名元帅被囚于山中。'), {
+    complete: true,
+    map: null,
+    overview: [L('Morgan’s Vigil watches the road toward the Redridge Mountains. Flame Crest looks out from the northern ridge. Between them are the ruins of Thaurissan’s city and the Blackrock orcs’ stronghold at Blackrock Stronghold.', '摩根的岗哨监视通往赤脊山的道路，烈焰峰则在北部山脊上俯瞰平原。两地之间是索瑞森城的废墟和兽人占据的黑石要塞。'), L('Inside Blackrock Mountain, the Dark Irons rule the depths while the Blackrock orcs and the black dragonflight operate above. The garrison in the steppes learns how far these powers reach when its search for Windsor leads back toward Stormwind.', '黑石山内部，黑铁矮人掌控深渊，黑石兽人与黑龙军团则占据上层。燃烧平原的驻军追寻温德索尔时，发现线索竟一路通向暴风城。')],
+    history: [
+      H(L('War of the Three Hammers', '三锤之战'), L('A city burns on the plain', '平原上的城市焚毁'), L('The eruption brought on by Ragnaros’s summoning destroys Thaurissan’s city and blackens the surrounding land.', '召唤拉格纳罗斯引发的爆发摧毁了索瑞森城，也烧焦了周围的土地。')),
+      H(L('Second War and after', '第二次战争及战后'), L('A stronghold outlasts the war', '要塞在战后依然屹立'), L('Blackrock Spire serves the old Horde. In Classic, Blackrock orcs and black dragons both hold ground inside the mountain.', '黑石塔曾为旧部落效力。经典旧世时期，黑石兽人和黑龙都在山中立足。'))
+    ],
+    storylines: [S('bs-windsor', L('The marshal in the depths', '深渊里的元帅'), ['bs-dragonkin', 'bs-windsor', 'defias-prestor']), S('bs-spire', L('The powers above the depths', '深渊上方的势力'), ['bs-spire'])],
+    figureIds: ['ragnaros', 'thaurissan', 'windsor', 'finkle', 'nefarian', 'helendis'], factionIds: ['blackrock', 'dark-iron', 'black-dragonflight', 'stormwind-army'],
+    places: [
+      { id: 'morgans-vigil', name: L('Morgan’s Vigil', '摩根的岗哨'), text: L('Helendis Riverhorn reports the dragonkin threat from the Alliance camp.', '赫林迪斯·河角在这处联盟营地报告龙人的威胁。') },
+      { id: 'flame-crest', name: L('Flame Crest', '烈焰峰'), text: L('The outpost in the north gives the Horde a foothold on the plain.', '北部前哨是部落在平原上的据点。') },
+      { id: 'thaurissan-ruins', name: L('Ruins of Thaurissan', '索瑞森废墟'), text: L('The remains of the Dark Iron city stand amid the soot and ash.', '昔日黑铁矮人城市的残垣断壁仍立在灰烬中。') },
+      { id: 'blackrock-mountain', name: L('Blackrock Mountain', '黑石山'), text: L('Passages from the mountain’s interior lead into Blackrock Depths and up to Blackrock Spire.', '山体内部的通道向下通往黑石深渊，向上则通往黑石塔。') }
+    ],
+    relatedZoneIds: [1427, 1433, 1453, 1452, 1445], sagaIds: ['three-hammers'], sourceIds: ['bs-classic', 'bs-lair', 'bs-menace', 'bs-true', 'bs-marshal', 'bs-note', 'bs-jail', 'bs-rend', 'bs-orders', 'history', 'clans', 'court-reveal', 'manual']
+  });
+
+  zone(1430, L('Deadwind Pass', '逆风小径'), L('Southern Eastern Kingdoms', '东部王国南部'), '55–60', L('A narrow road crosses empty hills between Duskwood and the swamp. At the end of the valley stands Karazhan, the tower from which Medivh changed Azeroth’s history.', '暮色森林与沼泽之间，一条狭路穿过空寂的山岭。谷底矗立着卡拉赞，麦迪文曾在这座塔里改变艾泽拉斯的历史。'), {
+    complete: true,
+    map: null,
+    overview: [L('The pass has few inhabitants. Ogres hold caves near the road, and the country around Karazhan is haunted. In Classic the tower stands closed above the abandoned village at its foot.', '小径一带人口稀少。食人魔占据路边洞穴，卡拉赞周围则闹鬼。经典旧世时期，高塔大门紧闭，脚下的村庄早已荒废。')],
+    history: [
+      H(L('First War', '第一次战争'), L('The last Guardian’s seat', '末代守护者的居所'), L('Medivh lives at Karazhan. His pact with Gul’dan helps the first orc armies cross into Azeroth.', '麦迪文住在卡拉赞。他与古尔丹达成交易，使最早的兽人军队得以进入艾泽拉斯。')),
+      H(L('Classic era', '经典旧世时期'), L('The tower stands closed', '塔门紧闭'), L('The Master’s Terrace and the abandoned village remain visible below a tower whose interior is shut.', '高塔内部无法进入，塔下仍可见主宰的露台与废弃村落。'))
+    ],
+    storylines: [S('dw-guardian', L('The Guardian of Karazhan', '卡拉赞的守护者'), ['dw-portal', 'dw-staff'])],
+    figureIds: ['medivh', 'lothar'], factionIds: ['night-watch'],
+    places: [
+      { id: 'karazhan', name: L('Karazhan', '卡拉赞'), text: L('Medivh’s abandoned tower dominates the southern end of the pass.', '麦迪文废弃的高塔矗立在小径南端。') },
+      { id: 'deadwind-ogres', name: L('Deadwind Ravine', '逆风谷'), text: L('The ogres make their home in caves off the road.', '食人魔住在路旁的洞穴里。') }
+    ],
+    relatedZoneIds: [1431, 1435, 1419, 1453], sagaIds: [], sourceIds: ['dw-classic', 'dw-guardian', 'dw-staff', 'dw-cleansing', 'portal-history', 'manual']
+  });
+
+  zone(1434, L('Stranglethorn Vale', '荆棘谷'), L('Southern Eastern Kingdoms', '东部王国南部'), '30–45', L('Trading ships and zeppelins reach the edges of Stranglethorn. Deeper in the jungle, the old troll city of Zul’Gurub is the center of a struggle over the return of Hakkar.', '商船与飞艇抵达荆棘谷边缘。丛林深处，古老的巨魔城市祖尔格拉布正在为哈卡的归来而争斗。'), {
+    complete: true,
+    overview: [L('Booty Bay is a goblin port with a ship to Ratchet. The Horde holds Grom’gol on the coast farther north. Away from the docks, hunters set up camp and rival troll groups occupy old ruins.', '藏宝海湾是地精港口，有船驶往棘齿城。部落则在更北的海岸据守格罗姆高。离开码头，能看到猎人扎营，也能看到不同的巨魔势力占据旧日遗迹。'), L('The Zandalar establish a camp on Yojamba Isle to oppose Hakkar’s rise. Their expedition links a living troll community with the fate of the old Gurubashi capital across the jungle.', '赞达拉人在尤亚姆巴岛扎营，决心阻止哈卡崛起。这个仍然兴盛的巨魔部族渡海而来，为的是丛林另一端古拉巴什旧都的命运。')],
+    history: [
+      H(L('After the Sundering', '大分裂之后'), L('The Gurubashi and the blood god', '古拉巴什与血神'), L('The Gurubashi ask Hakkar for power. As the price in blood grows, they turn against him and drive his most devoted followers into exile.', '古拉巴什向哈卡寻求力量。献血的代价越来越沉重，他们转而反抗哈卡，将其最忠诚的信徒逐出家园。')),
+      H(L('Classic era', '经典旧世时期'), L('A return to Zul’Gurub', '重返祖尔格拉布'), L('Hakkar threatens the Gurubashi capital again, and the Zandalar call for help from their island camp.', '哈卡再度威胁古拉巴什的都城，赞达拉人从岛上营地向外求援。'))
+    ],
+    storylines: [S('sv-port', L('A port in the path of pirates', '海盗盯上的港口'), ['sv-pirates']), S('sv-hakkar', L('The Soulflayer’s return', '夺灵者归来'), ['sv-heart'])],
+    figureIds: ['hakkar'], factionIds: ['zandalar', 'steamwheedle', 'horde'],
+    places: [
+      P('booty-bay', L('Booty Bay', '藏宝海湾'), 27.5, 77.7, L('The goblin port’s shipping ties reach across the Great Sea to Ratchet.', '地精港口的航线横跨无尽之海，通往棘齿城。')),
+      P('gromgol', L('Grom’gol Base Camp', '格罗姆高营地'), 32.5, 29.3, L('The Horde keeps a garrison and a zeppelin tower on the western shore.', '部落在西海岸驻军，并建有飞艇塔。')),
+      P('nesingwary', L('Nesingwary’s Expedition', '奈辛瓦里远征队营地'), 35.7, 10.8, L('The hunters set their camp beside the river in northern Stranglethorn.', '猎人们在荆棘谷北部的河边扎营。')),
+      { id: 'yojamba', name: L('Yojamba Isle', '尤亚姆巴岛'), text: L('The Zandalar gather here to oppose Hakkar.', '赞达拉人在岛上集结，对抗哈卡。') },
+      { id: 'zulgurub', name: L('Zul’Gurub', '祖尔格拉布'), text: L('The old Gurubashi capital is the seat of the Soulflayer’s return.', '古拉巴什旧都是夺灵者归来的地方。') }
+    ],
+    relatedZoneIds: [1435, 1431, 1446, 1413], sagaIds: [], sourceIds: ['sv-classic', 'sv-pirates', 'sv-heart', 'hakkar-history', 'hakkar-wrath']
+  });
+
+  zone(1435, L('Swamp of Sorrows', '悲伤沼泽'), L('Southern Eastern Kingdoms', '东部王国南部'), '35–45', L('Stonard keeps a Horde watch among the reeds. Beneath the waters of the Pool of Tears, the exiles who worship Hakkar still guard their temple.', '斯通纳德的部落守军在芦苇间警戒。泪水之池的水下，崇拜哈卡的流亡者依然守着自己的神庙。'), {
+    complete: true,
+    map: null,
+    overview: [L('The road into the swamp runs past Stonard and the remnants at the Fallow Sanctuary. Off the road, the Pool of Tears covers much of the Temple of Atal’Hakkar, where trolls and green dragonkin still meet in conflict.', '沼泽里的道路经过斯通纳德和农田避难所的残存建筑。远离道路，泪水之池淹没了阿塔哈卡神庙的大半，巨魔与绿龙军团的龙人依然在那里争斗。'), L('The temple’s story reaches beyond the swamp. An egg from the Hinterlands and a request in Tanaris give the sunk halls a role in Hakkar’s return, long after the place was first sealed under water.', '神庙的故事并不局限于沼泽。一枚来自辛特兰的卵和一项在塔纳利斯提出的委托，让沉入水下多年的大厅卷入了哈卡归来的事件。')],
+    history: [
+      H(L('In the time of the exiles', '流亡者时代'), L('The Atal’ai build a temple', '阿塔莱建起神庙'), L('Driven out for their worship of Hakkar, the Atal’ai raise a sanctuary and continue their rites in the swamp.', '阿塔莱因崇拜哈卡被放逐，于是在沼泽建起神庙，继续举行仪式。')),
+      H(L('Before Classic', '经典旧世之前'), L('The temple sinks', '神庙沉没'), L('Ysera and her flight bring down the temple to stop the rites. Green dragons keep watch over what remains.', '伊瑟拉和她的龙族摧毁神庙，希望阻止仪式。绿龙留在那里看守遗迹。'))
+    ],
+    storylines: [S('ss-temple', L('Beneath the Pool of Tears', '泪水之池下'), ['ss-discovery', 'ss-avatar'])],
+    figureIds: ['hakkar'], factionIds: ['horde', 'green-dragonflight'],
+    places: [
+      { id: 'stonard', name: L('Stonard', '斯通纳德'), text: L('The Horde garrison holds the road through the swamp.', '部落驻军守住了穿过沼泽的道路。') },
+      { id: 'pool-of-tears', name: L('Pool of Tears', '泪水之池'), text: L('The pool hides most of the temple beneath its surface.', '池水淹没了大部分神庙。') },
+      { id: 'atal-hakkar', name: L('Temple of Atal’Hakkar', '阿塔哈卡神庙'), text: L('The sunken sanctuary is still occupied by the Atal’ai and watched by green dragonkin.', '阿塔莱依然盘踞在沉没的圣所中，绿龙军团也仍在看守。') }
+    ],
+    relatedZoneIds: [1430, 1419, 1434, 1446], sagaIds: [], sourceIds: ['ss-classic', 'ss-temple', 'ss-avatar', 'hakkar-wrath']
+  });
+
+  zone(1458, L('Undercity', '幽暗城'), L('Lordaeron · Eastern Kingdoms', '洛丹伦 · 东部王国'), 'Capital city', L('The ruined court of Lordaeron stands above another capital. Below it, Sylvanas rules the free undead from a city of ringed passages, sewers and workshops.', '洛丹伦宫廷的废墟下方，还有一座都城。希尔瓦娜斯在这片由环形通道、下水道与工坊组成的地下城市统领自由亡灵。'), {
+    complete: true,
+    map: null,
+    overview: [L('The throne room above ground keeps the memory of Terenas and Arthas. The city underneath is busy with a new government. Trade fills its central ring, and beyond it the quarters house soldiers, mages, rogues and the Royal Apothecary Society.', '地面上的王座厅留着泰瑞纳斯与阿尔萨斯的记忆，地下城则忙着运转新的政权。中央环道商贸繁忙，外围各区分别有士兵、法师、潜行者与皇家药剂师协会活动。'), L('From the Royal Quarter, Sylvanas holds together a people whose freedom is still recent. The apothecaries have their own far-reaching network, from the test sites of Hillsbrad to allies and prospective partners across the sea.', '希尔瓦娜斯在皇家区统领这些重获自由不久的亡灵。药剂师们另有一套延伸甚远的网络，既包括希尔斯布莱德的试验地点，也包括海对岸的盟友和潜在伙伴。')],
+    history: [
+      H(L('Third War', '第三次战争'), L('The old court falls', '旧宫廷陷落'), L('Arthas kills Terenas on his return to Lordaeron. The city and its people fall to the Scourge.', '阿尔萨斯回到洛丹伦，杀死泰瑞纳斯。王城和城中居民落入天灾军团之手。')),
+      H(L('After the Third War', '第三次战争之后'), L('A capital beneath the ruins', '废墟下的新都'), L('Sylvanas claims Lordaeron for the free undead. The Forsaken finish the underground city and make it their seat of power.', '希尔瓦娜斯为自由亡灵夺取洛丹伦。被遗忘者完成地下城市的建造，把它作为统治中心。'))
+    ],
+    storylines: [S('uc-power', L('Who holds the old capital', '谁掌握昔日王城'), ['uc-free', 'uc-hillsbrad']), S('uc-apothecary', L('The apothecaries’ reach', '药剂师的人脉'), ['uc-allies'])],
+    figureIds: ['sylvanas', 'faranell', 'varimathras', 'arthas', 'magatha', 'darthalia'], factionIds: ['forsaken', 'royal-apothecary', 'horde'],
+    places: [
+      { id: 'lordaeron-throne', name: L('Ruins of Lordaeron', '洛丹伦废墟'), text: L('The courtyard and throne room stand above the entrance to the underground capital.', '庭院和王座厅就在地下都城入口的上方。') },
+      { id: 'royal-quarter', name: L('Royal Quarter', '皇家区'), text: L('Sylvanas and Varimathras direct the Forsaken from these chambers.', '希尔瓦娜斯与瓦里玛萨斯在这些厅室里指挥被遗忘者。') },
+      { id: 'apothecarium', name: L('The Apothecarium', '炼金房'), text: L('Master Apothecary Faranell and the Society work in this wing of the city.', '大药剂师法拉尼尔和协会成员在这个城区工作。') }
+    ],
+    relatedZoneIds: [1420, 1421, 1424, 1422], sagaIds: [], sourceIds: ['uc-classic', 'uc-report', 'uc-allies', 'manual', 'arthas-history', 'hi-fields', 'ti-plague']
+  });
 
   const sagas = {
     defias: {
@@ -554,7 +984,7 @@
       relatedSagaIds: ['gnomeregan'], sourceIds: ['defias', 'trail', 'elwynn-collector', 'letter', 'curious-visitor', 'shadow-past', 'attack', 'court-audience', 'court-reveal'],
       conclusion: L('VanCleef’s ship stays in its cavern, the Stockade riot ends, and the men meeting in the garden are dead. The account finally reaches the same court where the trouble began. Out in Westfall, the farmers and the militia still have fields and roads to reclaim.', '范克里夫的战船留在洞穴里，监狱暴动平息，在花园碰头的人也已身亡。事情终于呈报到当初引发纠纷的宫廷。西部荒野的农民和民兵仍有农田与道路等着收复。')
     },
-    'three-hammers': { id: 'three-hammers', name: L('The Three Hammers & the Dark Iron threat', '三锤之战与黑铁威胁'), complete: true, summary: L('A succession dispute divides the dwarves, a desperate summoning scars the land, and an old feud finds new tunnels into Ironforge.', '王位之争使矮人分裂，绝望中的一次召唤在大地上留下伤痕。昔日宿敌如今又从地下通道进入铁炉堡。'), introduction: L('Begin with a kingdom that already contains three rival centers of power. The first war decides who holds Ironforge; the second changes the geography of the Eastern Kingdoms. Forever’s local raid on the ancestral vaults is a new episode in that inherited landscape, not the event that created it.', '故事始于一个早已有三股势力角力的王国。第一场战争决定谁统治铁炉堡，第二场改变了东部王国的地貌。无限服中对先祖密室的袭击，发生在那两场战争早已塑造的局势之下，是这段历史的新篇章。'), history: [H(L('Centuries ago · succession', '数百年前 · 王位继承'), L('Ironforge breaks apart', '铁炉堡分裂'), L('Modimus dies. The Bronzebeards win the capital, and the other clans leave.', '莫迪姆斯去世，铜须氏族赢得都城，其余两个氏族离开。')), H(L('The renewed war', '战火再起'), L('Two failed invasions', '两次失败的入侵'), L('Thaurissan attacks Ironforge and Modgud attacks Grim Batol. The defenders counterattack together.', '索瑞森进攻铁炉堡，莫德古德进攻格瑞姆巴托。守军联手反攻。')), H(L('The catastrophe', '灾变'), L('Fire reshapes the south', '大火重塑南方'), L('Ragnaros’s arrival destroys Thaurissan’s city and subjugates the survivors.', '拉格纳罗斯现身，摧毁索瑞森的城市，奴役幸存者。')), H(L('Classic / Forever present', '经典旧世及无限服时期'), L('An inherited threat', '延续至今的威胁'), L('The rival powers endure. Forever adds Farsen’s warning and the Hall of Thanes incursion.', '敌对势力仍然存在。无限服新增了法森发出警告和领主大厅遭到入侵的情节。'))], beatIds: ['hammers-succession', 'hammers-exile', 'hammers-invasion', 'hammers-fire', 'hammers-aftermath', 'dm-farsen', 'dm-vaults'], zoneIds: [1455, 1426, 1437, 1427, 1428, 1433], figureIds: ['modimus', 'madoran', 'khardros', 'thaurissan', 'modgud', 'ragnaros', 'dagran', 'magni', 'farsen'], relatedSagaIds: ['gnomeregan'], sourceIds: ['history', 'clans', 'farsen', 'incursion', 'thanes'], conclusion: L('The old war ends in separation and catastrophe. In the present, Magni’s response secures the breached vaults; it does not end the greater conflict with Shadowforge or Ragnaros. The treaty recovered from the dungeon is presented as an artifact, with its unstated meaning left open.', '昔日的战争以各族分离和一场灾难告终。如今麦格尼重新守住被攻破的密室，与暗炉城和拉格纳罗斯的更大冲突却仍在继续。从地下城取回的条约是一件历史遗物，文本没有说明的含义仍有待考证。') },
+    'three-hammers': { id: 'three-hammers', name: L('The Three Hammers & the Dark Iron threat', '三锤之战与黑铁威胁'), complete: true, summary: L('A succession dispute divides the dwarves, a desperate summoning scars the land, and an old feud finds new tunnels into Ironforge.', '王位之争使矮人分裂，绝望中的一次召唤在大地上留下伤痕。昔日宿敌如今又从地下通道进入铁炉堡。'), introduction: L('Begin with a kingdom that already contains three rival centers of power. The first war decides who holds Ironforge; the second changes the geography of the Eastern Kingdoms. Forever’s local raid on the ancestral vaults is a new episode in that inherited landscape, not the event that created it.', '故事始于一个早已有三股势力角力的王国。第一场战争决定谁统治铁炉堡，第二场改变了东部王国的地貌。无限服中对先祖密室的袭击，发生在那两场战争早已塑造的局势之下，是这段历史的新篇章。'), history: [H(L('Centuries ago · succession', '数百年前 · 王位继承'), L('Ironforge breaks apart', '铁炉堡分裂'), L('Modimus dies. The Bronzebeards win the capital, and the other clans leave.', '莫迪姆斯去世，铜须氏族赢得都城，其余两个氏族离开。')), H(L('The renewed war', '战火再起'), L('Two failed invasions', '两次失败的入侵'), L('Thaurissan attacks Ironforge and Modgud attacks Grim Batol. The defenders counterattack together.', '索瑞森进攻铁炉堡，莫德古德进攻格瑞姆巴托。守军联手反攻。')), H(L('The catastrophe', '灾变'), L('Fire reshapes the south', '大火重塑南方'), L('Ragnaros’s arrival destroys Thaurissan’s city and subjugates the survivors.', '拉格纳罗斯现身，摧毁索瑞森的城市，奴役幸存者。')), H(L('Classic / Forever present', '经典旧世及无限服时期'), L('An inherited threat', '延续至今的威胁'), L('The rival powers endure. Forever adds Farsen’s warning and the Hall of Thanes incursion.', '敌对势力仍然存在。无限服新增了法森发出警告和领主大厅遭到入侵的情节。'))], beatIds: ['hammers-succession', 'hammers-exile', 'hammers-invasion', 'hammers-fire', 'hammers-aftermath', 'dm-farsen', 'dm-vaults'], zoneIds: [1455, 1426, 1437, 1427, 1428, 1433, 1425], figureIds: ['modimus', 'madoran', 'khardros', 'thaurissan', 'modgud', 'ragnaros', 'dagran', 'magni', 'farsen'], relatedSagaIds: ['gnomeregan'], sourceIds: ['history', 'clans', 'farsen', 'incursion', 'thanes'], conclusion: L('The old war ends in separation and catastrophe. In the present, Magni’s response secures the breached vaults; it does not end the greater conflict with Shadowforge or Ragnaros. The treaty recovered from the dungeon is presented as an artifact, with its unstated meaning left open.', '昔日的战争以各族分离和一场灾难告终。如今麦格尼重新守住被攻破的密室，与暗炉城和拉格纳罗斯的更大冲突却仍在继续。从地下城取回的条约是一件历史遗物，文本没有说明的含义仍有待考证。') },
     gnomeregan: {
       id: 'gnomeregan', name: L('The fall of Gnomeregan', '诺莫瑞根的陷落'), complete: true,
       summary: L('Troggs break into a city under Dun Morogh. The gnomes lose their home and try to save the tools and knowledge they need to return.', '穴居人闯进丹莫罗地下的城市。失去故乡的侏儒设法保住返回家园所需的工具与知识。'),
@@ -589,31 +1019,31 @@
   // One line per zone for the continent map's hover card. Levels only where no zone entry gives them.
   const Z = (levels, en, zh) => ({ levels: levels && (levels === 'city' ? L('Capital city', '主城') : L(levels, levels)), tagline: L(en, zh) });
   const briefs = {
-    1416: Z('30–40', 'Snowbound ruins of a traitor king’s realm, now held by ogres and the Syndicate.', '叛国之王领地的雪中废墟，如今被食人魔和辛迪加占据。'),
-    1417: Z('30–40', 'Stromgarde’s broken hills, the cradle of the first human kingdom.', '激流堡残破的丘陵，人类第一个王国的摇篮。'),
-    1418: Z('35–45', 'A sun-scorched waste of canyons, dragons and the ruins of Uldaman.', '烈日炙烤的峡谷荒原，有巨龙和奥达曼遗迹。'),
-    1419: Z('45–55', 'Scarred land around the Dark Portal, where the orcs first came through.', '黑暗之门周围的焦土，兽人最初由此进入艾泽拉斯。'),
-    1420: Z('1–10', 'Lordaeron’s haunted heartland, home of the Forsaken and the Scarlet Crusade.', '洛丹伦闹鬼的腹地，被遗忘者与血色十字军的据点。'),
-    1421: Z('10–20', 'Misty pine woods below the Greymane Wall, stalked by worgen.', '格雷迈恩之墙下雾气笼罩的松林，狼人在此出没。'),
-    1422: Z('51–58', 'Lordaeron’s farmland rotted by the plague, with Scholomance at its heart.', '被瘟疫腐蚀的洛丹伦农田，通灵学院位于其中。'),
-    1423: Z('53–60', 'The Scourge’s heartland, where Stratholme burned and the Argent Dawn holds on.', '天灾军团的腹地，斯坦索姆在此焚毁，银色黎明仍在坚守。'),
-    1424: Z('20–30', 'Farms and orchards where Southshore faces the Forsaken of Tarren Mill.', '农田与果园之间，南海镇与塔伦米尔的被遗忘者对峙。'),
-    1425: Z('40–50', 'Wild highlands of the Wildhammer dwarves and the Vilebranch trolls.', '蛮锤矮人与邪枝巨魔栖居的荒野高地。'),
+    1416: Z('', 'Snowbound ruins of a traitor king’s realm, now held by ogres and the Syndicate.', '叛国之王领地的雪中废墟，如今被食人魔和辛迪加占据。'),
+    1417: Z('', 'Stromgarde’s broken hills, the cradle of the first human kingdom.', '激流堡残破的丘陵，人类第一个王国的摇篮。'),
+    1418: Z('', 'A sun-scorched waste of canyons, dragons and the ruins of Uldaman.', '烈日炙烤的峡谷荒原，有巨龙和奥达曼遗迹。'),
+    1419: Z('', 'Scarred land around the Dark Portal, where the orcs first came through.', '黑暗之门周围的焦土，兽人最初由此进入艾泽拉斯。'),
+    1420: Z('', 'Lordaeron’s haunted heartland, home of the Forsaken and the Scarlet Crusade.', '洛丹伦闹鬼的腹地，被遗忘者与血色十字军的据点。'),
+    1421: Z('', 'Misty pine woods below the Greymane Wall, stalked by worgen.', '格雷迈恩之墙下雾气笼罩的松林，狼人在此出没。'),
+    1422: Z('', 'Lordaeron’s farmland rotted by the plague, with Scholomance at its heart.', '被瘟疫腐蚀的洛丹伦农田，通灵学院位于其中。'),
+    1423: Z('', 'The Scourge’s heartland, where Stratholme burned and the Argent Dawn holds on.', '天灾军团的腹地，斯坦索姆在此焚毁，银色黎明仍在坚守。'),
+    1424: Z('', 'Farms and orchards where Southshore faces the Forsaken of Tarren Mill.', '农田与果园之间，南海镇与塔伦米尔的被遗忘者对峙。'),
+    1425: Z('', 'Wild highlands of the Wildhammer dwarves and the Vilebranch trolls.', '蛮锤矮人与邪枝巨魔栖居的荒野高地。'),
     1426: Z('', 'Snowy home of the dwarves, and of the gnomes who lost Gnomeregan.', '矮人的雪原故乡，也是失去诺莫瑞根的侏儒的栖身之地。'),
     1427: Z('', 'Dark Iron mines and slag pits at the foot of Blackrock Mountain.', '黑石山脚下的黑铁矮人矿坑与熔渣池。'),
     1428: Z('', 'Ashen plains below Blackrock Spire, ruled by dragons and orcs.', '黑石塔下的灰烬平原，由黑龙和兽人统治。'),
     1429: Z('', 'Stormwind’s woods and farms, troubled by kobolds and Defias thieves.', '暴风城的林地与农田，狗头人和迪菲亚盗贼时常侵扰。'),
-    1430: Z('55–60', 'A dead valley around Karazhan, Medivh’s abandoned tower.', '卡拉赞周围死寂的山谷，麦迪文的高塔早已荒废。'),
+    1430: Z('', 'A dead valley around Karazhan, Medivh’s abandoned tower.', '卡拉赞周围死寂的山谷，麦迪文的高塔早已荒废。'),
     1431: Z('', 'A forest in permanent night, where Darkshire’s Night Watch guards the road.', '永夜笼罩的森林，夜色镇的守夜人守护着道路。'),
     1432: Z('', 'A dwarven valley of hills and roads below the Stonewrought Dam.', '石坝之下丘陵起伏、道路纵横的矮人山谷。'),
     1433: Z('', 'Lakeshire’s red hills, where Blackrock orcs still raid the farms.', '湖畔镇的红色山岭，黑石兽人仍在袭扰农庄。'),
-    1434: Z('30–45', 'Jungle of trolls, pirates and hunters, from Zul’Gurub to Booty Bay.', '巨魔、海盗与猎人的丛林，从祖尔格拉布延伸到藏宝海湾。'),
-    1435: Z('35–45', 'Mist over the sunken Temple of Atal’Hakkar.', '雾气笼罩着沉没的阿塔哈卡神庙。'),
+    1434: Z('', 'Jungle of trolls, pirates and hunters, from Zul’Gurub to Booty Bay.', '巨魔、海盗与猎人的丛林，从祖尔格拉布延伸到藏宝海湾。'),
+    1435: Z('', 'Mist over the sunken Temple of Atal’Hakkar.', '雾气笼罩着沉没的阿塔哈卡神庙。'),
     1436: Z('', 'Abandoned farms overrun by the Defias Brotherhood.', '被迪菲亚兄弟会占据的荒废农田。'),
     1437: Z('', 'Marshes between Menethil Harbor and the dwarven roads, with Dragonmaw camps.', '米奈希尔港与矮人道路之间的沼泽，龙喉兽人在此扎营。'),
     1453: Z('', 'The rebuilt human capital, with its king missing and its Stockade full.', '重建后的人类王都，国王下落不明，监狱人满为患。'),
     1455: Z('', 'The dwarven city carved around a great forge.', '环绕巨大熔炉开凿而成的矮人城市。'),
-    1458: Z('city', 'The Forsaken capital, beneath the ruins of Lordaeron.', '洛丹伦废墟之下的被遗忘者都城。'),
+    1458: Z('', 'The Forsaken capital, beneath the ruins of Lordaeron.', '洛丹伦废墟之下的被遗忘者都城。'),
     1411: Z('1–10', 'The orcs’ red, rocky homeland, named for Thrall’s father.', '兽人红色多岩的家园，以萨尔之父的名字命名。'),
     1412: Z('1–10', 'Grassy plains of the tauren below Thunder Bluff.', '雷霆崖下牛头人的草原。'),
     1413: Z('10–25', 'Savanna of the Horde’s roads, from the Crossroads to Ratchet.', '部落道路贯穿的草原，从十字路口通往棘齿城。'),
@@ -642,6 +1072,9 @@
 
 // Re-cut from the original primer; personal references and later-era assumptions removed.
 Object.assign(WORLD.glossary, {
+  'horde': { id: 'horde', name: { en: 'Horde', zh: '部落' }, text: { en: 'Thrall’s alliance of orcs, Darkspear trolls, tauren and Forsaken in the Classic era.', zh: '经典旧世时期由萨尔领导的联盟，成员包括兽人、暗矛巨魔、牛头人和被遗忘者。' } },
+  'syndicate': { id: 'syndicate', name: { en: 'Syndicate', zh: '辛迪加' }, text: { en: 'A network led by nobles of fallen Alterac. Its agents operate in the mountains and in neighboring human lands.', zh: '由奥特兰克亡国贵族领导的组织，成员在山中和周边的人类领地活动。' } },
+
   "titans": {
     "id": "titans",
     "name": {
