@@ -120,7 +120,8 @@ end
 local questFields = {"name", "questLevel", "requiredLevel", "requiredRaces", "requiredClasses",
     "zoneOrSort", "preQuestSingle", "preQuestGroup", "nextQuestInChain", "exclusiveTo",
     "breadcrumbForQuestId", "breadcrumbs", "parentQuest", "childQuests", "questFlags", "startedBy",
-    "finishedBy", "objectives", "requiredSourceItems", "triggerEnd", "extraObjectives", "reputationReward"}
+    "finishedBy", "objectives", "requiredSourceItems", "triggerEnd", "extraObjectives", "reputationReward",
+    "requiredSkill", "specialFlags"}
 
 local function readFields(entity, id, fields)
     local values = entity.GetAll(id, fields)
@@ -256,4 +257,8 @@ end
 
 io.write(json({version = header.Version, profile = persona, quests = quests, npcs = npcs,
     objects = objects, items = items, rewardItemIds = rewards, npcRanks = db.Enum.npcRanks,
+    classKeys = db.Enum.classKeys, professionKeys = db.Enum.professionKeys,
+    campingSort = db.Enum.sortKeys.CAMPING,
+    periodicQuestFlags = db.Enum.questFlags.DAILY + db.Enum.questFlags.WEEKLY + db.Enum.questFlags.MONTHLY,
+    repeatableSpecialFlag = db.Enum.specialFlags.REPEATABLE,
     partyAcceptFlag = db.Enum.questFlags.PARTY_ACCEPT, raidFlag = db.Enum.questFlags.RAID}), "\n")

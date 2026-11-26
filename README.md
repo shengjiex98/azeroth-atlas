@@ -68,21 +68,31 @@ The first run downloads QuestieDB v1.1.6 Forever and its matching emulator into
 `tools/.cache/`. Later runs use that cache. The table goes to stdout. For a
 saved `RSJ1.` summary, pass its file to `--journey`. Summaries contain completed
 quests. SavedVariables also include the active quest log. Touched chains sort
-first, and progress counts unique completed quest IDs out of all IDs in the
-chain, including alternatives.
+first. Any completed variant finishes its step, and progress counts finished
+steps out of all steps in the chain.
+
+Repeatable and periodic quests are excluded. Links stay within the same class
+mask and profession. Class and profession candidates are labeled in the table.
+A prerequisite list of three or more alternatives becomes an entry note in JSON.
+Starter-zone prerequisites for Camping also become entry notes, so Camping
+variants leave the starter chains separate.
 
 The score gives three points per step, one per UiMap (up to ten), and three
 per continent beyond the first. Elite, rare-elite and boss objective NPCs earn
-one, two and three points respectively (up to ten combined). Objectives with
-a known instance location earn two points each, and raid-flagged quests earn
-one each (up to ten combined). Ties use the first quest ID. The JSON includes
-party-accept flags, reward item IDs, prerequisite alternatives and optional
-breadcrumbs. QuestieDB supplies no reward item quality or group-size field.
+one, two and three points respectively (up to ten combined). It counts distinct
+kill targets and counts item droppers only when there are at most three and
+their spawns belong to the representative cluster. Steps with an instance
+objective earn two points, and raid-flagged steps earn one (up to ten combined).
+Ties use the first quest ID.
 
+Only representative points contribute maps, continents and instance locations.
 Points use Forever UiMaps and integer coordinates from 0 to 1000. The tool
 chooses the map with the most spawns, then the centroid of the largest cluster
 formed by spawns within five percentage points of each other. An instance
 entrance can stand in for an unmappable interior marker and is labeled in JSON.
+The JSON also includes party-accept flags, reward item IDs, prerequisite
+alternatives and optional breadcrumbs. QuestieDB supplies no reward item
+quality or group-size field.
 
 ## Repository layout
 

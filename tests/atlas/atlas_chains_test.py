@@ -14,6 +14,8 @@ def quest(quest_id, **fields):
 def profile(quests, **data):
     return {"profile": "Alliance", "quests": quests, "npcs": {}, "objects": {}, "items": {},
             "npcRanks": {"ELITE": 1, "RARE_ELITE": 2, "BOSS": 3}, "partyAcceptFlag": 2, "raidFlag": 64,
+            "periodicQuestFlags": 4096 | 32768 | 65536, "repeatableSpecialFlag": 1, "campingSort": -666,
+            "classKeys": {"WARRIOR": 1, "PALADIN": 2}, "professionKeys": {"BLACKSMITHING": 164, "ALCHEMY": 171},
             **data}
 
 
@@ -40,17 +42,68 @@ class AtlasChainsTest(unittest.TestCase):
         self.assertEqual([row["id"] for row in first["quests"]], [1, 2])
         self.assertEqual(last["requires"], [1])
 
-    def test_structurally_matching_faction_and_class_variants(self):
-        for restriction in ({"faction": "Alliance"}, {"requiredClasses": 1}):
-            with self.subTest(restriction=restriction):
-                other = {"faction": "Horde"} if "faction" in restriction else {"requiredClasses": 2}
-                name = {"enUS": "Parallel step"}
-                quests = [quest(1, name=name, **restriction), quest(2, name=name, **other),
-                          quest(3, preQuestSingle=[1, 2])]
-                chain, = rank_chains([profile(quests)], {})
-                self.assertEqual(chain["signals"]["questCount"], 3)
-                self.assertEqual(chain["signals"]["stepCount"], 2)
-                self.assertEqual(chain["signals"]["faction"], "Both")
+    def test_structurally_matching_faction_variants_share_a_step(self):
+        name = {"enUS": "Parallel step"}
+        quests = [quest(1, name=name, faction="Alliance"), quest(2, name=name, faction="Horde"),
+                  quest(3, preQuestSingle=[1, 2])]
+        chain, = rank_chains([profile(quests)], {})
+        self.assertEqual(chain["signals"]["questCount"], 3)
+        self.assertEqual(chain["signals"]["stepCount"], 2)
+        self.assertEqual(chain["signals"]["faction"], "Both")
+
+    def test_any_of_gate_is_an_entry_note_and_keeps_components_separate(self):
+        quests = [quest(1, nextQuestInChain=2), quest(2, nextQuestInChain=10),
+                  quest(3, nextQuestInChain=4), quest(4, childQuests=[10]),
+                  quest(5, nextQuestInChain=6), quest(6, breadcrumbForQuestId=10),
+                  quest(10, preQuestSingle=[2, 4, 6], exclusiveTo=[2], nextQuestInChain=11), quest(11)]
+        chains = rank_chains([profile(quests)], {})
+        self.assertEqual([c["firstQuest"]["id"] for c in chains], [1, 3, 5, 10])
+        entry = chains[-1]["steps"][0]
+        self.assertEqual(entry["entryRequiresAny"], [2, 4, 6])
+        self.assertEqual(entry["after"], [])
+        self.assertEqual(entry["requiresAny"], [])
+        self.assertEqual(chains[-1]["steps"][1]["requires"], [10])
+
+    def test_class_and_profession_quests_link_only_with_same_restriction(self):
+        quests = [
+            quest(1, nextQuestInChain=2), quest(2, childQuests=[10, 20]),
+            quest(10, requiredClasses=1, preQuestSingle=[2], nextQuestInChain=11, exclusiveTo=[12]),
+            quest(11, requiredClasses=1, nextQuestInChain=13),
+            quest(12, requiredClasses=2, nextQuestInChain=13),
+            quest(13, requiredClasses=2),
+            quest(20, requiredSkill=[164, 1], nextQuestInChain=21),
+            quest(21, requiredSkill=[164, 100], nextQuestInChain=22),
+            quest(22, requiredSkill=[171, 100], nextQuestInChain=23),
+            quest(23, requiredSkill=[171, 225]),
+        ]
+        chains = rank_chains([profile(quests)], {})
+        self.assertEqual([(c["firstQuest"]["id"], c["signals"]["restrictions"]) for c in chains],
+                         [(1, []), (10, ["Warrior (class)"]), (12, ["Paladin (class)"]),
+                          (20, ["Blacksmithing (profession)"]), (22, ["Alchemy (profession)"])])
+        self.assertTrue(all(c["signals"]["questCount"] == 2 for c in chains))
+        self.assertIn("Warrior (class)", list(markdown(chains))[3])
+
+    def test_camping_variants_do_not_merge_starter_zones(self):
+        quests = [quest(1, nextQuestInChain=2), quest(2, nextQuestInChain=10),
+                  quest(3, nextQuestInChain=4), quest(4, nextQuestInChain=11),
+                  quest(10, zoneOrSort=-666, preQuestSingle=[2], exclusiveTo=[11], nextQuestInChain=12),
+                  quest(11, zoneOrSort=-666, preQuestSingle=[4], nextQuestInChain=12),
+                  quest(12, zoneOrSort=-666, preQuestSingle=[10, 11])]
+        chains = rank_chains([profile(quests)], {})
+        self.assertEqual([c["firstQuest"]["id"] for c in chains], [1, 3, 10])
+        camping = chains[-1]["steps"][0]
+        self.assertEqual([q["entryRequiresAny"] for q in camping["quests"]], [[2], [4]])
+
+    def test_repeatable_and_periodic_quests_are_removed_before_grouping(self):
+        quests = [quest(1, nextQuestInChain=2), quest(2, nextQuestInChain=3),
+                  quest(3, specialFlags=1, nextQuestInChain=4),
+                  quest(4, nextQuestInChain=5), quest(5, nextQuestInChain=6),
+                  quest(6, questFlags=4096, nextQuestInChain=7),
+                  quest(7, questFlags=32768, nextQuestInChain=8),
+                  quest(8, questFlags=65536, nextQuestInChain=9),
+                  quest(9, questFlags=2, nextQuestInChain=10), quest(10)]
+        chains = rank_chains([profile(quests)], {})
+        self.assertEqual([[s["id"] for s in c["steps"]] for c in chains], [[1, 2], [4, 5], [9, 10]])
 
     def test_all_prerequisites_in_group_join(self):
         quests = [quest(1), quest(2), quest(3, preQuestGroup=[1, -2]),
@@ -82,30 +135,66 @@ class AtlasChainsTest(unittest.TestCase):
                          [(1, []), (2, [1]), (3, [2])])
         self.assertEqual(chain["edgeConflicts"], [{"from": 3, "to": 1, "kind": "next"}])
 
-    def test_signals_and_cluster_center_from_all_spawn_maps(self):
+    def test_map_and_instance_signals_use_only_representative_points(self):
         quests = [quest(1, startedBy={"1": [10]}, questLevel=6, questFlags=2),
-                  quest(2, preQuestSingle=[1], questLevel=20, questFlags=64,
-                        finishedBy={"2": [20]}, objectives={"1": [{"1": 12, "3": 0}], "3": [[30]]})]
+                  quest(2, preQuestSingle=[1], questLevel=20, questFlags=64, dungeon="Quest zone",
+                        finishedBy={"2": [20]}, objectives={"1": [{"1": 12, "3": 0}, [13]], "3": [[30]]})]
         npcs = {
-            "10": {"rank": 1, "spawns": [{"uiMap": 11, "points": [[9, 9]]}]},
+            "10": {"rank": 1, "spawns": [{"uiMap": 11, "points": [[9, 9], [10, 10]]},
+                                         {"uiMap": 14, "points": [[2, 2]]}]},
             "11": {"rank": 2, "spawns": [{"uiMap": 12, "points": [[10, 10], [12, 10], [40, 40]]},
-                                          {"uiMap": 13, "points": [[80, 80]]}]},
+                                         {"uiMap": 14, "points": [[80, 80]], "dungeon": "Unused dungeon"}]},
             "12": {"rank": 3, "spawns": [{"uiMap": 222, "points": [[-1, -1]], "dungeon": "Dungeon",
-                                          "entrances": [[11, 45, 51]]}]},
+                                         "entrances": [[11, 45, 51], [14, 90, 60]]}]},
         }
-        objects = {"20": {"spawns": [{"uiMap": 13, "points": [[75, 75]]}]}}
+        objects = {"20": {"spawns": [{"uiMap": 13, "points": [[75, 75], [76, 75]]},
+                                      {"uiMap": 14, "points": [[12, 13]]}]}}
         items = {"30": {"itemDrops": [31]}, "31": {"npcDrops": [11, 12], "itemDrops": [30]}}
         data = profile(quests, npcs=npcs, objects=objects, items=items)
-        chain, = rank_chains([data], {11: 1414, 12: 1415, 13: 1415})
+        chain, = rank_chains([data], {11: 1415, 12: 1415, 13: 1415, 14: 1414})
         self.assertEqual(chain["signals"], {
-            "questCount": 2, "stepCount": 2, "faction": "Both", "levelSpan": [6, 20],
-            "maps": [11, 12, 13], "continents": [1414, 1415], "elite": 0, "rareElite": 1, "boss": 1,
-            "dungeons": ["Dungeon"], "dungeonObjectives": 2, "partyAcceptQuests": 1, "raidQuests": 1,
+            "questCount": 2, "stepCount": 2, "faction": "Both", "restrictions": [], "levelSpan": [6, 20],
+            "maps": [11, 12, 13], "continents": [1415], "elite": 0, "rareElite": 1, "boss": 1,
+            "dungeons": ["Dungeon"], "dungeonObjectives": 1, "dungeonSteps": 1,
+            "partyAcceptSteps": 1, "raidSteps": 1,
         })
-        npc, item = chain["steps"][1]["quests"][0]["objectives"]
-        self.assertEqual(npc["point"], {"uiMap": 11, "x": 450, "y": 510, "entrance": True})
+        npc, unknown, item = chain["steps"][1]["quests"][0]["objectives"]
+        self.assertEqual(npc["point"], {"uiMap": 11, "x": 450, "y": 510, "entrance": True, "dungeon": "Dungeon"})
+        self.assertIsNone(unknown["point"])
         self.assertEqual(item["point"], {"uiMap": 12, "x": 110, "y": 100})
-        self.assertEqual(item["maps"], [11, 12, 13])
+        self.assertEqual(item["maps"], [12])
+
+    def test_item_dropper_cap_cluster_membership_and_distinct_kills(self):
+        quests = [quest(1, nextQuestInChain=2, objectives={"1": [[6], [6]], "3": [[31]]}),
+                  quest(2, objectives={"3": [[30], [31]]})]
+        npcs = {
+            str(i): {"rank": 3 if i in {5, 6} else 1,
+                     "spawns": [{"uiMap": 12, "points": [[10, 10], [11, 11]] if i == 1 else [[20 * i, 50]]}]}
+            for i in range(1, 6)
+        }
+        npcs["6"] = {"rank": 3}
+        items = {"30": {"npcDrops": [2, 3, 4, 5]}, "31": {"npcDrops": [1, 2, 5]}}
+        chain, = rank_chains([profile(quests, npcs=npcs, items=items)], {})
+        self.assertEqual(chain["signals"]["elite"], 1)
+        self.assertEqual(chain["signals"]["boss"], 1)
+        common, named = chain["steps"][1]["quests"][0]["objectives"]
+        self.assertEqual(common["clusterDropperIds"], [])
+        self.assertEqual(named["clusterDropperIds"], [1])
+
+    def test_variants_do_not_increase_score_or_prevent_full_progress(self):
+        npc = {"rank": 0, "spawns": [{"uiMap": 12, "points": [[50, 50]], "dungeon": "Dungeon"}]}
+        first = quest(1, nextQuestInChain=3, questFlags=64, objectives={"1": [[10]]})
+        last = quest(3)
+        variant = quest(2, exclusiveTo=[1], nextQuestInChain=3, questFlags=64, objectives={"1": [[10]]})
+        single, = rank_chains([profile([first, last], npcs={"10": npc})], {})
+        chain, = rank_chains([profile([first, variant, last], npcs={"10": npc})], {}, ({2, 3}, {1}))
+        self.assertEqual(chain["score"], single["score"])
+        self.assertEqual(chain["signals"]["dungeonSteps"], 1)
+        self.assertEqual(chain["signals"]["raidSteps"], 1)
+        self.assertEqual(chain["signals"]["questCount"], 3)
+        self.assertEqual(chain["done"], 2)
+        self.assertEqual(chain["inLog"], 0)
+        self.assertIn("| Yes | 2/2 |", list(markdown([chain], journey=True))[-1])
 
     def test_ranking_uses_score_and_touched_quests_first(self):
         quests = [quest(1, nextQuestInChain=2), quest(2), quest(10, nextQuestInChain=11),

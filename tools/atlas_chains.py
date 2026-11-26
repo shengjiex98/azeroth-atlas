@@ -122,12 +122,48 @@ def connects(successors, start, end):
     return False
 
 
+def restriction(quest):
+    return quest.get("requiredClasses", 0), slot(quest.get("requiredSkill") or [], 1, 0)
+
+
+def restriction_labels(quest, profile):
+    classes, skill = restriction(quest)
+    labels = []
+    if classes:
+        names = [key.replace("_", " ").title() for key, mask in profile["classKeys"].items()
+                 if mask > 0 and mask.bit_count() == 1 and classes & mask]
+        labels.append(f"{'/'.join(sorted(names)) or classes} (class)")
+    if skill:
+        skills = {value: key.replace("_", " ").title() for key, value in profile["professionKeys"].items()}
+        labels.append(f"{skills.get(skill, skill)} (profession)")
+    return labels
+
+
 def quest_graph(quests):
     links = defaultdict(set)
-    available = {qid: {profile["profile"] for profile, _ in choices} for qid, choices in quests.items()}
+    # The Adventurer has one Camping variant per starter zone. An entry from a
+    # starter zone unlocks Camping without making the starter arcs one component.
+    available = {qid: {profile["profile"]: (*restriction(quest), quest.get("zoneOrSort") == profile["campingSort"])
+                       for profile, quest in choices} for qid, choices in quests.items()}
+
+    def group(qid, faction):
+        return available.get(qid, {}).get(faction)
+
+    entries = {}
+    for qid, choices in quests.items():
+        for profile, quest in choices:
+            faction = profile["profile"]
+            prerequisites = quest.get("preQuestSingle") or []
+            if len(prerequisites) >= 3:
+                entries[qid, faction] = sorted(set(prerequisites))
+            elif group(qid, faction)[-1]:
+                entries[qid, faction] = sorted({source for source in prerequisites
+                                               if (source_group := group(source, faction)) and not source_group[-1]})
 
     def add(source, target, kind, faction):
-        if faction in available.get(source, ()) and faction in available.get(target, ()):
+        source_group = group(source, faction)
+        if (source_group is not None and source_group == group(target, faction)
+                and source not in entries.get((target, faction), ())):
             links[source, target, kind].add(faction)
 
     for quest_id, profiles in quests.items():
@@ -180,9 +216,12 @@ def quest_graph(quests):
             step_for[quest_id] = first
 
     for quest_id, profiles in sorted(quests.items()):
-        for _, row in profiles:
+        for profile, row in profiles:
+            faction = profile["profile"]
             for other in row.get("exclusiveTo") or []:
-                if other in quests:
+                if (group(quest_id, faction) in available.get(other, {}).values()
+                        and other not in entries.get((quest_id, faction), ())
+                        and quest_id not in entries.get((other, faction), ())):
                     merge(quest_id, other, "exclusiveTo")
 
     signatures = defaultdict(set)
@@ -196,16 +235,14 @@ def quest_graph(quests):
         name = row.get("name", {}).get("enUS", "").casefold()
         if not name or not signatures[quest_id]:
             continue
-        # A parallel faction or class branch may have different IDs at every step.
+        # Parallel faction branches may have different IDs at every step.
         neighbors = frozenset((direction, kind, quests[neighbor][0][1].get("name", {}).get("enUS"),
                                quests[neighbor][0][1].get("questLevel"))
                               for direction, kind, neighbor in signatures[quest_id])
-        key = (name, row.get("questLevel"), neighbors)
+        key = (name, row.get("questLevel"), group(quest_id, profiles[0][0]["profile"]), neighbors)
         for other in variants[key]:
             candidate = quests[other][0][1]
-            faction_variant = {row["faction"], candidate["faction"]} == set(FACTIONS)
-            classes = row.get("requiredClasses", 0), candidate.get("requiredClasses", 0)
-            if faction_variant or (all(classes) and not classes[0] & classes[1]):
+            if {row["faction"], candidate["faction"]} == set(FACTIONS):
                 merge(quest_id, other, "variant")
         variants[key].append(quest_id)
 
@@ -264,13 +301,14 @@ def quest_graph(quests):
                     requirements[faction] = {"requires": sorted(mandatory),
                                              "requiresAny": any_of if len(any_of) > 1 else [],
                                              "requiresActive": sorted(links_to["active"]),
-                                             "optionalPredecessors": sorted(links_to["breadcrumb"])}
+                                             "optionalPredecessors": sorted(links_to["breadcrumb"]),
+                                             "entryRequiresAny": entries.get((quest_id, faction), [])}
                 options.append((quest_id, requirements))
             paths = [path for _, requirements in options for path in requirements.values()]
             common = {field: sorted(set.intersection(*(set(path[field]) for path in paths)))
                       for field in ("requires", "requiresActive", "optionalPredecessors")}
-            common["requiresAny"] = paths[0]["requiresAny"] if all(p["requiresAny"] == paths[0]["requiresAny"]
-                                                                  for p in paths) else []
+            for field in ("requiresAny", "entryRequiresAny"):
+                common[field] = paths[0][field] if all(path[field] == paths[0][field] for path in paths) else []
             ordered.append({"id": step, **common, "after": sorted(required[step]), "quests": options})
         repairs = [{"from": source, "to": target, "kind": kind}
                    for source, target, kind in sorted(set(conflicts)) if step_for[source] in component]
@@ -292,48 +330,63 @@ def item_sources(item_id, items):
 
 
 def spawn_locations(rows):
-    points, entrances, dungeons = defaultdict(list), defaultdict(list), set()
-    for row in rows:
-        if row.get("dungeon"):
-            dungeons.add(row["dungeon"])
+    points = defaultdict(lambda: defaultdict(list))
+    entrances = defaultdict(lambda: defaultdict(list))
+    for source, row in rows:
+        origin = (source, row.get("dungeon"))
         ui = row.get("uiMap")
         if ui:
             for x, y, *_ in row["points"]:
                 if x is not None and y is not None and 0 <= x <= 100 and 0 <= y <= 100:
-                    points[ui].append((x, y))
+                    points[ui][x, y].append(origin)
         for ui, x, y in row.get("entrances", []):
-            if 0 <= x <= 100 and 0 <= y <= 100 and (x, y) not in entrances[ui]:
-                entrances[ui].append((x, y))
-    return points, entrances, dungeons
+            if 0 <= x <= 100 and 0 <= y <= 100:
+                entrances[ui][x, y].append(origin)
+    return points, entrances
 
 
-def representative(maps):
-    if maps:
-        ui = min(maps, key=lambda key: (-len(maps[key]), key))
-        weights = Counter(maps[ui])
-        cells = defaultdict(set)
-        for x, y in weights:
-            cells[x // 5, y // 5].add((x, y))
-        largest, size = [], 0
-        for start in sorted(weights):
-            cell = cells[start[0] // 5, start[1] // 5]
-            if start not in cell:
-                continue
-            cell.remove(start)
-            cluster = [start]
-            for x, y in cluster:
-                for dx in (-1, 0, 1):
-                    for dy in (-1, 0, 1):
-                        cell = cells[x // 5 + dx, y // 5 + dy]
-                        near = {p for p in cell if (x - p[0]) ** 2 + (y - p[1]) ** 2 <= 25}
-                        cluster.extend(sorted(near))
-                        cell.difference_update(near)
-            count = sum(weights[point] for point in cluster)
-            if count > size:
-                largest, size = cluster, count
-        x, y = (int(sum(point[axis] * weights[point] for point in largest) * 10 / size + 0.5)
-                for axis in range(2))
-        return {"uiMap": ui, "x": x, "y": y}
+def representative(maps, entrance=False):
+    if not maps:
+        return None, set()
+
+    def weights(points):
+        return {point: 1 if entrance else len(origins) for point, origins in points.items()}
+
+    ui = min(maps, key=lambda key: (-sum(weights(maps[key]).values()), key))
+    counts = weights(maps[ui])
+    cells = defaultdict(set)
+    for x, y in counts:
+        cells[x // 5, y // 5].add((x, y))
+    largest, size = [], 0
+    for start in sorted(counts):
+        cell = cells[start[0] // 5, start[1] // 5]
+        if start not in cell:
+            continue
+        cell.remove(start)
+        cluster = [start]
+        for x, y in cluster:
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    cell = cells[x // 5 + dx, y // 5 + dy]
+                    near = {p for p in cell if (x - p[0]) ** 2 + (y - p[1]) ** 2 <= 25}
+                    cluster.extend(sorted(near))
+                    cell.difference_update(near)
+        count = sum(counts[point] for point in cluster)
+        if count > size:
+            largest, size = cluster, count
+    x, y = (sum(point[axis] * counts[point] for point in largest) / size for axis in range(2))
+    pin = {"uiMap": ui, "x": int(x * 10 + 0.5), "y": int(y * 10 + 0.5)}
+    if entrance:
+        pin["entrance"] = True
+
+    # Classify the pin using the closest spawn in the winning cluster.
+    closest = min(largest, key=lambda point: ((x - point[0]) ** 2 + (y - point[1]) ** 2, point))
+    dungeons = Counter(dungeon or "" for _, dungeon in maps[ui][closest])
+    dungeon = min(dungeons, key=lambda name: (-dungeons[name], name))
+    if dungeon:
+        pin["dungeon"] = dungeon
+    sources = {source for point in largest for source, _ in maps[ui][point] if source}
+    return pin, sources
 
 
 def quest_locations(quest, profile):
@@ -346,24 +399,19 @@ def quest_locations(quest, profile):
             sources.update(item_sources(entity_id, profile["items"]))
         if kind in {"npc", "object"}:
             sources.add((kind, entity_id))
-        rows = list(extra)
-        known_dungeons = set()
-        for source_kind, source_id in sorted(sources):
-            source = entities[source_kind].get(str(source_id), {})
-            if not extra:
-                rows.extend(source.get("spawns") or [])
-            if source.get("dungeon") and not source.get("spawns"):
-                known_dungeons.add(source["dungeon"])
-        points, entrances, dungeons = spawn_locations(rows)
-        pin = representative(points)
-        if pin is None:
-            pin = representative(entrances)
-            if pin:
-                pin["entrance"] = True
-        return {"kind": kind, "id": entity_id, "name": entity.get("name", {}), "point": pin,
-                "maps": sorted(points.keys() | entrances.keys()),
-                "dungeons": sorted(dungeons | known_dungeons),
-                "sources": [{"kind": source_kind, "id": source_id} for source_kind, source_id in sorted(sources)]}
+        rows = ([(None, row) for row in extra] if extra else
+                [((kind, eid), row) for kind, eid in sorted(sources)
+                 for row in entities[kind].get(str(eid), {}).get("spawns") or []])
+        points, entrances = spawn_locations(rows)
+        pin, cluster_sources = representative(points) if points else representative(entrances, entrance=True)
+        row = {"kind": kind, "id": entity_id, "name": entity.get("name", {}), "point": pin,
+               "maps": [pin["uiMap"]] if pin else [],
+               "dungeons": [pin["dungeon"]] if pin and "dungeon" in pin else [],
+               "sources": [{"kind": kind, "id": eid} for kind, eid in sorted(sources)]}
+        if kind == "item":
+            droppers = {source for source in sources if source[0] == "npc"}
+            row["clusterDropperIds"] = sorted(eid for _, eid in cluster_sources & droppers) if len(droppers) <= 3 else []
+        return row
 
     def givers(field):
         groups = quest.get(field) or {}
@@ -379,7 +427,7 @@ def quest_locations(quest, profile):
         target["value"] = reputation[1]
         locations.append(target)
     for index, row in enumerate(slot(objectives, 5, [])):
-        ids = set(slot(row, 1, [])) | {slot(row, 2, 0)}
+        ids = set(slot(row, 1, [])) or {slot(row, 2, 0)}
         target = locate("killCredit", index + 1, (("npc", i) for i in ids if i))
         target["description"] = slot(row, 3, "")
         locations.append(target)
@@ -404,9 +452,6 @@ def quest_locations(quest, profile):
         target = locate("extra", index + 1, sources, slot(row, 1, []))
         target["description"] = slot(row, 3, "")
         locations.append(target)
-    for objective in locations:
-        if quest.get("dungeon") and objective["kind"] != "reputation" and not (objective["maps"] or objective["dungeons"]):
-            objective["dungeons"] = [quest["dungeon"]]
     return {"givers": givers("startedBy"), "objectives": locations, "turnIns": givers("finishedBy")}
 
 
@@ -417,25 +462,34 @@ def slot(row, index, default):
 def score(signals):
     return (3 * signals["stepCount"] + min(10, len(signals["maps"])) + 3 * max(0, len(signals["continents"]) - 1)
             + min(10, signals["elite"] + 2 * signals["rareElite"] + 3 * signals["boss"])
-            + min(10, 2 * signals["dungeonObjectives"] + signals["raidQuests"]))
+            + min(10, 2 * signals["dungeonSteps"] + signals["raidSteps"]))
 
 
 def rank_chains(profiles, continents, journey=None):
     choices = defaultdict(list)
     for profile in profiles:
         for row in profile["quests"]:
+            if (row.get("specialFlags", 0) & profile["repeatableSpecialFlag"]
+                    or row.get("questFlags", 0) & profile["periodicQuestFlags"]):
+                continue
             if row["faction"] in (profile["profile"], "Both") or len(profiles) == 1:
                 choices[row["id"]].append((profile, row))
     completed, active = journey or (set(), set())
     chains = []
     for steps, conflicts in quest_graph(choices):
-        ids, factions, maps, dungeon_targets, levels, dungeons = set(), set(), set(), set(), [], set()
-        ranks, raid, party = {}, set(), set()
+        factions, restrictions, maps, dungeons, levels = set(), set(), set(), set(), []
+        ranks, dungeon_targets, dungeon_steps, raid_steps, party_steps = {}, set(), set(), set(), set()
+        done = in_log = quest_count = 0
         for step in steps:
             options = step["quests"]
+            ids = {quest_id for quest_id, _ in options}
+            quest_count += len(ids)
+            if ids & completed:
+                done += 1
+            elif ids & active:
+                in_log += 1
             step["quests"] = []
             for quest_id, requirements in options:
-                ids.add(quest_id)
                 for index, (profile, quest) in enumerate(choices[quest_id]):
                     locations = quest_locations(quest, profile)
                     view = {**quest, **locations, **requirements[profile["profile"]],
@@ -447,41 +501,48 @@ def rank_chains(profiles, continents, journey=None):
                     elif view != primary:
                         option.setdefault("factionOverrides", {})[profile["profile"]] = view
                     factions.add(quest["faction"])
+                    restrictions.update(restriction_labels(quest, profile))
                     if quest.get("questLevel", 0) > 0:
                         levels.append(quest["questLevel"])
                     if quest.get("questFlags", 0) & profile["raidFlag"]:
-                        raid.add(quest_id)
+                        raid_steps.add(step["id"])
                     if quest.get("questFlags", 0) & profile["partyAcceptFlag"]:
-                        party.add(quest_id)
-                    for entries in locations.values():
+                        party_steps.add(step["id"])
+                    for role, entries in locations.items():
                         for row in entries:
-                            maps.update(row["maps"])
+                            point = row["point"]
+                            if point:
+                                maps.add(point["uiMap"])
+                                if "dungeon" in point:
+                                    dungeons.add(point["dungeon"])
+                                    if role == "objectives":
+                                        dungeon_steps.add(step["id"])
+                                        dungeon_targets.add((quest_id, row["kind"], row["id"]))
                     for row in locations["objectives"]:
-                        if row["dungeons"]:
-                            dungeons.update(row["dungeons"])
-                            dungeon_targets.add((quest_id, row["kind"], row["id"]))
-                        for source in row["sources"]:
-                            if source["kind"] != "npc":
-                                continue
-                            npc_id = source["id"]
+                        if row["kind"] in {"npc", "killCredit"}:
+                            npc_ids = [source["id"] for source in row["sources"] if source["kind"] == "npc"]
+                        else:
+                            npc_ids = row.get("clusterDropperIds", [])
+                        for npc_id in npc_ids:
                             rank = profile["npcs"].get(str(npc_id), {}).get("rank")
                             if rank is not None:
                                 ranks[npc_id] = rank
         counts = Counter(ranks.values())
         rank_codes = profiles[0]["npcRanks"]
         restricted = factions - {"Both"}
-        signals = {"questCount": len(ids), "stepCount": len(steps), "faction": next(iter(restricted))
+        signals = {"questCount": quest_count, "stepCount": len(steps), "faction": next(iter(restricted))
                    if len(restricted) == 1 else "Both",
+                   "restrictions": sorted(restrictions),
                    "levelSpan": [min(levels), max(levels)] if levels else None,
                    "maps": sorted(maps), "continents": sorted({continents[ui] for ui in maps if ui in continents}),
                    "elite": counts[rank_codes["ELITE"]], "rareElite": counts[rank_codes["RARE_ELITE"]],
                    "boss": counts[rank_codes["BOSS"]], "dungeonObjectives": len(dungeon_targets),
-                   "dungeons": sorted(dungeons), "partyAcceptQuests": len(party), "raidQuests": len(raid)}
+                   "dungeons": sorted(dungeons), "dungeonSteps": len(dungeon_steps),
+                   "partyAcceptSteps": len(party_steps), "raidSteps": len(raid_steps)}
         first = steps[0]["quests"][0]
         chains.append({"firstQuest": {"id": first["id"], "name": first.get("name", {})}, "steps": steps,
                        "signals": signals, "edgeConflicts": conflicts, "score": score(signals),
-                       "touched": bool(ids & (completed | active)), "done": len(ids & completed),
-                       "inLog": len(ids & (active - completed))})
+                       "touched": bool(done or in_log), "done": done, "inLog": in_log})
     chains.sort(key=lambda chain: (not chain["touched"], -chain["score"], chain["firstQuest"]["id"]))
     for rank, chain in enumerate(chains, 1):
         chain["rank"] = rank
@@ -489,8 +550,9 @@ def rank_chains(profiles, continents, journey=None):
 
 
 def markdown(chains, journey=False):
-    yield "| Rank | First quest | Faction | Quests | Level | Maps | Continents | Elite / Rare elite / Boss | Dungeon | Touched | Done / Total |"
-    yield "| ---: | --- | --- | ---: | --- | ---: | --- | --- | ---: | --- | --- |"
+    yield ("| Rank | First quest | Faction | Restriction | Steps | Quests | Level | Maps | Continents | "
+           "Elite / Rare elite / Boss | Dungeon steps | Touched | Done / Total |")
+    yield "| ---: | --- | --- | --- | ---: | ---: | --- | ---: | --- | --- | ---: | --- | --- |"
     for chain in chains:
         signals, first = chain["signals"], chain["firstQuest"]
         title = first["name"].get("enUS", "Unknown quest").replace("|", r"\|").replace("\n", " ")
@@ -498,9 +560,11 @@ def markdown(chains, journey=False):
         continents = ", ".join(CONTINENTS[ui] for ui in signals["continents"]) or "—"
         ranks = " / ".join(str(signals[key]) for key in ("elite", "rareElite", "boss"))
         touched = ("Yes" if chain["touched"] else "No") if journey else "—"
-        progress = f'{chain["done"]}/{signals["questCount"]}' if journey else "—"
-        yield (f'| {chain["rank"]} | {title} ({first["id"]}) | {signals["faction"]} | {signals["questCount"]} | '
-               f'{level} | {len(signals["maps"])} | {continents} | {ranks} | {signals["dungeonObjectives"]} | '
+        progress = f'{chain["done"]}/{signals["stepCount"]}' if journey else "—"
+        restriction = ", ".join(signals["restrictions"]) or "—"
+        yield (f'| {chain["rank"]} | {title} ({first["id"]}) | {signals["faction"]} | {restriction} | '
+               f'{signals["stepCount"]} | {signals["questCount"]} | {level} | {len(signals["maps"])} | '
+               f'{continents} | {ranks} | {signals["dungeonSteps"]} | '
                f'{touched} | {progress} |')
 
 
