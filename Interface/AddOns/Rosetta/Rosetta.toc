@@ -2,7 +2,7 @@
 ## Title: Rosetta
 ## Notes: Bridge between the game and outside tools: exports character data for AI tools to read.
 ## Author: shengjiex98
-## Version: 1.4.1
+## Version: 1.4.2
 ## SavedVariables: RosettaDB
 ## OptionalDeps: RXPGuides, QuestieDB
 

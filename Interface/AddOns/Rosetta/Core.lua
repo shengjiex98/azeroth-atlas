@@ -162,3 +162,11 @@ SlashCmdList.ROSETTA = function(msg)
 end
 SLASH_ROSETTASNAP1 = "/csnap"
 SlashCmdList.ROSETTASNAP = snapshot
+
+SLASH_ROSETTAEXPORT1 = "/rx"
+SlashCmdList.ROSETTAEXPORT = export
+
+-- Bindings.xml calls this global; the key is unbound until the player sets one.
+BINDING_HEADER_ROSETTA = "Rosetta"
+BINDING_NAME_ROSETTA_EXPORT = "Export journey summary"
+function RosettaExport() export() end
