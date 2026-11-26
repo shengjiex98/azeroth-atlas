@@ -397,7 +397,7 @@
     const visits = entry?.visits || [];
     const content = visits.length ? `<div class="visit-header"><span>${ui('visitOrder')}</span>
         ${visits.length > 1 ? `<label class="path-toggle"><input id="show-path" type="checkbox" ${state.paths.has(id) ? 'checked' : ''}>${ui('showPath')}</label>` : ''}
-        </div><p class="visit-order" tabindex="0">${visits.map(n => `<span>${n}</span>`).join('<span aria-hidden="true"> → </span>')}</p>` : '';
+        </div><p class="visit-order" tabindex="0">${visits.map(n => `<span>${n}</span>`).join('<span aria-hidden="true">&nbsp;→ </span>')}</p>` : '';
     return journeyCard(content, visitBadge(id));
   }
 
