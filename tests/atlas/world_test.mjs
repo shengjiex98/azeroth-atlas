@@ -4,12 +4,12 @@ import { test } from 'node:test';
 import { createContext, runInContext } from 'node:vm';
 
 const context = createContext({});
-for (const file of ['data/world.js', 'data/geo.js', 'i18n.js']) {
+for (const file of ['data/world.js', 'data/chains.js', 'data/geo.js', 'i18n.js']) {
   const source = readFileSync(new URL('../../lore/atlas/' + file, import.meta.url), 'utf8');
   runInContext(source, context, { filename: file });
 }
-const { WORLD, GEO, LORE_UI, LORE_ZONE_NAMES } = runInContext(
-  '({ WORLD, GEO, LORE_UI, LORE_ZONE_NAMES })', context
+const { WORLD, CHAINS, GEO, LORE_UI, LORE_ZONE_NAMES } = runInContext(
+  '({ WORLD, CHAINS, GEO, LORE_UI, LORE_ZONE_NAMES })', context
 );
 
 test('every map zone has complete bilingual lore and a matching brief', () => {
@@ -76,7 +76,7 @@ function checkData(value, path, problems) {
 
   for (const [field, child] of Object.entries(value)) {
     const fieldPath = `${path}.${field}`;
-    if (Object.hasOwn(references, field) && child != null) {
+    if (Object.hasOwn(references, field) && child != null && !(field === 'zoneIds' && path.startsWith('CHAINS.'))) {
       for (const id of Array.isArray(child) ? child : [child]) {
         if (!Object.hasOwn(references[field], id)) problems.push(`${fieldPath} references unknown ID ${id}`);
       }
@@ -149,5 +149,43 @@ test('zone outlines stay inside the game rectangles with a one percent margin', 
       problems.push(`Zone ${id} has an outline but no game rectangle`);
     }
   }
+  assert.deepEqual(problems, []);
+});
+
+test('the picked chains and their authored lore share valid IDs', () => {
+  const { picks } = JSON.parse(readFileSync(new URL('../../tools/data/chain_picks.json', import.meta.url), 'utf8'));
+  const ids = picks.map(pick => pick.id).sort();
+  assert.deepEqual(Object.keys(CHAINS).sort(), ids);
+  assert.deepEqual(Object.keys(WORLD.chains).sort(), ids);
+  for (const [id, { notes }] of Object.entries(WORLD.chains)) {
+    const stepIds = new Set(CHAINS[id].steps.map(step => String(step.id)));
+    for (const step of Object.keys(notes)) {
+      assert.ok(stepIds.has(step), `${id} notes refer to unknown step ${step}`);
+    }
+  }
+});
+
+test('the site chains have ordered steps and representative map points', () => {
+  for (const chain of Object.values(CHAINS)) {
+    const seen = new Set();
+    const maps = new Set();
+    for (const step of chain.steps) {
+      assert.ok(!seen.has(step.id), `${chain.id} repeats step ${step.id}`);
+      assert.ok(step.after.every(id => seen.has(id)), `${chain.id} has steps out of order`);
+      seen.add(step.id);
+      assert.ok(step.questIds.length > 0);
+      for (const { map, x, y } of [step.giver, ...step.goals, step.turnIn].filter(point => point?.map != null)) {
+        assert.ok(Object.hasOwn(GEO.zones, map) || Object.hasOwn(GEO.continents, map), `Unknown map ${map}`);
+        maps.add(map);
+        assert.ok([x, y].every(axis => Number.isInteger(axis) && axis >= 0 && axis <= 1000));
+      }
+      assert.ok(step.goals.every(goal => goal.map != null && ['kill', 'loot', 'use', 'talk', 'other'].includes(goal.kind)));
+    }
+    assert.deepEqual([...chain.zoneIds], [...maps]);
+    assert.equal(chain.signals.steps, seen.size);
+    assert.equal(chain.signals.maps, maps.size);
+  }
+  const problems = [];
+  checkData(CHAINS, 'CHAINS', problems);
   assert.deepEqual(problems, []);
 });

@@ -21,15 +21,18 @@ keeps the full journal locally and writes this compact summary; the atlas builds
 | `Z` | map, firstVisit, seconds, quests, kills, deaths, minLevel, maxLevel | One per zone (UiMap) with any activity. |
 | `C` | map, cx, cy, seconds, killXP, kills, questXP, otherXP, firstSeen | One journal cell: a 5% grid square, `cx`/`cy` 0-19. `firstSeen` may be empty for cells recorded before v1. |
 | `Q` | t, map, x, y, questID, flags | A quest turned in. Flag `b`: backfilled from QuestieDB (no time; position is the finisher's spawn). |
+| `A` | t, map, x, y, questID | A quest accepted. |
+| `O` | questID,questID,... (one field) | Quest IDs in the current quest log, sorted numerically. Omitted when empty. |
 | `D` | t, map, x, y, level | A death. |
 | `L` | t, map, x, y, level | A level-up. |
 | `S` | map, cx, cy, name | The most frequent subzone name recorded in that cell (a place label). |
 | `R` | map:t, map:t, ... (one field, comma-separated pairs) | Zone visit sequence from the journal, consecutive repeats collapsed. `t` may be empty for backfilled visits. |
 
-Order: `H` first; then `Z`, `R`, `C`, `S`; then `Q`, `D`, `L` by time. Backfilled `Q` lines (no time) come
+Order: `H` first; then `Z`, `R`, `O`, `C`, `S`; then `Q`, `A`, `D`, `L` by time. Backfilled `Q` lines (no time) come
 before timed ones, ordered by quest level, then quest ID.
 
 ## Size
 
 Target at most 60 KB for the transport string of a level-60 character. If a summary would exceed 120 KB,
-drop `S` lines first, then `C` lines with fewer than 30 seconds and no XP, and report it.
+drop `S` lines first, then as many `A` lines as needed (oldest first), then `C` lines with fewer than
+30 seconds and no XP. Report how many lines were dropped and whether the summary still exceeds 120 KB.

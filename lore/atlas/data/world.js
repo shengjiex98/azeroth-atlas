@@ -5,6 +5,7 @@
   'use strict';
   const L = (en, zh = '') => ({ en, zh });
   const sources = {
+    questiedb: { title: L('QuestieDB', 'QuestieDB'), url: 'https://github.com/Questie/QuestieDB', note: L('Quest links, names, and representative locations for the picked Forever quest chains.', '提供无限服精选任务链的任务关联、名称和代表性地点。') },
     'hy-forever': { title: L('Mount Hyjal in Forever', '无限服的海加尔山'), url: 'https://www.wowhead.com/forever/zone=616/mount-hyjal', note: L('The zone and its Forever inhabitants and quests.', '无限服这一区域的居民和任务。') },
     'hy-zones': { title: L('Forever’s new zones', '无限服的新区域'), url: 'https://www.wowhead.com/forever/guide/zones-maps-locations-rewards', note: L('The aftermath at Hyjal, and Shen’dralas’s ties to the centaur and Dire Maul.', '海加尔山战后的局势，以及辛德拉与半人马和厄运之槌的关系。') },
     'hy-ashes': { title: L('Ashes of the Legion Ascent', '军团高地的灰烬'), url: 'https://www.wowhead.com/forever/quest=92335/ashes-of-the-legion-ascent', note: L('How Azgalor’s remains are used and where they were left after the battle.', '阿兹加洛的遗骸在战后留在何处，以及灰烬的用途。') },
@@ -1628,7 +1629,21 @@
     2652: Z('', 'A temple whose fading crystals sustain the Shen’dralar.', '逐渐黯淡的水晶维系着神殿里的辛德拉族人。')
   };
 
-  root.WORLD = { version: 1, title: L('Azeroth, in context', '艾泽拉斯全景'), setting: L('Classic-era world · Forever additions identified', '经典旧世的艾泽拉斯 · 标注无限服新增内容'), zones, briefs, sagas, beats, figures, factions, sources, glossary: {} };
+  const chains = {
+    'missing-diplomat': { story: [], notes: {} },
+    'on-guard-in-stonetalon': { story: [], notes: {} },
+    'welcome-to-the-jungle': { story: [], notes: {} },
+    'claws-from-the-deep': { story: [], notes: {} },
+    'howling-vale': { story: [], notes: {} },
+    'unsent-letter': { story: [], notes: {} },
+    'deliveries-to-sven': { story: [], notes: {} },
+    'the-hermit': { story: [], notes: {} },
+    'legend-of-stalvan': { story: [], notes: {} },
+    'defias-brotherhood': { story: [], notes: {} },
+    'onyxia-alliance': { story: [], notes: {} }
+  };
+
+  root.WORLD = { version: 1, title: L('Azeroth, in context', '艾泽拉斯全景'), setting: L('Classic-era world · Forever additions identified', '经典旧世的艾泽拉斯 · 标注无限服新增内容'), zones, briefs, sagas, beats, figures, factions, sources, chains, glossary: {} };
 })(globalThis);
 
 // Re-cut from the original primer; personal references and later-era assumptions removed.

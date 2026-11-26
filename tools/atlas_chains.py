@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rank Forever quest-chain candidates for manual review."""
+"""Rank Forever quest-chain candidates and publish the atlas picks."""
 
 import argparse
 import base64
@@ -90,8 +90,11 @@ def read_journey(path, character=None):
         name = lines[0].split("|")[2]
         if character and not name.casefold().startswith(character.casefold()):
             raise ValueError(f"RSJ1 character {name!r} does not match {character!r}")
-        records = (line.split("|") for line in lines[1:])
-        return {int(row[5]) for row in records if row[0] == "Q" and len(row) > 5 and row[5]}, set()
+        records = [line.split("|") for line in lines[1:]]
+        completed = {int(row[5]) for row in records if row[0] == "Q" and len(row) > 5 and row[5]}
+        active = {int(quest_id) for row in records if row[0] == "O" and len(row) > 1
+                  for quest_id in row[1].split(",") if quest_id}
+        return completed, active
     if not character:
         raise ValueError("SavedVariables require --character NAME_PREFIX")
     characters = Parser(data).file().get("RosettaDB", {}).get("characters", {})
@@ -549,9 +552,111 @@ def rank_chains(profiles, continents, journey=None):
     return chains
 
 
-def read_picks(path=TOOLS / "data/chain_picks.json"):
+def read_pick_details(path):
     picks = json.loads(path.read_text(encoding="utf-8"))["picks"]
-    return {pick["firstQuest"]: pick["id"] for pick in picks}
+    return {pick["firstQuest"]: pick for pick in picks}
+
+
+def read_picks(path=TOOLS / "data/chain_picks.json"):
+    return {first: pick["id"] for first, pick in read_pick_details(path).items()}
+
+
+# QuestieDB localizes entity names, but these picked objective descriptions are English only.
+SITE_OBJECTIVES = {
+    "Sentry Point explored": ("other", "Sentry Point explored", "探索警戒哨岗"),
+    "Place the NG-5 Explosives (Blue)": ("use", "NG-5 Explosives (Blue)", "NG-5炸药（蓝色）"),
+    "Place the NG-5 Explosives (Red)": ("use", "NG-5 Explosives (Red)", "NG-5炸药（红色）"),
+    "Tome of Mel'Thandris": ("use", "Tome of Mel'Thandris", "梅尔萨迪斯之书"),
+    "Overhear Lescovar and Marzon's Conversation": ("other", "Overhear Lescovar and Marzon's Conversation", "偷听莱斯科瓦和玛尔松的谈话"),
+    "Escort The Defias Traitor to discover where VanCleef is hiding": ("other", "Escort the Defias Traitor", "护送迪菲亚叛徒"),
+    "Jail Break!": ("other", "Jail Break!", "冲破牢笼！"),
+    "Talk to Squire Rowe": ("talk", "Squire Rowe", "侍从洛文"),
+    "Reginald's March": ("other", "Reginald's March", "雷吉纳德的行军"),
+}
+
+
+def site_chains(chains, picks):
+    def localized(names, fallback=""):
+        en = names.get("enUS") or fallback
+        return {"en": en, "zh": names.get("zhCN") or en}
+
+    def point(location):
+        pin = location["point"]
+        return {"map": pin["uiMap"], "x": pin["x"], "y": pin["y"]} if pin else {}
+
+    def endpoint(locations):
+        entry = next((row for row in locations if row["point"]), locations[0] if locations else None)
+        if entry is None:
+            return None
+        return {"name": localized(entry["name"]), **(point(entry) or dict.fromkeys(("map", "x", "y")))}
+
+    kinds = {"npc": "kill", "killCredit": "kill", "item": "loot", "object": "use", "spell": "use"}
+    # These True Masters steps use an NPC objective to record a conversation.
+    talk_objectives = {(4185, 1749), (4224, 9563)}
+    by_first = {chain["firstQuest"]["id"]: chain for chain in chains}
+    published = {}
+    for first, pick in picks.items():
+        if first not in by_first:
+            raise ValueError(f"Picked chain {pick['id']} has no candidate for quest {first}")
+        chain = by_first[first]
+        steps, zones = [], {}
+        depth = {}
+        for step in chain["steps"]:
+            depth[step["id"]] = 1 + max((depth[parent] for parent in step["after"]), default=-1)
+        for step in sorted(chain["steps"], key=lambda step: depth[step["id"]]):
+            quests = step["quests"]
+            variants = [view for quest in quests for view in (quest, *quest.get("factionOverrides", {}).values())]
+            giver = endpoint([row for quest in variants for row in quest["givers"]])
+            turn_in = endpoint([row for quest in variants for row in quest["turnIns"]])
+            goals = []
+            for quest in variants:
+                for row in quest["objectives"]:
+                    if not row["point"]:
+                        continue
+                    label = localized(row["name"], row.get("description", ""))
+                    kind = kinds.get(row["kind"], "other")
+                    if row["kind"] == "npc" and (quest["id"], row["id"]) in talk_objectives:
+                        kind = "talk"
+                    if label["en"] == label["zh"] and label["en"] in SITE_OBJECTIVES:
+                        kind, label["en"], label["zh"] = SITE_OBJECTIVES[label["en"]]
+                    goal = {"kind": kind, "label": label, **point(row)}
+                    if goal not in goals:
+                        goals.append(goal)
+            for location in (giver, *goals, turn_in):
+                if location and location["map"] is not None:
+                    zones[location["map"]] = None
+            steps.append({"id": step["id"], "questIds": [quest["id"] for quest in quests], "after": step["after"],
+                          "name": localized(quests[0]["name"]), "giver": giver, "goals": goals, "turnIn": turn_in})
+        title = localized(chain["firstQuest"]["name"])
+        if isinstance(pick.get("title"), str):
+            title["en"] = pick["title"]
+        elif pick.get("title"):
+            title.update(pick["title"])
+        source = chain["signals"]
+        signals = {"steps": len(steps), "maps": len(zones), "continents": len(source["continents"]),
+                   **{key: source[key] for key in ("elite", "rareElite", "boss", "dungeonSteps")}}
+        published[pick["id"]] = {"id": pick["id"], "title": title, "faction": source["faction"],
+                                 "levels": source["levelSpan"], "zoneIds": list(zones), "signals": signals, "steps": steps}
+    return published
+
+
+def write_site(path, chains):
+    def compact(value):
+        return json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+
+    with path.open("w", encoding="utf-8", newline="\n") as output:
+        output.write("// Generated by tools/atlas_chains.py from QuestieDB Forever.\n"
+                     "(function (root) {\n  'use strict';\n  root.CHAINS = {\n")
+        for i, (key, chain) in enumerate(chains.items()):
+            if i:
+                output.write(",\n")
+            output.write(f"    {compact(key)}:{{")
+            output.write(",".join(f"{compact(field)}:{compact(value)}"
+                                  for field, value in chain.items() if field != "steps"))
+            output.write(',\n      "steps":[\n        ')
+            output.write(",\n        ".join(map(compact, chain["steps"])))
+            output.write("\n      ]}")
+        output.write("\n  };\n})(globalThis);\n")
 
 
 def markdown(chains, journey=False, picks=None):
@@ -578,6 +683,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--journey", type=Path, metavar="FILE", help="RSJ1 summary or Rosetta SavedVariables")
     parser.add_argument("--character", metavar="NAME_PREFIX", help="character to select in SavedVariables")
+    parser.add_argument("--site", type=Path, metavar="FILE", help="write the picked atlas chains as JavaScript")
     parser.add_argument("--json", type=Path, metavar="FILE", help="write the complete candidate chains")
     args = parser.parse_args()
     if args.character and not args.journey:
@@ -588,13 +694,16 @@ def main():
         profiles = [json.loads(subprocess.check_output(["lua5.1", TOOLS / "quest_dump.lua", faction], cwd=db))
                     for faction in FACTIONS]
         chains = rank_chains(profiles, map_continents(), journey)
+        picks = read_pick_details(TOOLS / "data/chain_picks.json")
+        if args.site:
+            write_site(args.site, site_chains(chains, picks))
         if args.json:
             with args.json.open("w", encoding="utf-8") as output:
                 json.dump({"questieDB": VERSION, "chains": chains}, output, ensure_ascii=False, separators=(",", ":"))
                 output.write("\n")
     except (ValueError, OSError, subprocess.CalledProcessError) as error:
         parser.exit(1, f"atlas_chains: {error}\n")
-    for line in markdown(chains, args.journey is not None, read_picks()):
+    for line in markdown(chains, args.journey is not None, {first: pick["id"] for first, pick in picks.items()}):
         print(line)
 
 

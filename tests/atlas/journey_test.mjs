@@ -7,7 +7,7 @@ for (const file of ['data/ui_map_bounds.js', 'journey.js']) {
   const source = readFileSync(new URL('../../lore/atlas/' + file, import.meta.url), 'utf8');
   runInThisContext(source, { filename: file });
 }
-const { decodeSummary, buildJourney } = globalThis.ROSETTA_JOURNEY;
+const { decodeSummary, buildJourney, chainProgress } = globalThis.ROSETTA_JOURNEY;
 const encode = (...lines) => 'RSJ1.' + Buffer.from(lines.join('\n'), 'utf8').toString('base64url');
 const header = 'H|1|Zoë|Testrealm|Gnome|Mage|Alliance|12|1700000000|1.2.3';
 
@@ -38,7 +38,7 @@ test('v1 round-trip with UTF-8, old cells, backfilled quests, zone visits and ev
   assert.equal(records[4].firstSeen, null);
   assert.equal(records[10].flags, 'b');
   assert.deepEqual(buildJourney(records), {
-    character: { name: 'Zoë', race: 'Gnome', class: 'Mage', level: 12, updated: 1700000000 },
+    character: { name: 'Zoë', race: 'Gnome', faction: 'Alliance', class: 'Mage', level: 12, updated: 1700000000 },
     sources: ['rosetta-journal'],
     zones: [
       { zone: 1432, first: 250, levels: [7, 7], places: [], visits: [] },
@@ -56,7 +56,8 @@ test('v1 round-trip with UTF-8, old cells, backfilled quests, zone visits and ev
     events: {
       deaths: [{ zone: 1429, x: 83, y: 82, t: 115, level: 4 }],
       levels: [{ zone: 1429, x: 83, y: 82, t: 160, level: 6 }, { zone: 1432, x: 17, y: 24, t: 250, level: 7 }]
-    }
+    },
+    quests: { completed: new Map([[123, { t: null, flags: 'b' }]]), accepted: new Map(), open: new Set() }
   });
 });
 
@@ -110,4 +111,58 @@ test('malformed summaries report the documented errors', () => {
     fails(bad, 'journeyErrorHeader', 'The summary must start with a single header record.');
   }
   fails(encode('H|2|Zoë'), 'journeyErrorVersion', 'This summary format version is unsupported.');
+});
+
+test('A and O records expose quest activity separately from map observations', () => {
+  const records = decodeSummary(encode(
+    header, 'O|102,103,102,,bad|ignored', 'A|3||||102', 'Q|||||101|b',
+    'A|6|1429|100|250|102', 'Q|9||||101|', 'Q|12||||101|'
+  ));
+  assert.deepEqual(records[1], { type: 'O', questIds: [102, 103, 102] });
+  assert.deepEqual(records[2], { type: 'A', t: 3, map: null, x: null, y: null, questID: 102 });
+  const journey = buildJourney(records);
+  assert.deepEqual(journey.zones, []);
+  assert.deepEqual(journey.quests, {
+    completed: new Map([[101, { t: 9, flags: null }]]),
+    accepted: new Map([[102, { t: 6 }]]),
+    open: new Set([102, 103])
+  });
+});
+
+const chain = { faction: 'Alliance', steps: [
+  { id: 1, questIds: [101, 110], after: [] },
+  { id: 2, questIds: [102], after: [1] },
+  { id: 3, questIds: [103, 130], after: [1] },
+  { id: 4, questIds: [104], after: [2, 3] },
+  { id: 5, questIds: [105], after: [2] }
+] };
+const progress = (...lines) => chainProgress(chain, buildJourney(decodeSummary(encode(header, ...lines))));
+const statuses = result => [...result.steps.values()].map(step => step.status);
+
+test('chain progress uses variants, the open log and every prerequisite, with level at turn-in', () => {
+  const result = progress('Q|||||101|b', 'Q|22||||110|', 'L|24||||12',
+    'L|22||||11', 'O|110,130', 'A|10||||102');
+  assert.equal(result.status, 'inProgress');
+  assert.equal(result.done, 1);
+  assert.deepEqual(statuses(result), ['done', 'next', 'active', 'locked', 'locked']);
+  assert.deepEqual(result.steps.get(1), { status: 'done', t: 22, level: 11, backfilled: false });
+
+  const backfill = progress('Q|||||101|b');
+  assert.deepEqual(backfill.steps.get(1), { status: 'done', t: null, level: null, backfilled: true });
+  assert.deepEqual(statuses(backfill), ['done', 'next', 'next', 'locked', 'locked']);
+  assert.equal(progress('Q|1||||101|', 'L|2||||10').steps.get(1).level, null);
+});
+
+test('chain status requires every ending and hides only the other faction', () => {
+  assert.equal(progress('A|10||||101').status, 'notStarted');
+  assert.deepEqual(statuses(progress()), ['next', 'locked', 'locked', 'locked', 'locked']);
+  assert.equal(progress('O|110').status, 'inProgress');
+  assert.equal(progress('Q|10||||104|').status, 'inProgress');
+  const completed = progress('Q|10||||104|', 'Q|||||105|b');
+  assert.equal(completed.status, 'completed');
+  assert.equal(completed.done, 2);
+  const horde = buildJourney(decodeSummary(encode(header.replace('Alliance', 'Horde'))));
+  assert.equal(chainProgress(chain, horde).visible, false);
+  assert.equal(chainProgress({ ...chain, faction: 'Both' }, horde).visible, true);
+  assert.equal(chainProgress(chain, null).visible, true);
 });
