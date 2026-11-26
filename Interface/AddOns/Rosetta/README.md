@@ -68,3 +68,5 @@ command to append a line to the selected note, creating one if needed. With the
 editor focused, shift-click an item, spell, recipe, or quest to insert its link
 at the cursor. Notes are stored in `RosettaDB.notes` in the account SavedVariables
 file, so they follow all characters and sync with that file between computers.
+Type `1g20s5c` for a price or `@today` for the local date. Add the token to a slash append, or follow it with a space, newline, or one of `.` `,` `;` `)` in the editor. Chips are fixed at entry time.
+In `RosettaDB.notes`, chips are stored inline as hyperlinks with payloads `addon:Rosetta:money:<copper>` and `addon:Rosetta:date:<YYYY-MM-DD>` using the local date.

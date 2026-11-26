@@ -1,5 +1,6 @@
 local ADDON_PATH = "Interface/AddOns/Rosetta/"
 local now = 1700000000
+local localDay = "2026-11-26"
 local report = print
 local frames, hooks, messages, popup
 local rejectHyperlinks = false
@@ -36,7 +37,14 @@ function frameMethods:GetVerticalScroll() return self.scroll or 0 end
 function frameMethods:GetVerticalScrollRange() return 800 end
 function frameMethods:SetMultiLine(multiline) self.multiline = multiline end
 function frameMethods:SetMaxLetters(maxLetters) self.maxLetters = maxLetters end
-function frameMethods:SetCursorPosition(cursor) self.cursor = cursor end
+function frameMethods:SetCursorPosition(cursor)
+    self.cursor, self.highlightStart, self.highlightStop = cursor, nil, nil
+end
+function frameMethods:GetCursorPosition() return self.cursor or 0 end
+function frameMethods:HighlightText(start, stop)
+    self.highlightStart, self.highlightStop = start, stop
+    self.lastHighlight = { start, stop }
+end
 function frameMethods:GetText() return self.text end
 function frameMethods:SetText(text, userInput)
     self.text = text
@@ -44,9 +52,10 @@ function frameMethods:SetText(text, userInput)
 end
 function frameMethods:Insert(text)
     self.insertions = (self.insertions or 0) + 1
-    local cursor = self.cursor or 0
-    self:SetText(self.text:sub(1, cursor) .. text .. self.text:sub(cursor + 1))
-    self.cursor = cursor + #text
+    local start = self.highlightStart or self:GetCursorPosition()
+    local stop = self.highlightStop or start
+    self:SetCursorPosition(start + #text)
+    self:SetText(self.text:sub(1, start) .. text .. self.text:sub(stop + 1), self.insertIsUserInput)
 end
 function frameMethods:SetFocus() self.focus = true end
 function frameMethods:ClearFocus() self.focus = false end
@@ -85,6 +94,8 @@ function GameTooltip:SetHyperlink(link)
     if link == "invalid" then error("unknown hyperlink") end
     self.link = link
 end
+function GameTooltip:SetText(text) self.text, self.line, self.money = text, nil, nil end
+function GameTooltip:AddLine(line) self.line = line end
 function GameTooltip:Show() self.shown = true end
 function GameTooltip:Hide() self.owner, self.link, self.shown = nil, nil, false end
 
@@ -92,6 +103,14 @@ function StaticPopup_Show(which, title, _, data)
     popup = { which = which, title = title, data = data }
 end
 function time() return now end
+function date(format, timestamp)
+    eq(format, "%Y-%m-%d", "local date format")
+    if timestamp then
+        eq(timestamp, now, "explicit date timestamp")
+        return "2023-11-14"
+    end
+    return localDay
+end
 function issecretvalue(value) return value == secret end
 function strtrim(text) return text:match("^%s*(.-)%s*$") end
 function print(message) messages[#messages + 1] = message end
@@ -147,10 +166,62 @@ eq(notes.title("\n\t\n|A:icon:1:1|a|cFFFFFFFF|r"), "New note", "empty visible ti
 eq(notes.title(""), "New note", "empty note title")
 report("PASS lazy load and titles")
 
+local validPrices = { ["5c"] = 5, ["30s"] = 3000, ["1g"] = 10000, ["1g20s"] = 12000,
+    ["2g5c"] = 20005, ["1G20S5C"] = 12005, ["2s5c"] = 205, ["0g00s0c"] = 0, ["99s99c"] = 9999 }
+for token, copper in pairs(validPrices) do eq(notes.parseMoney(token), copper, token .. " parsed") end
+for _, token in ipairs({ "", "5sec", "x30s", "30s,", "150s", "100c", "1s100c", "1s2g", "1g2g",
+    "5c20s", "1g20s5c5c", "1g20", "5", "g", "1g 20s", "-5c", "1.5g", "900719925474g9s92c" }) do
+    eq(notes.parseMoney(token), nil, token .. " rejected")
+end
+
+local function money(copper, display)
+    return "|cffffd100|Haddon:Rosetta:money:" .. copper .. "|h" .. display .. "|h|r"
+end
+local function dayChip(day)
+    return "|cff66bbff|Haddon:Rosetta:date:" .. day .. "|h" .. day .. "|h|r"
+end
+
+eq(notes.moneyChip(12005), money(12005, "1g 20s 5c"), "money chip format")
+eq(notes.moneyChip(20005), money(20005, "2g 5c"), "zero units omitted")
+eq(notes.moneyChip(0), money(0, "0c"), "zero price chip")
+eq(notes.moneyChip(9007199254740991), money("9007199254740991", "900719925474g 9s 91c"), "large payload stays exact")
+eq(notes.dateChip(now), dayChip("2023-11-14"), "date chip from timestamp")
+eq(notes.dateChip(), dayChip(localDay), "date chip from stubbed local date")
+
+local protected = "|cff1eff00|Hitem:2589:0:0|h[Linen 30s @today ||h 5c roll]|h|r"
+local mixed = protected .. " 5c. 30S, 1g; 2g5c)\n@TODAY 1g20s5c"
+local expanded = protected .. " " .. money(5, "5c") .. ". " .. money(3000, "30s") .. ", "
+    .. money(10000, "1g") .. "; " .. money(20005, "2g 5c") .. ")\n" .. dayChip(localDay) .. " "
+    .. money(12005, "1g 20s 5c")
+eq(notes.expandText(mixed), expanded, "punctuation, case, end token and protected links")
+local invalid = "x30s 5sec (30s) 30s! 30s,cost 150s @yesterday x@today " .. protected .. "30s"
+eq(notes.expandText(invalid), invalid, "attached characters and unsupported tokens stay literal")
+localDay = "2026-11-27"
+eq(notes.expandText(expanded), expanded, "existing chips are unchanged on a later date")
+localDay = "2026-11-26"
+
+local prefix = "Café " .. protected .. "\n"
+local start, stop, chip = notes.editChipAtCursor(prefix .. "30s, rest", #prefix + 4)
+eq(start, #prefix, "selection start counts UTF-8 bytes and link escapes")
+eq(stop, #prefix + 3, "selection excludes trailing punctuation")
+eq(chip, money(3000, "30s"), "detected price chip")
+start, stop, chip = notes.editChipAtCursor("@ToDaY\nnext", 7)
+eq(start, 0, "first token starts at byte offset zero")
+eq(stop, 6, "selection excludes newline")
+eq(chip, dayChip(localDay), "detected local date chip")
+start, stop = notes.editChipAtCursor("30s\r\n", 5)
+eq(start, 0, "CRLF token start")
+eq(stop, 3, "selection excludes both newline bytes")
+eq(notes.editChipAtCursor(protected, protected:find("30s ", 1, true) + 3), nil, "delimiter inside a link ignored")
+eq(notes.editChipAtCursor("30s", 3), nil, "editor waits for delimiter")
+eq(notes.editChipAtCursor("30s,extra", 4), nil, "punctuation in the middle of a token ignored")
+report("PASS chip syntax, formats, expansion and byte spans")
+
 SlashCmdList.ROSETTANOTE(link .. " Sells for 30s")
 local store = RosettaDB.notes
 local first = store.list[1]
-eq(first.text, link .. " Sells for 30s", "append creates a note and preserves the link")
+local firstLine = link .. " Sells for " .. money(3000, "30s")
+eq(first.text, firstLine, "append creates a note with a chip at the end and preserves the item link")
 eq(store.selected, first.id, "new note selected")
 eq(first.created, now, "creation timestamp")
 eq(#messages, 1, "one confirmation")
@@ -162,8 +233,9 @@ local second = notes.create()
 notes.append("Second")
 store.selected = first.id
 now = now + 1
-SlashCmdList.ROSETTA("  NoTe " .. link .. " Price CHECK ")
-eq(first.text, link .. " Sells for 30s\n" .. link .. " Price CHECK ", "/rosetta preserves append text")
+SlashCmdList.ROSETTA("  NoTe " .. link .. " Price CHECK @TODAY ")
+eq(first.text, firstLine .. "\n" .. link .. " Price CHECK " .. dayChip(localDay) .. " ",
+    "/rosetta expands the date and preserves append text")
 eq(first.updated, now, "append updates timestamp")
 eq(second.text, "Second", "append edits the selected note")
 eq(notes.sortedList()[1], first, "most recently updated note first")
@@ -245,6 +317,72 @@ eq(GameTooltip.link, nil, "leaving hides hyperlink tooltip")
 edit.scripts.OnHyperlinkEnter(edit, "invalid")
 eq(GameTooltip.owner, nil, "bad hyperlink skips tooltip")
 
+local moneyLink = "addon:Rosetta:money:12005"
+edit.scripts.OnHyperlinkEnter(edit, moneyLink)
+eq(GameTooltip.text, "1g 20s 5c", "money tooltip falls back to the display")
+assert(GameTooltip.shown, "fallback tooltip is shown")
+function SetTooltipMoney(tooltip, copper, style)
+    eq(style, "STATIC", "native money tooltip style")
+    tooltip.money = copper
+end
+edit.scripts.OnHyperlinkEnter(edit, moneyLink)
+eq(GameTooltip.money, 12005, "native tooltip receives copper")
+function SetTooltipMoney() error("money tooltip unavailable") end
+edit.scripts.OnHyperlinkEnter(edit, "addon:Rosetta:money:0")
+eq(GameTooltip.text, "0c", "unavailable native tooltip keeps zero visible")
+edit.scripts.OnHyperlinkEnter(edit, "addon:Rosetta:date:" .. localDay)
+eq(GameTooltip.text, localDay, "date tooltip displays the stored day")
+eq(GameTooltip.line, "Today", "today tooltip")
+localDay = "2024-03-01"
+edit.scripts.OnHyperlinkEnter(edit, "addon:Rosetta:date:2024-02-29")
+eq(GameTooltip.line, "1 day ago", "day count across leap day")
+edit.scripts.OnHyperlinkEnter(edit, "addon:Rosetta:date:2024-02-28")
+eq(GameTooltip.line, "2 days ago", "plural day count")
+localDay = "2026-11-26"
+
+local clicked
+function SetItemRef(linkData) clicked = linkData end
+edit.scripts.OnHyperlinkClick(edit, moneyLink, "1g 20s 5c", "LeftButton")
+eq(clicked, nil, "clicking a chip skips SetItemRef")
+edit.scripts.OnHyperlinkClick(edit, "item:2589", "[Linen Cloth]", "LeftButton")
+eq(clicked, "item:2589", "ordinary links use SetItemRef")
+
+edit.insertIsUserInput = true
+edit:SetCursorPosition(#prefix + 3)
+edit:SetText(prefix .. "30s continued", true)
+local beforeInsert = edit.insertions
+edit:SetCursorPosition(#prefix + 4)
+edit:SetText(prefix .. "30s, continued", true)
+local price = money(3000, "30s")
+eq(first.text, prefix .. price .. ", continued", "editor saves only the token replacement")
+eq(edit.lastHighlight[1], #prefix, "selection begins after multibyte text and a link")
+eq(edit.lastHighlight[2], #prefix + 3, "selection stops before the delimiter")
+eq(edit.cursor, #prefix + #price, "cursor follows the inserted chip")
+eq(edit.insertions, beforeInsert + 1, "nested text change inserts once")
+
+edit:SetCursorPosition(6)
+edit:SetText("@todayZZ", true)
+edit:SetCursorPosition(7)
+edit:SetText("@today\n", true)
+eq(first.text, dayChip(localDay) .. "\n", "newline inserts date chip while replacing a selection")
+edit:SetCursorPosition(5)
+edit:SetText("30s  x", true)
+edit:SetCursorPosition(4)
+edit:SetText("30s x", true)
+eq(first.text, "30s x", "deleting next to an existing space does not expand")
+
+edit:SetCursorPosition(9)
+edit:SetText("Price 30s", true)
+local highlight = edit.HighlightText
+function edit:HighlightText(start, stop) highlight(self, start - 1, stop) end
+edit:SetCursorPosition(10)
+edit:SetText("Price 30s ", true)
+eq(edit.text, "Price 30s ", "client selection mismatch restores the typed text")
+eq(first.text, edit.text, "client selection mismatch saves the typed text")
+eq(edit.cursor, 10, "client selection mismatch restores the cursor")
+edit.HighlightText, edit.insertIsUserInput = nil, nil
+report("PASS chip tooltips, clicks, editor replacement and fallback")
+
 local count = #messages
 SlashCmdList.ROSETTANOTE("Visible Append")
 eq(edit.text, first.text, "append refreshes the open editor")
@@ -272,8 +410,9 @@ window.x, window.y = 640, 430
 window.scripts.OnDragStop(window)
 edit.scripts.OnEscapePressed()
 assert(not window.shown and not edit.focus, "Escape closes the window and clears focus")
+local beforeCloseLink = edit.insertions
 ChatFrameUtil.InsertLink(link)
-eq(edit.insertions, 1, "closed editor ignores links")
+eq(edit.insertions, beforeCloseLink, "closed editor ignores links")
 report("PASS editor, modern link hook, tooltip, selection and confirmation")
 
 rejectHyperlinks = true
