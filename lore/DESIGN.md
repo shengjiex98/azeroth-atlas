@@ -23,6 +23,10 @@ The atlas also opens from disk. `atlas/data/world.js` holds the lore.
 Rosetta when available. `atlas/data/ui_map_bounds.js` supplies world bounds for
 clustering zone observations by distance.
 
+Pages stamps the Atlas HTML and its local script and stylesheet URLs with the deploy commit, and publishes that commit in `atlas/version.json`.
+Open tabs check for a new version on focus, when visible again, and every minute while visible, like Avalon. The automatic reload keeps the URL and waits for input, dialogs and map popovers to clear; the banner's Reload button reloads at once.
+If a reload is deferred, the banner offers a Reload button and the next safe return to the tab reloads once per version in that session.
+
 Rosetta records gameplay in the WoW: Forever client, including zone visits,
 position samples, quest turn-ins, deaths, and level-ups, with time and XP totals
 by map cell. With QuestieDB loaded, it fills missing completed quest turn-ins

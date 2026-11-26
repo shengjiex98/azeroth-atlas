@@ -23,6 +23,8 @@ jobs:
           node-version: '24'
       - name: Test atlas journey
         run: node tests/atlas/journey_test.mjs
+      - name: Test Atlas version stamping
+        run: python3 -m unittest discover -s tests/atlas -p '*_test.py'
       - name: Check JavaScript syntax
         run: |
           for file in lore/atlas/*.js; do

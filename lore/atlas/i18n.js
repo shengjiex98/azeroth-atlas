@@ -29,6 +29,8 @@
     journeyErrorHeader: L('The summary must start with a single header record.', '摘要必须以唯一一条标头记录开头。'),
     journeyErrorVersion: L('This summary format version is unsupported.', '此摘要格式的版本不受支持。'),
     journeyStorageError: L('The browser could not save your changes. Saved journeys may differ after reloading.', '浏览器无法保存更改。重新加载后，已保存的旅程可能会有所不同。'),
+    updateAvailable: L('A new version is available.', '有新版本可用。'),
+    reload: L('Reload', '重新加载'),
     visitBadge: L('First visit #{n}', '第 {n} 个到访区域'),
     firstVisits: L('Show first visits', '显示首次到访'),
     fullSequence: L('Show full sequence', '显示完整顺序'),
