@@ -7,3 +7,5 @@ node_modules/
 .stversions/
 .stignore
 *.sync-conflict-*
+
+/tools/.cache/

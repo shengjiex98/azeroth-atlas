@@ -55,6 +55,35 @@ python3 tools/atlas_geo.py > lore/atlas/data/geo.js
 To retrace the zone outlines, run `uv run tools/atlas_shapes.py` before
 regenerating the geometry.
 
+## Quest chain candidates
+
+Run the offline ranking with Python 3.11+ and Lua 5.1.
+
+```sh
+python3 tools/atlas_chains.py --json tools/.cache/candidates.json
+python3 tools/atlas_chains.py --journey /path/to/Rosetta.lua --character Lancet
+```
+
+The first run downloads QuestieDB v1.1.6 Forever and its matching emulator into
+`tools/.cache/`. Later runs use that cache. The table goes to stdout. For a
+saved `RSJ1.` summary, pass its file to `--journey`. Summaries contain completed
+quests. SavedVariables also include the active quest log. Touched chains sort
+first, and progress counts unique completed quest IDs out of all IDs in the
+chain, including alternatives.
+
+The score gives three points per step, one per UiMap (up to ten), and three
+per continent beyond the first. Elite, rare-elite and boss objective NPCs earn
+one, two and three points respectively (up to ten combined). Objectives with
+a known instance location earn two points each, and raid-flagged quests earn
+one each (up to ten combined). Ties use the first quest ID. The JSON includes
+party-accept flags, reward item IDs, prerequisite alternatives and optional
+breadcrumbs. QuestieDB supplies no reward item quality or group-size field.
+
+Points use Forever UiMaps and integer coordinates from 0 to 1000. The tool
+chooses the map with the most spawns, then the centroid of the largest cluster
+formed by spawns within five percentage points of each other. An instance
+entrance can stand in for an unmappable interior marker and is labeled in JSON.
+
 ## Repository layout
 
 - `lore/` contains the static site, map images, illustrations, and
