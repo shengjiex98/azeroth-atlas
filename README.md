@@ -36,14 +36,15 @@ For details on SavedVariables, backfill, and snapshot sections, see the
 ## Develop locally
 
 Open `lore/index.html` in a browser. The site has no build step. From the
-repository root, run these checks with Node.js and Lua 5.1 installed.
+repository root, run these checks with Node.js, Lua 5.1, and Python 3 installed.
 
 ```sh
 set -e
-node tests/atlas/journey_test.mjs
-for file in lore/atlas/*.js; do node --check "$file"; done
+for file in tests/atlas/*_test.mjs; do node "$file"; done
+for file in lore/atlas/*.js lore/atlas/data/*.js; do node --check "$file"; done
 for file in tests/rosetta/*_test.lua; do lua5.1 "$file"; done
 luac5.1 -p Interface/AddOns/Rosetta/*.lua
+python3 -m unittest discover -s tests/atlas -p '*_test.py'
 ```
 
 Regenerate the map geometry from the bundled data with Python 3.
@@ -67,7 +68,7 @@ python3 tools/atlas_chains.py --journey /path/to/Rosetta.lua --character Lancet
 The first run downloads QuestieDB v1.1.6 Forever and its matching emulator into
 `tools/.cache/`. Later runs use that cache. The table goes to stdout. For a
 saved `RSJ1.` summary, pass its file to `--journey`. Summaries contain completed
-quests. SavedVariables also include the active quest log. Touched chains sort
+quests and, starting with Rosetta 1.6.0, the active quest log. Touched chains sort
 first. Any completed variant finishes its step, and progress counts finished
 steps out of all steps in the chain.
 
@@ -87,6 +88,11 @@ Ties use the first quest ID.
 
 Chains picked for the atlas are listed in `tools/data/chain_picks.json`, keyed by
 first quest, with the reason for each pick. The table's Pick column names them.
+Regenerate the atlas data from those picks with the same cached QuestieDB release.
+
+```sh
+python3 tools/atlas_chains.py --site lore/atlas/data/chains.js
+```
 
 Only representative points contribute maps, continents and instance locations.
 Points use Forever UiMaps and integer coordinates from 0 to 1000. The tool
@@ -110,5 +116,6 @@ quality or group-size field.
 
 The project's code and documentation use the [MIT License](LICENSE). World of
 Warcraft maps, icons, and artwork in `lore/maps/` and `lore/img/` belong to
-Blizzard Entertainment and are excluded from the MIT license. This is an
-unofficial fan project.
+Blizzard Entertainment and are excluded from the MIT license. Quest chain data
+in `lore/atlas/data/chains.js` is derived from [QuestieDB](https://github.com/Questie/QuestieDB)
+and is also excluded from the MIT license. This is an unofficial fan project.

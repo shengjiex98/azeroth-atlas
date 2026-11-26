@@ -6,6 +6,8 @@
     Z: ['map', 'firstVisit', 'seconds', 'quests', 'kills', 'deaths', 'minLevel', 'maxLevel'],
     C: ['map', 'cx', 'cy', 'seconds', 'killXP', 'kills', 'questXP', 'otherXP', 'firstSeen'],
     Q: ['t', 'map', 'x', 'y', 'questID', 'flags'],
+    A: ['t', 'map', 'x', 'y', 'questID'],
+    O: ['questIds'],
     D: ['t', 'map', 'x', 'y', 'level'],
     L: ['t', 'map', 'x', 'y', 'level'],
     S: ['map', 'cx', 'cy', 'name'],
@@ -58,6 +60,8 @@
             const [map, time = ''] = pair.split(':');
             return { map: integer(map), t: integer(time) };
           });
+        } else if (field === 'questIds') {
+          record.questIds = value.split(',').map(integer).filter(id => id > 0);
         } else {
           record[field] = textFields.has(field) ? value || null : integer(value);
         }
@@ -215,7 +219,11 @@
 
     const zoneData = new Map([...new Set(route.concat(activity.map(visit => visit.map)))]
       .filter(hasBounds).map(map => [map, { first: null, observations: [], levels: [] }]));
-    const events = { deaths: [], levels: [] };
+    const deaths = [];
+    const levels = records.filter(record => record.type === 'L').sort(timeOrder)
+      .map(({ map, x, y, t, level }) => ({
+        zone: map, x: inRange(x, 1000) ? x / 10 : null, y: inRange(y, 1000) ? y / 10 : null, t, level
+      }));
     for (const { map, t } of activity.concat(visits).sort(timeOrder)) {
       const data = zoneData.get(map);
       if (data && t !== null) data.first ??= t;
@@ -223,9 +231,8 @@
     for (const point of timeline) {
       const { zone, x, y, t, level, kind } = point;
       const data = zoneData.get(zone);
-      if (kind === 'death') events.deaths.push({ zone, x, y, t, level });
+      if (kind === 'death') deaths.push({ zone, x, y, t, level });
       if (kind === 'level') {
-        events.levels.push({ zone, x, y, t, level });
         if (data && level !== null) data.levels.push(level);
       } else {
         data?.observations.push(point);
@@ -247,12 +254,56 @@
         places: ordered.map(describePlace), visits: sequence.map(place => numbers.get(place))
       });
     }
-    const { name, race, level, exportedAt } = header;
+    const completed = new Map();
+    const accepted = new Map();
+    const open = new Set();
+    for (const { type, questID, questIds, t, flags } of records) {
+      if (type === 'O') {
+        for (const id of questIds) open.add(id);
+      } else if (type === 'Q' && questID > 0) {
+        if (!completed.has(questID) || (t !== null && (completed.get(questID).t ?? Infinity) > t)) {
+          completed.set(questID, { t, flags });
+        }
+      } else if (type === 'A' && questID > 0) {
+        if (!accepted.has(questID) || (t !== null && (accepted.get(questID).t ?? -1) < t)) {
+          accepted.set(questID, { t });
+        }
+      }
+    }
+
+    const { name, race, faction, level, exportedAt } = header;
     return {
-      character: { name, race, class: header.class, level, updated: exportedAt },
-      sources: ['rosetta-journal'], zones, route, events
+      character: { name, race, faction, class: header.class, level, updated: exportedAt },
+      sources: ['rosetta-journal'], zones, route, events: { deaths, levels }, quests: { completed, accepted, open }
     };
   }
 
-  root.ROSETTA_JOURNEY = { decodeSummary, buildJourney };
+  function chainProgress(chain, journey) {
+    const faction = journey?.character.faction;
+    const otherFaction = faction === 'Alliance' ? 'Horde' : faction === 'Horde' ? 'Alliance' : null;
+    const visible = chain.faction !== otherFaction;
+    const successors = new Set(chain.steps.flatMap(step => step.after));
+    const levels = (journey?.events.levels || []).filter(event => event.t !== null && event.level !== null);
+    const steps = new Map();
+    let done = 0;
+    for (const step of chain.steps) {
+      const turnIns = step.questIds.map(id => journey?.quests.completed.get(id)).filter(Boolean);
+      const timed = turnIns.filter(entry => entry.t !== null && !entry.flags?.includes('b')).sort(timeOrder)[0];
+      if (turnIns.length) {
+        const level = timed ? levels.findLast(event => event.t <= timed.t)?.level ?? null : null;
+        steps.set(step.id, { status: 'done', t: timed?.t ?? null, level,
+          backfilled: !timed && turnIns.some(entry => entry.flags?.includes('b')) });
+        done++;
+      } else if (step.questIds.some(id => journey?.quests.open.has(id))) {
+        steps.set(step.id, { status: 'active' });
+      } else {
+        steps.set(step.id, { status: step.after.every(id => steps.get(id)?.status === 'done') ? 'next' : 'locked' });
+      }
+    }
+    const completed = chain.steps.every(step => successors.has(step.id) || steps.get(step.id).status === 'done');
+    const inProgress = done || [...steps.values()].some(step => step.status === 'active');
+    return { visible, status: completed ? 'completed' : inProgress ? 'inProgress' : 'notStarted', done, steps };
+  }
+
+  root.ROSETTA_JOURNEY = { decodeSummary, buildJourney, chainProgress };
 })(globalThis);

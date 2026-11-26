@@ -83,7 +83,7 @@ local function trimEvents(events, milestones)
             positions = positions - 1
         elseif kind ~= "P" and other > 0 then
             other = other - 1
-            if kind == "Q" or kind == "D" or kind == "L" then removedMilestones = removedMilestones + 1 end
+            if kind == "A" or kind == "Q" or kind == "D" or kind == "L" then removedMilestones = removedMilestones + 1 end
         else
             kept = kept + 1
             events[kept] = event

@@ -3,7 +3,8 @@
 
   const W = WORLD;
   const G = GEO;
-  const { decodeSummary, buildJourney } = ROSETTA_JOURNEY;
+  const C = CHAINS;
+  const { decodeSummary, buildJourney, chainProgress } = ROSETTA_JOURNEY;
   const language = LORE_LANGUAGE;
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({
@@ -21,6 +22,7 @@
   const cityFactions = { 1453: 'alliance', 1454: 'horde', 1455: 'alliance', 1456: 'horde', 1457: 'alliance', 1458: 'horde' };
   const continentName = id => u(id === '1414' ? 'kalimdor' : 'eastern');
   function zoneName(id) {
+    if (Object.hasOwn(continentSlug, id)) return continentName(String(id));
     const lore = W.zones[id]?.name;
     const names = LORE_ZONE_NAMES[id];
     return (language.current === 'zh' && (lore?.zh || names?.zh)) ||
@@ -53,7 +55,7 @@
       onSelect: () => { state.journey = true; }
     },
     lines: { param: 'lines', values: ['current', 'ink', 'dashed', 'footsteps'], default: 'ink',
-      get available() { return Boolean(J); } },
+      get available() { return Boolean(J || route?.chain); } },
     crest: { param: 'crest', values: badgeStyles, default: 'medallion' },
     numbers: { param: 'numbers', values: badgeStyles, default: 'ink', get available() { return Boolean(J); } }
   };
@@ -65,7 +67,7 @@
   const phone = matchMedia('(width < 700px)');
   const state = {
     journey: false,
-    fullSequence: false, paths: new Set(), snap: 'peek', place: null, card: null
+    fullSequence: false, paths: new Set(), snap: 'peek', place: null, card: null, chainStep: null
   };
   const panels = { sagas: 'sagas', glossary: 'glossary', sources: 'sources' };
 
@@ -177,27 +179,33 @@
   function parseRoute(hash) {
     const [path, query] = hashParts(hash);
     const params = new URLSearchParams(query);
-    const saga = /^\/saga\/([\w-]+)$/.exec(path)?.[1];
+    const entry = /^\/(saga|chain)\/([\w-]+)$/.exec(path);
     const panel = params.get('panel');
     const fallback = { continent: continents.ek };
-    if (saga && Object.hasOwn(W.sagas, saga)) {
-      return { base: parseBase(params.get('at') || '') || fallback, saga };
+    if (entry) {
+      const [, type, id] = entry;
+      if (Object.hasOwn(type === 'chain' ? C : W.sagas, id)) {
+        return { base: parseBase(params.get('at') || '') || fallback, [type]: id };
+      }
     }
     const base = parseBase(path || '/ek');
     return { base: base || fallback, missing: !base, panel: Object.hasOwn(panels, panel) ? panel : null };
   }
 
-  function routeHref({ base, saga, panel }) {
+  function routeHref({ base, saga, chain, panel }) {
     const path = basePath(base);
+    const entry = chain ? '/chain/' + chain : saga ? '/saga/' + saga : '';
     const params = new URLSearchParams();
-    if (saga && path !== '/ek') params.set('at', path);
-    if (!saga && panel) params.set('panel', panel);
+    if (entry && path !== '/ek') params.set('at', path);
+    if (!entry && panel) params.set('panel', panel);
     const query = params.toString();
-    return '#' + (saga ? '/saga/' + saga : path) + (query ? '?' + query : '');
+    return '#' + (entry || path) + (query ? '?' + query : '');
   }
 
   let route;
   const panelHref = panel => routeHref({ base: route.base, panel });
+  const mapHref = path => routeHref({ base: parseBase(path), chain: route.chain });
+  const chainLink = chain => anchor(routeHref({ base: route.base, chain: chain.id }), E(chain.title));
   const sagaLink = (id, cls = '') => anchor(routeHref({ base: route.base, saga: id }), E(W.sagas[id].name), cls);
 
   function experimentMenu() {
@@ -336,7 +344,7 @@
     return `<section class="journey-card" aria-labelledby="journey-title">
       <div class="journey-heading"><h2 id="journey-title" tabindex="-1">${ui(J ? 'journey' : 'loadJourney')}</h2>${badge}</div>
       ${J ? `<div class="journey-characters">${character}<button id="journey-remove" type="button">${ui('journeyRemove')}</button></div>
-        ${content}<details id="journey-import">
+        ${content}${route.chain ? '' : journeyChains()}<details id="journey-import">
           <summary>${ui('loadAnotherJourney')}</summary>${form}
         </details>` : form}
       ${storageError ? `<p class="journey-feedback" role="status">${ui('journeyStorageError')}</p>` : ''}
@@ -401,13 +409,14 @@
     const name = esc(zoneName(id));
     const noMap = geo.image ? '' : `<p class="notice">${ui('noZoneMap')}</p>`;
     const journey = zoneJourney(id);
+    const chains = zoneChains(id);
     if (!zone) {
-      return entryHeading(name, esc(continentName(geo.continent)), ui('loreUnavailable')) + noMap + journey;
+      return entryHeading(name, esc(continentName(geo.continent)), ui('loreUnavailable')) + noMap + chains + journey;
     }
     const levels = zone.levels.en.includes('city') ? E(zone.levels) : ui('levelRange', { levels: t(zone.levels) });
     return `${entryHeading(name, E(zone.region), E(zone.summary))}
       <p class="entry-meta">${levels}<span aria-hidden="true"> · </span>${ui(zone.complete ? 'fullEntry' : 'briefEntry')}</p>
-      ${noMap}${journey}
+      ${noMap}${chains}${journey}
       ${zone.storylines.length ? `<details class="story-index"><summary>${ui('storylines')}</summary>
         <ul>${zone.storylines.map(story => `<li>${anchor('#' + zonePath(id, story.id), E(story.title))}</li>`).join('')}</ul></details>` : ''}
       ${!zone.complete ? `<p class="notice">${ui('stubNote')}</p>` : ''}
@@ -431,6 +440,117 @@
         <div class="connection-links">${zone.relatedZoneIds.map(id => zoneLink(id, 'button')).join('')}
         ${zone.sagaIds.map(id => sagaLink(id, 'button')).join('')}</div></section>` : ''}
       ${zone.sourceIds.length ? `<details class="entry-sources"><summary>${ui('sourcesForEntry')}</summary>${sourceList(zone.sourceIds)}</details>` : ''}`;
+  }
+
+  function chainWhy({ signals }) {
+    const { steps, maps, continents, elite, rareElite, boss, dungeonSteps } = signals;
+    return [
+      u('chainWhySteps', { n: steps }),
+      u(maps === 1 ? 'chainWhyMap' : 'chainWhyMaps', { n: maps }),
+      continents > 1 && u('chainWhyContinents', { n: continents }),
+      elite && u(elite === 1 ? 'chainWhyElite' : 'chainWhyElites', { n: elite }),
+      rareElite && u(rareElite === 1 ? 'chainWhyRareElite' : 'chainWhyRareElites', { n: rareElite }),
+      boss && u(boss === 1 ? 'chainWhyBoss' : 'chainWhyBosses', { n: boss }),
+      dungeonSteps && u(dungeonSteps === 1 ? 'chainWhyDungeonStep' : 'chainWhyDungeonSteps', { n: dungeonSteps })
+    ].filter(Boolean).join(' · ');
+  }
+
+  function chainRow(chain, progress) {
+    const { levels, steps } = chain;
+    const next = progress.status === 'inProgress' && ['active', 'next'].map(status =>
+      steps.find(step => progress.steps.get(step.id).status === status)).find(Boolean);
+    const giver = next?.giver;
+    const nextText = next && (giver?.map != null
+      ? ui('chainNextStep', { step: t(next.name), giver: t(giver.name), zone: zoneName(giver.map) })
+      : ui('chainNextStepName', { step: t(next.name) }));
+    const detail = [
+      progress.status !== 'notStarted' && u('chainCount', { done: progress.done, total: steps.length }),
+      levels && u('levelRange', { levels: [...new Set(levels)].join('–') })
+    ].filter(Boolean).join(' · ');
+    return `<li class="chain-row">${chainLink(chain)}${detail ? `<p>${esc(detail)}</p>` : ''}
+      <p class="muted">${esc(chainWhy(chain))}</p>${nextText ? `<p class="chain-next">${nextText}</p>` : ''}</li>`;
+  }
+
+  function journeyChains() {
+    const lists = { inProgress: [], completed: [] };
+    for (const chain of Object.values(C)) {
+      const progress = chainProgress(chain, J);
+      if (progress.visible && lists[progress.status]) lists[progress.status].push(chainRow(chain, progress));
+    }
+    const list = (items, label, empty) => `<h4>${ui(label)}</h4>
+      ${items.length ? `<ul class="chain-rows">${items.join('')}</ul>` : `<p class="muted">${ui(empty)}</p>`}`;
+    return `<section class="journey-chains" aria-labelledby="journey-chains">
+      <h3 id="journey-chains">${ui('questChains')}</h3>
+      ${list(lists.inProgress, 'chainsInProgress', 'noChainsInProgress')}
+      ${list(lists.completed, 'chainsCompleted', 'noChainsCompleted')}</section>`;
+  }
+
+  function zoneChains(id) {
+    const items = Object.values(C).filter(chain => chain.zoneIds.includes(Number(id))).map(chain => {
+      const progress = chainProgress(chain, J);
+      return progress.visible ? chainRow(chain, progress) : '';
+    }).join('');
+    return items ? `<section><h2>${ui('chainsHere')}</h2><ul class="chain-rows">${items}</ul></section>` : '';
+  }
+
+  function chainGroups(chain) {
+    const groups = [];
+    const depth = new Map();
+    for (const [index, step] of chain.steps.entries()) {
+      const level = Math.max(0, ...step.after.map(id => depth.get(id) + 1));
+      depth.set(step.id, level);
+      (groups[level] ||= []).push({ step, n: index + 1 });
+    }
+    return groups;
+  }
+
+  function chainLocation(point) {
+    const name = t(point.name ?? point.label);
+    return point.map == null ? esc(name) : ui('chainAt', { name, zone: zoneName(point.map) });
+  }
+
+  function chainStepCard({ step, n }, progress, note) {
+    const { status, t: time, level, backfilled } = progress;
+    const turnedIn = new Date((time ?? NaN) * 1000);
+    const date = Number.isNaN(turnedIn.getTime()) ? '' : turnedIn.toLocaleDateString(
+      language.current === 'zh' ? 'zh-CN' : 'en', { dateStyle: 'medium' });
+    const turnIn = backfilled ? ui('chainBeforeRosetta') : date ? [
+      ui('chainTurnInDate', { date }), level && ui('chainTurnInLevel', { level })
+    ].filter(Boolean).join(' · ') : '';
+    const endpoints = [['chainGiver', step.giver], ['chainTurnIn', step.turnIn]].filter(([, point]) => point)
+      .map(([label, point]) => `<span class="sr-only">${ui(label)} </span>${chainLocation(point)}`)
+      .join(' <span aria-hidden="true">→</span> ');
+    const goals = step.goals.map(goal =>
+      `<li>${ui('chainGoal_' + goal.kind, { label: t(goal.label) })} <span class="muted">· ${esc(zoneName(goal.map))}</span></li>`).join('');
+    const links = step.questIds.map(id => `<a href="https://www.wowhead.com/forever/quest=${id}" target="_blank"
+      rel="noopener noreferrer">${ui(step.questIds.length > 1 ? 'chainWowheadQuest' : 'chainWowhead', { id })}</a>`);
+    return `<article id="chain-step-${step.id}" class="chain-step">
+      <h3><button type="button" data-chain-step="${step.id}" aria-pressed="false" title="${ui('chainMapStep', { n })}">
+        <span class="chain-number" aria-hidden="true">${n}</span><span class="sr-only">${ui('chainStep', { n })}</span><span>${E(step.name)}</span>
+        ${J ? `<span class="chain-status" data-status="${status}">${ui('chainStatus_' + status)}</span>` : ''}
+      </button></h3>
+      <div class="chain-step-details">
+        ${endpoints ? `<p>${endpoints}</p>` : ''}
+        ${goals ? `<ul>${goals}</ul>` : ''}
+        ${note ? `<p>${rich(note)}</p>` : ''}
+        <p class="chain-step-meta">${turnIn ? `<span>${turnIn}</span>` : ''}${links.join('')}</p>
+      </div></article>`;
+  }
+
+  function chainPage(id) {
+    const chain = C[id];
+    const progress = chainProgress(chain, J);
+    const authored = W.chains[id];
+    const close = `<a class="icon-button chain-close" href="${panelHref(null)}" aria-label="${ui('close')}" title="${ui('close')}">×</a>`;
+    if (!progress.visible) return `<div class="chain-heading">${entryHeading(ui('chainHidden'))}${close}</div>`;
+    const groups = chainGroups(chain).map(group => {
+      const cards = group.map(entry => chainStepCard(entry, progress.steps.get(entry.step.id), authored?.notes[entry.step.id])).join('');
+      return group.length === 1 ? cards : `<div class="chain-parallel" role="group" aria-label="${ui('chainParallel')}">
+        <p>${ui('chainParallel')}</p>${cards}</div>`;
+    }).join('');
+    return `<div class="chain-heading">${entryHeading(E(chain.title), '', esc(chainWhy(chain)))}${close}</div>
+      ${authored?.story.length ? `<section><h2>${ui('readStory')}</h2>${authored.story.map(text => `<p>${rich(text)}</p>`).join('')}</section>` : ''}
+      <section><h2>${ui('chainSteps')}</h2><div class="chain-steps">${groups}</div></section>`;
   }
 
   function sagaPage(id) {
@@ -475,6 +595,7 @@
   }
 
   function paneTitle() {
+    if (route.chain) return chainProgress(C[route.chain], J).visible ? t(C[route.chain].title) : u('questChains');
     if (route.saga) return t(W.sagas[route.saga].name);
     if (route.panel) return u(panels[route.panel]);
     if (route.missing) return u('missing');
@@ -483,9 +604,9 @@
 
   let readingKey;
   function renderReading({ keepScroll = false, focus = false } = {}) {
-    const { base, saga, panel, missing } = route;
+    const { base, saga, chain, panel, missing } = route;
     const journeyStyle = experimentValue(experiments.journey);
-    const key = [basePath(base), saga, panel, missing, language.current, state.journey, state.fullSequence,
+    const key = [basePath(base), saga, chain, panel, missing, language.current, state.journey, state.fullSequence,
       journeyStyle, journeyRevision, importError].join('|');
     const scroller = $('reading-scroll');
     $('reading').classList.toggle('is-overlay', Boolean(saga || panel));
@@ -497,17 +618,18 @@
       const panelBar = saga || panel ? `<div class="panel-bar">
         ${saga ? anchor(panelHref('sagas'), ui('sagas')) : ''}
         <a class="icon-button panel-close" href="${panelHref(null)}" aria-label="${ui('close')}" title="${ui('close')}">×</a></div>` : '';
-      scroller.innerHTML = panelBar + (saga ? sagaPage(saga) : panel ? pages[panel]() :
+      scroller.innerHTML = panelBar + (chain ? chainPage(chain) : saga ? sagaPage(saga) : panel ? pages[panel]() :
         missing ? entryHeading(ui('missing')) + anchor('#/ek', ui('goHome'), 'button') :
         base.zone ? zonePage(base.zone) : continentPage(base.continent, journeyStyle));
       if (saga || panel || missing) scroller.querySelector('.entry-heading').insertAdjacentHTML('afterend', journeyCard());
+      if (chain) scroller.insertAdjacentHTML('beforeend', journeyCard());
       $('journey-summary').value = draft;
       if (J) $('journey-import').open = Boolean(importOpen || importError);
       renderJourneyError();
       readingKey = key;
       if (keepScroll) scroller.scrollTop = previousScroll;
       else scroller.scrollTop = 0;
-      const story = !saga && !panel && base.story && $('story-' + base.story);
+      const story = !chain && !saga && !panel && base.story && $('story-' + base.story);
       if (story && !keepScroll) scroller.scrollTop = story.offsetTop - 8;
       if (focus) (story || $('reading-title')).focus({ preventScroll: true });
     }
@@ -547,7 +669,7 @@
     return `left:${left}%;top:${top}%;width:${right - left}%;height:${bottom - top}%`;
   }
 
-  function pathLayer(positions, style, width, height) {
+  function pathLayer(positions, style, width, height, curved) {
     const segments = [], marks = [];
     const passes = new Map();
     const coords = (x, y) => `${x.toFixed(2)} ${y.toFixed(2)}`;
@@ -558,7 +680,7 @@
       const x = from[0] * width / 100, y = from[1] * height / 100;
       const endX = to[0] * width / 100, endY = to[1] * height / 100;
       const start = `M${coords(x, y)}`, end = coords(endX, endY);
-      if (style === 'current') {
+      if (style === 'current' && !curved) {
         segments.push(`${start}L${end}`);
         continue;
       }
@@ -593,7 +715,7 @@
       segments.push(`${start}Q${coords(x + dx / 2 + bendX, y + dy / 2 + bendY)} ${end}`);
       // Stagger marks on repeat passes and leave room for badges at each end.
       const stagger = pass * 8;
-      if (length < 48 + 2 * stagger) continue;
+      if (style === 'current' || length < 48 + 2 * stagger) continue;
       const count = dashed ? 1 : Math.ceil((length - 40) / 84);
       for (let mark = 1; mark <= count; mark++) {
         const progress = dashed ? 1 - 20 / length : mark / (count + 1);
@@ -635,7 +757,88 @@
     return journey.visits.map(n => locations.get(n));
   }
 
-  function zonePins(id) {
+  function chainMap(chain, progress) {
+    const { zone, continent } = route.base;
+    const pins = [];
+    const points = [];
+    const stops = new Set();
+    const otherContinents = new Set();
+    let previousMap;
+    for (const [index, step] of chain.steps.entries()) {
+      const n = index + 1;
+      const status = state.journey ? progress.steps.get(step.id).status : '';
+      const locations = [
+        [step.giver, step.giver && u('chainGiver') + ' · ' + t(step.giver.name)],
+        ...step.goals.map(goal => [goal, u('chainGoal_' + goal.kind, { label: t(goal.label) })]),
+        [step.turnIn, step.turnIn && u('chainTurnIn') + ' · ' + t(step.turnIn.name)]
+      ];
+      const stepPins = new Map();
+      for (const [point, label] of locations) {
+        if (point?.map == null) continue;
+        const id = String(point.map);
+        const land = G.zones[id]?.continent || (Object.hasOwn(continentSlug, id) ? id : null);
+        const localPoint = [point.x / 10, point.y / 10];
+        if (zone) {
+          if (id !== zone) continue;
+          points.push(localPoint);
+          const key = localPoint.join(',');
+          if (!stepPins.has(key)) stepPins.set(key, { position: localPoint, labels: [] });
+          stepPins.get(key).labels.push(label);
+        } else if (land === continent) {
+          const position = id === land ? localPoint : zoneAnchor(id);
+          if (previousMap !== id || id === land) points.push(position);
+          previousMap = id;
+          if (!stops.has(id)) {
+            stops.add(id);
+            stepPins.set(id, { position, labels: [zoneName(id)] });
+          }
+        } else if (land) {
+          otherContinents.add(land);
+          if (previousMap) points.push(null);
+          previousMap = null;
+        }
+      }
+      for (const { position, labels } of stepPins.values()) {
+        pins.push({ step: step.id, n, position, status, title: u('chainPin', { n, place: labels.join(' · ') }) });
+      }
+    }
+    return { pins, points, stops, otherContinents };
+  }
+
+  function syncChainStep() {
+    for (const element of document.querySelectorAll('[data-chain-step]')) {
+      const selected = Number(element.dataset.chainStep) === state.chainStep;
+      element.setAttribute('aria-pressed', String(selected));
+      element.closest('.chain-step').classList.toggle('is-selected', selected);
+    }
+    for (const element of labels.querySelectorAll('[data-chain-pin]')) {
+      element.setAttribute('aria-pressed', String(Number(element.dataset.chainPin) === state.chainStep));
+    }
+  }
+
+  function selectChainStep(id, fromMap) {
+    const step = C[route.chain].steps.find(step => step.id === id);
+    state.chainStep = id;
+    syncChainStep();
+    if (fromMap) {
+      if (phone.matches && state.snap === 'peek') setSnap('half');
+      const row = $('chain-step-' + id);
+      $('reading-scroll').scrollTop = row.offsetTop - 8;
+      row.querySelector('button').focus({ preventScroll: true });
+      return;
+    }
+
+    const maps = [step.giver, ...step.goals, step.turnIn].map(point => point?.map).filter(Boolean).map(String);
+    const target = maps.find(id => zoneIds.includes(id)) || maps.find(id => Object.hasOwn(continentSlug, id));
+    if (!target) return;
+    if (phone.matches && state.snap === 'full') setSnap('half');
+    const path = Object.hasOwn(continentSlug, target) ? homePath(target) : zonePath(target);
+    if (basePath(route.base) !== path) location.hash = mapHref(path);
+  }
+
+  function zonePins(id, chainLayer) {
+    if (chainLayer) return chainLayer.pins;
+    if (!id) return [];
     const lore = (W.zones[id]?.places || []).filter(hasPoint).map(place => ({
       key: 'lore:' + place.id, position: [place.x, place.y], title: t(place.name), place
     }));
@@ -654,17 +857,17 @@
     return (.25 + .75 * Math.sqrt(questTotals.get(id) / mostQuests)).toFixed(2);
   }
 
-  function zoneShape(id) {
-    const visited = state.journey && zonesVisited.has(id);
-    return `<a href="#${zonePath(id)}" class="zone-shape ${visited ? 'visited' : ''}"
+  function zoneShape(id, chainMap) {
+    const visited = !chainMap && state.journey && zonesVisited.has(id);
+    return `<a href="${mapHref(zonePath(id))}" class="zone-shape ${visited ? 'visited' : ''} ${chainMap?.stops.has(id) ? 'chain-stop' : ''}"
       data-map-zone="${id}" aria-label="${esc(zoneName(id))}" ${visited ? `style="--heat:${zoneHeat(id)}"` : ''}>
       <path d="${G.zones[id].path}"/></a>`;
   }
 
-  function zoneShapes(continent, journeyStyle) {
+  function zoneShapes(continent, journeyStyle, chainMap) {
     const zones = continentZones(continent).filter(id => G.zones[id].path).sort((a, b) => zoneAnchor(a)[1] - zoneAnchor(b)[1]);
     return `<svg id="zone-shapes" class="zone-shapes journey-${journeyStyle}" viewBox="0 0 100 100" preserveAspectRatio="none">
-      ${zones.map(zoneShape).join('')}</svg>`;
+      ${zones.map(id => zoneShape(id, chainMap)).join('')}</svg>`;
   }
 
   function cityMarkers(continent, journeyStyle) {
@@ -672,7 +875,7 @@
       .sort((a, b) => zoneAnchor(a)[1] - zoneAnchor(b)[1]).map(id => {
         const shaded = state.journey && journeyStyle === 'shade' && zonesVisited.has(id);
         const faction = cityFactions[id];
-        return `<a class="city-marker ${shaded ? 'visited' : ''}" href="#${zonePath(id)}" data-map-zone="${id}"
+        return `<a class="city-marker ${shaded ? 'visited' : ''}" href="${mapHref(zonePath(id))}" data-map-zone="${id}"
           data-faction="${faction}" aria-label="${esc(zoneName(id))}" ${shaded ? `style="--heat:${zoneHeat(id)}"` : ''}>
           <span class="crest-face"><img src="${asset('img/' + faction + '.jpg')}" alt="" draggable="false"></span></a>`;
       }).join('');
@@ -702,11 +905,14 @@
     const local = geo && geo.image;
     const layout = zone && !local ? zoneRect(zone) : wholeMap;
     const key = [continent, zone, language.current, state.journey, state.fullSequence, state.paths.has(zone),
-      journeyStyle, journeyRevision].join('|');
+      journeyStyle, journeyRevision, route.chain].join('|');
     if (key !== mapKey) {
+      const chain = route.chain && C[route.chain];
+      const progress = chain && chainProgress(chain, J);
+      const chainLayer = progress?.visible ? chainMap(chain, progress) : null;
       const name = zone ? zoneName(zone) : continentName(continent);
       map.setAttribute('aria-label', u('mapLabel', { zone: name }));
-      const points = zone ? zoneRoutePoints(zone) :
+      const points = chainLayer ? chainLayer.points : zone ? zoneRoutePoints(zone) :
         state.journey && journeyStyle === 'order' ? continentRoutePoints(continent) : [];
       const path = points.length > 1 ? `<svg class="map-path ${zone ? 'zone-path' : 'continent-path'}" aria-hidden="true"></svg>` : '';
       const tile = zone && !local ? `<div class="zone-tile ${geo.image ? '' : 'missing-tile'}" style="${rectStyle(layout)}">
@@ -716,8 +922,8 @@
       if (artwork.getAttribute('src') !== source) artwork.setAttribute('src', source);
       artwork.hidden = false;
       const overlays = $('map-overlays');
-      overlays.innerHTML = zone ? (tile || path) : path + zoneShapes(continent, journeyStyle);
-      travelPath = path ? { element: overlays.querySelector('.map-path'), points, layout } : null;
+      overlays.innerHTML = zone ? (tile || path) : path + zoneShapes(continent, journeyStyle, chainLayer);
+      travelPath = path ? { element: overlays.querySelector('.map-path'), points, layout, curved: Boolean(chainLayer && !zone) } : null;
       if ((drawnZone !== zone || drawnContinent !== continent) &&
           !matchMedia('(prefers-reduced-motion: reduce)').matches) {
         frame.getAnimations().forEach(animation => animation.cancel());
@@ -725,26 +931,34 @@
       }
       drawnZone = zone;
       drawnContinent = continent;
-      const badges = zone ? [] : zoneBadges(continent, journeyStyle);
-      const pins = zone ? zonePins(zone) : [];
+      const badges = zone || chainLayer ? [] : zoneBadges(continent, journeyStyle);
+      const pins = zonePins(zone, chainLayer);
       labels.innerHTML = `<svg id="leader-lines" class="leader-lines" aria-hidden="true"></svg>
         ${badges.map(badge => `<span class="zone-badge journey-${journeyStyle}" aria-hidden="true">${badge.text}</span>`).join('')}
-        ${zone ? '' : cityMarkers(continent, journeyStyle)}
-        ${pins.map(pin => `<button class="map-pin ${pin.journey ? 'journey-pin' : 'lore-pin'}" data-pin="${pin.key}"
+        ${zone ? '' : cityMarkers(continent, chainLayer ? '' : journeyStyle)}
+        ${pins.map(pin => pin.step ? `<button class="map-pin journey-pin chain-pin" data-chain-pin="${pin.step}"
+          data-status="${pin.status}" aria-controls="chain-step-${pin.step}" aria-pressed="false"
+          aria-label="${esc(pin.title)}" title="${esc(pin.title)}"><span aria-hidden="true">${pin.n}</span></button>`
+          : `<button class="map-pin ${pin.journey ? 'journey-pin' : 'lore-pin'}" data-pin="${pin.key}"
           aria-label="${esc(pin.title)}" aria-controls="map-popover" aria-expanded="false">
           <span aria-hidden="true" ${pin.size ? `style="--dot-size:${pin.size}px"` : ''}>${pin.journey ? pin.place.n : ''}</span></button>`).join('')}`;
       cityNodes = [...labels.querySelectorAll('.city-marker')];
       badgeNodes = [...labels.querySelectorAll('.zone-badge')].map((element, i) => ({ ...badges[i], element }));
-      pinNodes = [...labels.querySelectorAll('[data-pin]')].map((element, i) => ({
+      pinNodes = [...labels.querySelectorAll('.map-pin')].map((element, i) => ({
         ...pins[i], element, point: innerPoint(pins[i].position, layout)
       }));
-      $('map-controls').innerHTML = zone ? anchor('#' + homePath(continent),
-        ui('backContinent', { continent: continentName(continent) }), 'map-back') : '';
+      const mapControls = $('map-controls');
+      const back = zone ? anchor(mapHref(homePath(continent)),
+        ui(chainLayer ? 'chainZoneOverview' : 'backContinent', { continent: continentName(continent) }), 'map-back') : '';
+      const markers = [...(chainLayer?.otherContinents || [])].map(id => anchor(mapHref(homePath(id)),
+        ui('chainContinues', { continent: continentName(id) }), 'map-back chain-continuation'));
+      mapControls.innerHTML = back + markers.join('');
       mapKey = key;
       hideTip();
       hotZone = null;
       renderPlace();
     }
+    syncChainStep();
     requestPaint();
   }
 
@@ -789,7 +1003,7 @@
 
   function positionPath() {
     if (!travelPath) return;
-    const { element, points, layout: [left, top, right, bottom] } = travelPath;
+    const { element, points, layout: [left, top, right, bottom], curved } = travelPath;
     const style = experimentValue(experiments.lines);
     if (travelPath.width === camera.width && element.dataset.style === style) return;
     travelPath.width = camera.width;
@@ -797,7 +1011,7 @@
     // The SVG has no viewBox. Its user units are CSS pixels, even within a fallback zone tile.
     const width = camera.width * (right - left) / 100;
     const height = camera.width / aspect * (bottom - top) / 100;
-    element.innerHTML = pathLayer(points, style, width, height);
+    element.innerHTML = pathLayer(points, style, width, height, curved);
   }
 
   function requestPaint() {
@@ -832,11 +1046,20 @@
     return offsets.sort((a, b) => Math.hypot(...a) - Math.hypot(...b));
   }
   const pinOffsets = markerOffsets(3, 3, 15, 15);
+  const chainPinOffsets = markerOffsets(6, 5, 35, 35);
 
   function positionMarkers() {
     const markers = badgeNodes.length ? badgeNodes : pinNodes;
     const occupied = [];
     const leaders = [];
+    if (route.chain) {
+      const bounds = map.getBoundingClientRect();
+      for (const control of $('map-controls').children) {
+        const rect = control.getBoundingClientRect();
+        occupied.push({ x: rect.left - bounds.left + rect.width / 2, y: rect.top - bounds.top + rect.height / 2,
+          w: rect.width / 2, h: rect.height / 2 });
+      }
+    }
     // Crests stay at city centers while journey badges make room around their hit targets.
     for (const element of cityNodes) {
       const [x, y] = screenPoint(zoneAnchor(element.dataset.mapZone)).map(Math.round);
@@ -855,7 +1078,7 @@
       const fitX = candidate => clamp(candidate, w + 3, viewport.width - w - 3);
       const fitY = candidate => clamp(candidate, h + 3, viewport.height - h - 3);
       let placement = { x: fitX(x), y: fitY(y), w, h };
-      for (const [dx, dy] of pinOffsets) {
+      for (const [dx, dy] of marker.step ? chainPinOffsets : pinOffsets) {
         const cx = fitX(x + dx);
         const cy = fitY(y + dy);
         if (occupied.every(other => Math.abs(other.x - cx) >= other.w + w + 3 || Math.abs(other.y - cy) >= other.h + h + 1)) {
@@ -896,7 +1119,7 @@
       <button class="icon-button" data-place-close aria-label="${ui('close')}">×</button></div>` : `<strong class="tip-name">${esc(zoneName(id))}</strong>`;
     return `${meta ? `<span class="eyebrow">${meta}</span>` : ''}${heading}
       ${brief.tagline ? `<p>${E(brief.tagline)}</p>` : ''}${journey}
-      ${card ? anchor('#' + zonePath(id), ui(lore ? 'readZone' : 'openZone'), 'button card-link') : ''}`;
+      ${card ? anchor(mapHref(zonePath(id)), ui(lore ? 'readZone' : 'openZone'), 'button card-link') : ''}`;
   }
 
   function showTip(id, [x, y], below = false) {
@@ -929,7 +1152,9 @@
     const pin = pinNodes.find(item => item.key === state.place);
     const card = !route.base.zone && state.card;
     popover.hidden = !pin && !card;
-    for (const item of pinNodes) item.element.setAttribute('aria-expanded', String(item === pin));
+    for (const item of pinNodes) {
+      if (!item.step) item.element.setAttribute('aria-expanded', String(item === pin));
+    }
     setHot(card || null);
     if (card) {
       popover.innerHTML = zoneBrief(card, true);
@@ -998,8 +1223,11 @@
     const cleanHash = consumeJourneyFragment();
     route = parseRoute(cleanHash);
     const moved = previous.base.zone !== route.base.zone || previous.base.continent !== route.base.continent;
-    const opens = route.saga !== previous.saga || route.panel !== previous.panel;
-    const hasPanel = Boolean(route.saga || route.panel);
+    const sameChain = route.chain && route.chain === previous.chain;
+    const focusedStep = sameChain && document.activeElement?.dataset.chainStep;
+    if (!sameChain) state.chainStep = null;
+    const opens = route.chain !== previous.chain || route.saga !== previous.saga || route.panel !== previous.panel;
+    const hasPanel = Boolean(route.chain || route.saga || route.panel);
     const hasReading = route.base.zone || hasPanel || route.missing;
     $('entry-dialog').close();
     closePlace();
@@ -1010,8 +1238,9 @@
     }
     const focus = opens || moved || previous.base.story !== route.base.story;
     renderHeader();
-    renderReading({ focus: focus && (!phone.matches || state.snap !== 'peek') });
+    renderReading({ keepScroll: Boolean(sameChain), focus: focus && !sameChain && (!phone.matches || state.snap !== 'peek') });
     renderMap();
+    if (focusedStep) document.querySelector(`[data-chain-step="${focusedStep}"]`)?.focus({ preventScroll: true });
     if (focus && phone.matches && state.snap === 'peek') map.focus({ preventScroll: true });
     if (hash !== cleanHash && importError) focusJourneyImport();
   }
@@ -1173,6 +1402,8 @@
       renderReading({ keepScroll: true });
       document.querySelector(`[data-sequence="${target.dataset.sequence}"]`).focus({ preventScroll: true });
       renderMap();
+    } else if (target.dataset.chainPin || target.dataset.chainStep) {
+      selectChainStep(Number(target.dataset.chainPin || target.dataset.chainStep), Boolean(target.dataset.chainPin));
     } else if (target.dataset.pin) {
       openPlace(target.dataset.pin, !map.contains(target));
     } else if (target.dataset.gloss || target.dataset.figure) {
@@ -1181,14 +1412,14 @@
       $('entry-dialog').close();
     } else if (target.hasAttribute('data-place-close')) {
       closePlace(true);
-    } else if (target.matches('a[href^="#/"]') && target.hash === location.hash && route.base.story && !route.panel && !route.saga) {
+    } else if (target.matches('a[href^="#/"]') && target.hash === location.hash && route.base.story && !route.panel && !route.saga && !route.chain) {
       const story = $('story-' + route.base.story);
       $('reading-scroll').scrollTop = story.offsetTop - 8;
     }
   });
 
   document.addEventListener('change', event => {
-    if (event.target.id === 'continent-select') location.hash = '#/' + event.target.value;
+    if (event.target.id === 'continent-select') location.hash = mapHref('/' + event.target.value);
     if (event.target.id === 'journey-character' && summaries.has(event.target.value)) {
       selectJourney(event.target.value);
       saveJourneys();
@@ -1231,7 +1462,7 @@
       closePlace(true);
     } else if (!tip.hidden) {
       hideTip();
-    } else if (route.panel || route.saga) {
+    } else if (route.panel || route.saga || route.chain) {
       location.hash = panelHref(null);
     }
   });
@@ -1256,7 +1487,7 @@
   restoreJourneys();
   route = parseRoute(consumeJourneyFragment());
   renderHeader();
-  setSnap(phone.matches && (route.base.zone || route.saga || route.panel || route.missing) ? 'half' : 'peek');
+  setSnap(phone.matches && (route.base.zone || route.saga || route.chain || route.panel || route.missing) ? 'half' : 'peek');
   resizeMap();
   renderReading();
   renderMap();

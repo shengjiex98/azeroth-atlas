@@ -29,6 +29,14 @@ class AtlasChainsTest(unittest.TestCase):
             self.assertIsInstance(pick["firstQuest"], int)
             self.assertTrue(pick["why"].strip())
 
+    def test_summary_reads_open_quests_and_ignores_accepts(self):
+        lines = ["H|1|Lancet", "A|1||||8", "Q|2||||7|", "O|9,10"]
+        encoded = base64.urlsafe_b64encode("\n".join(lines).encode()).decode().rstrip("=")
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "summary"
+            path.write_text("RSJ1." + encoded)
+            self.assertEqual(read_journey(path, "Lancet"), ({7}, {9, 10}))
+
     def test_table_names_the_pick(self):
         chains = rank_chains([profile([quest(5, nextQuestInChain=7), quest(7)])], {})
         self.assertTrue(list(markdown(chains, picks={5: "five"}))[-1].endswith("| five |"))

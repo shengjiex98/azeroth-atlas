@@ -1,6 +1,6 @@
 # Rosetta
 
-Version 1.5.1
+Version 1.6.0
 
 Exports the logged-in character's data to the account SavedVariables file
 `WTF/Account/<account>/SavedVariables/Rosetta.lua`, under `RosettaDB.characters["<Name>-<Realm>"]`.

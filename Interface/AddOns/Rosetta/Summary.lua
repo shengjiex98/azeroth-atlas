@@ -1,6 +1,6 @@
 local ADDON, ns = ...
 
-local INDEX_VERSION = 1
+local INDEX_VERSION = 2
 local SIZE_LIMIT = 120 * 1024
 local PREFIX = "RSJ1."
 local ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
@@ -55,7 +55,7 @@ function ns.indexJournalEvent(index, kind, stamp, map, x, y, detail, level, back
             zone = zoneAt(index, map)
         end
     end
-    if kind == "Q" or kind == "D" or kind == "L" then
+    if kind == "A" or kind == "Q" or kind == "D" or kind == "L" then
         if kind == "Q" then
             if detail then index.seenQuests[detail] = true end
             if zone then zone.quests = zone.quests + 1 end
@@ -110,7 +110,7 @@ function ns.initSummaryIndex(journal)
             local detail
             if kind == "S" then
                 detail = rest:gsub("[|\r\n]", "")
-            elseif kind == "Q" or kind == "D" or kind == "L" then
+            elseif kind == "A" or kind == "Q" or kind == "D" or kind == "L" then
                 detail = tonumber(rest:match("^[^|]*"))
             end
             if kind == "D" or kind == "L" then level = detail or level end
@@ -172,10 +172,12 @@ local function buildMilestonesAndRoute(index, backfill)
         return a < b
     end)
 
-    local milestones, visits, previousMap = {}, {}, nil
+    local milestones, visits, accepts, previousMap = {}, {}, {}, nil
     for i, position in ipairs(order) do
         local entry = index.milestones[position]
-        milestones[i] = entry[1]
+        local line = entry[1]
+        milestones[i] = line
+        if line:sub(1, 2) == "A|" then accepts[#accepts + 1] = i end
         local map = entry[4]
         if map and map ~= previousMap then
             visits[#visits + 1] = map .. ":"
@@ -187,14 +189,14 @@ local function buildMilestonesAndRoute(index, backfill)
         visits[#visits] = nil
     end
     if firstTimed then visits[#visits + 1] = concat(index.visits, ",") end
-    return concat(milestones, "\n"), "R|" .. concat(visits, ",")
+    return milestones, "R|" .. concat(visits, ","), accepts
 end
 
 local function build(record, level)
     local journal = record.journal
     local index, info = journal.summaryIndex, record.info or {}
     local metadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
-    local version = ns.U.get(metadata, ADDON, "Version") or "1.4.0"
+    local version = ns.U.get(metadata, ADDON, "Version") or "1.6.0"
     if level then level = math.max(level, info.level or 0) end
     local start = { concat({ "H", 1, field(info.name), field(info.realm), field(info.race), field(info.class),
         field(info.faction), field(level or info.level), time(), field(version) }, "|") }
@@ -203,11 +205,18 @@ local function build(record, level)
         start[#start + 1] = concat({ "Z", map, z.first or "", z.seconds, z.quests, z.kills,
             z.deaths, z.min or "", z.max or "" }, "|")
     end
-    local milestones, route = buildMilestonesAndRoute(index, journal.backfill or {})
+    local milestones, route, accepts = buildMilestonesAndRoute(index, journal.backfill or {})
     start[#start + 1] = route
+    local open = {}
+    for _, quest in ipairs(record.quests or {}) do
+        local id = quest.questID
+        if type(id) == "number" and id > 0 and id % 1 == 0 then open[id] = true end
+    end
+    if next(open) then start[#start + 1] = "O|" .. concat(sortedKeys(open), ",") end
 
     local cellLines, labelLines, lowActivity = {}, {}, {}
-    local bytes = #concat(start, "\n") + (milestones ~= "" and #milestones + 1 or 0)
+    local bytes = #concat(start, "\n")
+    for _, line in ipairs(milestones) do bytes = bytes + #line + 1 end
     for _, key in ipairs(sortedKeys(journal.cells)) do
         local cell = journal.cells[key]
         local line = concat({ "C", (key:gsub(":", "|")), cell.s, cell.kx, cell.k, cell.qx,
@@ -234,10 +243,16 @@ local function build(record, level)
     local function transportSize(textBytes)
         return #PREFIX + math.ceil(textBytes * 4 / 3)
     end
-    local droppedLabels, droppedCells = 0, 0
+    local droppedLabels, droppedAccepts, droppedCells = 0, 0, 0
     if transportSize(bytes + labelBytes) > SIZE_LIMIT then
         droppedLabels = #labelLines
         labelLines = {}
+        while droppedAccepts < #accepts and transportSize(bytes) > SIZE_LIMIT do
+            droppedAccepts = droppedAccepts + 1
+            local i = accepts[droppedAccepts]
+            bytes = bytes - #milestones[i] - 1
+            milestones[i] = false
+        end
         while droppedCells < #lowActivity and transportSize(bytes) > SIZE_LIMIT do
             droppedCells = droppedCells + 1
             local i = lowActivity[droppedCells]
@@ -249,11 +264,14 @@ local function build(record, level)
         if line then start[#start + 1] = line end
     end
     for _, line in ipairs(labelLines) do start[#start + 1] = line end
-    if milestones ~= "" then start[#start + 1] = milestones end
+    for _, line in ipairs(milestones) do
+        if line then start[#start + 1] = line end
+    end
     local transport = base64url(concat(start, "\n"))
     local notice
-    if droppedLabels + droppedCells > 0 then
-        notice = ("Summary omitted %d subzone labels and %d low-activity cells."):format(droppedLabels, droppedCells)
+    if droppedLabels + droppedAccepts + droppedCells > 0 then
+        notice = ("Summary omitted %d subzone labels, %d quest accepts, and %d low-activity cells.")
+            :format(droppedLabels, droppedAccepts, droppedCells)
     end
     if #transport > SIZE_LIMIT then
         notice = (notice and notice .. " " or "") .. "Summary still exceeds 120 KB."

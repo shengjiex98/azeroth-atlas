@@ -444,7 +444,7 @@ local function cell(seconds, killXP, kills, questXP, otherXP)
 end
 
 local function loginWith(events, cells)
-    local fixture = { v = 1, enabled = false, events = events, cells = cells }
+    local fixture = { v = 1, enabled = false, events = events, cells = cells, summaryIndex = { version = 1 } }
     RosettaDB = { characters = { ["Tester-TestRealm"] = { journal = fixture } } }
     ns = loadAddon()
     fire("PLAYER_LOGIN")
@@ -462,22 +462,26 @@ journal = loginWith({
     "Q|1700000010|1426|975|50|42|8",
     "L|1700000030|1426|975|50|7",
     "D|1700000020|1426|975|50|6",
+    "A|1700000015|1426|975|50|44",
 }, {
     ["1426:19:1"] = cell(25, 50, 2, 8, 1),
     ["1426:20:1"] = cell(5, 10, 1),
     ["1426:8:9"] = cell(3),
 })
 
+ns.record.quests = { { questID = 44 }, { questID = 43 }, { questID = 44 } }
 fire("PLAYER_LOGOUT")
 local transport = ns.record.summary
 local decoded = table.concat({
-    "H|1|Tester|Realm|Dwarf|Hunter|Alliance|7|1700000040|1.4.0",
+    "H|1|Tester|Realm|Dwarf|Hunter|Alliance|7|1700000040|1.6.0",
     "Z|1426|1700000000|33|1|3|1|6|7",
     "R|1426:1700000000",
+    "O|43,44",
     "C|1426|19|1|30|60|3|8|1|1700000000",
     "C|1426|8|9|3|0|0|0|0|",
     "S|1426|19|1|Nørth Road",
     "Q|1700000010|1426|975|50|42|",
+    "A|1700000015|1426|975|50|44",
     "D|1700000020|1426|975|50|6",
     "L|1700000030|1426|975|50|7",
 }, "\n")
@@ -487,6 +491,10 @@ report("PASS v1 summary, UTF-8, field cleanup, migration, and ordering")
 report("Fixture transport " .. transport)
 report("Decoded fixture\n" .. decoded)
 
+local log = { 44, 43 }
+C_QuestLog.GetNumQuestLogEntries = function() return #log end
+C_QuestLog.GetInfo = function(index) return { questID = log[index] } end
+ns.record.quests = {}
 ns.record.summary = nil
 SlashCmdList.ROSETTA("export")
 local exportFrame, edit, close
@@ -527,6 +535,10 @@ eq(SLASH_ROSETTAEXPORT1, "/rx", "export shortcut")
 RosettaExport()
 assert(exportFrame.shown, "key binding opens the export")
 exportFrame:Hide()
+log = {}
+SlashCmdList.ROSETTAEXPORT("")
+assert(not decode(ns.record.summary):find("\nO|", 1, true), "empty log omitted even before collector debounce")
+exportFrame:Hide()
 report("PASS export saves, selects, and closes, including on copy; /rx and the key binding open it")
 
 local labels = journal.summaryIndex.labels
@@ -534,7 +546,7 @@ local counts = labels["1426:19:1"]
 labels["1426:19:1"] = { [string.rep("Long Label ", 10000)] = 1 }
 local labelsOnly = ns.saveSummary()
 assert(decode(labelsOnly):find("C|1426|8|9|3|0|0|0|0|", 1, true), "cold cells kept when dropping labels is enough")
-assert(ns.record.summaryNotice:match("1 subzone labels and 0 low%-activity cells"), "label-only pruning reported")
+assert(ns.record.summaryNotice:match("1 subzone labels, 0 quest accepts, and 0 low%-activity cells"), "label-only pruning reported")
 labels["1426:19:1"] = counts
 
 local completed = { 42, 18, 19, 20 }
@@ -542,7 +554,7 @@ for id = 100, 129 do completed[#completed + 1] = id end
 C_QuestLog.GetAllCompletedQuestIDs = function() return { unpack(completed) } end
 fire("QUEST_TURNED_IN", 42, 0)
 advance(1)
-eq(#journal.events, 7, "no backfill when QuestieDB is absent")
+eq(#journal.events, 8, "no backfill when QuestieDB is absent")
 
 local lookedUp, projected = {}, 0
 LibQuestieDB = {
@@ -581,9 +593,9 @@ eq(lookedUp[42], nil, "already journaled quest skipped")
 eq(lookedUp[129], nil, "backfill yields after a batch")
 advance(0)
 eq(lookedUp[129], 1, "backfill resumes on a later frame")
-eq(journal.events[8], "Q||1433|250|450|18|b", "preferred object finisher and Era projection")
-eq(journal.events[9], "Q||1426|0|1000|19|b", "fallback first spawn accepts map edges")
-eq(journal.events[10], "Q||1433|250|450|20|b", "object finisher")
+eq(journal.events[9], "Q||1433|250|450|18|b", "preferred object finisher and Era projection")
+eq(journal.events[10], "Q||1426|0|1000|19|b", "fallback first spawn accepts map edges")
+eq(journal.events[11], "Q||1433|250|450|20|b", "object finisher")
 assert(ns.journalStatus():find("backfill skipped 30", 1, true))
 
 local backfilled = decode(ns.saveSummary())
@@ -594,6 +606,7 @@ assert(backfilled:find(table.concat({
     "Q||1433|250|450|20|b",
     "Q||1426|0|1000|19|b",
     "Q|1700000010|1426|975|50|42|",
+    "A|1700000015|1426|975|50|44",
 }, "\n"), 1, true), "backfilled quests sorted by quest level and ID")
 
 local beforeProjection = projected
@@ -604,7 +617,7 @@ fire("PLAYER_LOGIN")
 advance(1)
 advance(0)
 advance(0)
-eq(journal.events[11], "Q||1433|300|450|21|b", "native Forever coordinates stay in the supplied frame")
+eq(journal.events[12], "Q||1433|300|450|21|b", "native Forever coordinates stay in the supplied frame")
 eq(projected, beforeProjection, "no second projection")
 for id, count in pairs(lookedUp) do eq(count, 1, "cached lookup " .. id) end
 eq(lookedUp[21], 1, "new completed quest backfilled")
@@ -645,6 +658,18 @@ assert(longTransport and ms < 250, ("200,000-event build took %.1f ms"):format(m
 report(("200,000-event build took %.2f ms, transport %.1f KB"):format(ms, #longTransport / 1024))
 report(ns.journalStatus())
 
+local accepts = {}
+for id = 1, 5000 do accepts[id] = ("A|%d|1426|975|50|%d"):format(EPOCH + id, id) end
+local acceptBudget = loginWith(accepts, { ["1426:8:9"] = cell(3) })
+local acceptTransport = ns.saveSummary()
+local acceptText = decode(acceptTransport)
+assert(#acceptTransport <= 120 * 1024, "accepts can be pruned to fit")
+assert(acceptText:find("C|1426|8|9|3|0|0|0|0|", 1, true), "cold cells kept when dropping accepts is enough")
+assert(not acceptText:find("A|1700000001|", 1, true), "oldest accept dropped first")
+assert(acceptText:find("A|1700005000|1426|975|50|5000", 1, true), "the newest accept survives")
+assert(ns.record.summaryNotice:match("[1-9]%d* quest accepts, and 0 low%-activity cells"), "accept-only pruning reported")
+assert(#acceptBudget.events == 5000, "pruning leaves the journal intact")
+
 local coldCells = {}
 for map = 1501, 1515 do
     for cx = 0, 19 do
@@ -658,6 +683,7 @@ coldCells["1426:0:1"] = cell(29, 0, 0, 1)
 local budgetEvents = {
     "S|1700000000|1426|0|0|North Road",
     "Q|1700000001|1426|0|0|42|8",
+    "A|1700000002|1426|0|0|44",
 }
 journal = loginWith(budgetEvents, coldCells)
 -- Cell and zone lines together need more than 120 KB.
@@ -665,12 +691,13 @@ local budgetTransport = ns.saveSummary()
 assert(#budgetTransport <= 120 * 1024, "transport under hard pruning threshold when possible")
 local budgetText = decode(budgetTransport)
 assert(not budgetText:find("\nS|", 1, true), "labels dropped before low-activity cells")
+assert(not budgetText:find("\nA|", 1, true), "accepts dropped before low-activity cells")
 assert(budgetText:find("C|1426|0|0|30|0|0|0|0|1700000000", 1, true), "30-second cell retained")
 assert(budgetText:find("C|1426|0|1|29|0|0|1|0|", 1, true), "XP cell retained")
 assert(budgetText:find("Q|1700000001|1426|0|0|42|", 1, true), "quest milestone retained")
-assert(ns.record.summaryNotice:match("1 subzone labels and [1-9]%d* low%-activity cells"), "pruning reported")
+assert(ns.record.summaryNotice:match("1 subzone labels, 1 quest accepts, and [1-9]%d* low%-activity cells"), "pruning reported")
 for _, data in pairs(coldCells) do data.s = 30 end
 assert(#ns.saveSummary() > 120 * 1024, "required data can exceed the pruning threshold")
 assert(ns.record.summaryNotice:find("still exceeds 120 KB", 1, true))
-report("PASS size budget drops labels, then low-activity cells, and reports a remaining oversize export")
+report("PASS size budget drops labels, then accepts, then low-activity cells, and reports a remaining oversize export")
 report("All Rosetta journal tests passed.")

@@ -142,6 +142,8 @@ local function export()
         return
     end
     runCollector("info")
+    dirty.quests = nil
+    runCollector("quests")
     local transport = ns.saveSummary(announcedLevel)
     if transport then
         ns.showSummaryExport(transport)
