@@ -10,7 +10,7 @@ WoW: Forever. [Open the Azeroth Atlas](https://shengjiex98.github.io/azeroth-atl
    `Interface/AddOns/` folder. The installed addon should be at
    `Interface/AddOns/Rosetta/`.
 2. Play with Rosetta enabled. When you want to see your journey, run
-   `/rosetta export` in game and press Ctrl+C to copy the full `RSJ1.` summary.
+   `/rosetta export` in game and press Ctrl+C (Cmd+C on a Mac) to copy the full `RSJ1.` summary.
 3. Open the atlas, choose **Your journey**, paste the summary, and select **Load**.
    If a journey is already loaded, choose **Load another summary** in the journey
    card. You can also open
@@ -26,7 +26,7 @@ character picker to switch journeys or **Remove** to delete the selected summary
 | --- | --- |
 | `/rosetta` | Opens the addon info page and shows export status. |
 | `/rosetta snap` or `/csnap` | Rebuilds the character snapshot and prints timing and errors. |
-| `/rosetta export` | Opens the journey summary for copying. |
+| `/rosetta export` | Opens the journey summary for copying; Ctrl+C (Cmd+C on a Mac) copies it and closes the window. |
 | `/rosetta journal off` or `/rosetta journal on` | Pauses or resumes journey recording. |
 | `/rosetta journal status` or `/rosetta journal` | Shows the journal status. |
 

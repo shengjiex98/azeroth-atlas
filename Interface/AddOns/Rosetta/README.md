@@ -1,6 +1,6 @@
 # Rosetta
 
-Version 1.4.0
+Version 1.4.1
 
 Exports the logged-in character's data to the account SavedVariables file
 `WTF/Account/<account>/SavedVariables/Rosetta.lua`, under `RosettaDB.characters["<Name>-<Realm>"]`.
@@ -51,7 +51,7 @@ located.
 - Data reaches disk only on `/reload`, logout, or exit.
 - `/rosetta` opens the info page (also under Options > AddOns > Rosetta): export status per section.
 - `/rosetta snap` (or `/csnap`) rebuilds the snapshot sections and prints per-section cost and errors.
-- `/rosetta export` opens the selected copy string. Press Ctrl+C and paste it into the Azeroth Atlas.
+- `/rosetta export` opens the selected copy string. Ctrl+C (Cmd+C on a Mac) copies it and closes the window; paste it into the Azeroth Atlas.
 - `/rosetta journal off` and `/rosetta journal on` pause and resume recording.
 - `/rosetta journal status` (or `/rosetta journal`) shows the journal's event count, cell count, recording state, estimated SavedVariables size, and backfill skip count.
 - Open the bank and each profession window once to capture `bank` and `recipes`.

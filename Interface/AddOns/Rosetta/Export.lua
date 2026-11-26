@@ -2,6 +2,17 @@ local _, ns = ...
 
 local frame, edit
 
+-- Mac clients copy with Cmd, which WoW reports as the meta key.
+local function copyHint()
+    local mac = IsMacClient and IsMacClient()
+    return (mac and "Cmd+C" or "Ctrl+C") .. " copies and closes. Paste into the Azeroth Atlas."
+end
+
+local function isCopy(key)
+    if key ~= "C" then return false end
+    return (IsControlKeyDown and IsControlKeyDown()) or (IsMetaKeyDown and IsMetaKeyDown()) or false
+end
+
 local function create()
     frame = CreateFrame("Frame", "RosettaExportFrame", UIParent, "BackdropTemplate")
     frame:SetSize(480, 184)
@@ -20,7 +31,7 @@ local function create()
 
     local hint = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
     hint:SetPoint("TOP", 0, -12)
-    hint:SetText("Ctrl+C to copy, then paste into the Azeroth Atlas")
+    hint:SetText(copyHint())
 
     local scroll = CreateFrame("ScrollFrame", "RosettaExportScrollFrame", frame, "UIPanelScrollFrameTemplate")
     scroll:SetPoint("TOPLEFT", 12, -34)
@@ -31,6 +42,10 @@ local function create()
     edit:SetFontObject(ChatFontNormal)
     edit:SetSize(436, 112)
     edit:SetScript("OnEscapePressed", function() frame:Hide() end)
+    -- Hiding inside the key handler would clear focus before the edit box copies, so wait a frame.
+    edit:SetScript("OnKeyDown", function(_, key)
+        if isCopy(key) then C_Timer.After(0, function() frame:Hide() end) end
+    end)
     scroll:SetScrollChild(edit)
     frame:SetScript("OnHide", function()
         edit:ClearFocus()

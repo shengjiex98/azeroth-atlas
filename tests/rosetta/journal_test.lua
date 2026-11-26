@@ -498,7 +498,7 @@ end
 eq(ns.record.summary, transport, "export saves the summary")
 assert(exportFrame.movable and exportFrame.shown and edit.multiline and edit.focus)
 eq(UISpecialFrames[1], exportFrame.name, "frame closes with Escape when EditBox loses focus")
-eq(exportFrame.label.text, "Ctrl+C to copy, then paste into the Azeroth Atlas", "copy hint")
+eq(exportFrame.label.text, "Ctrl+C copies and closes. Paste into the Azeroth Atlas.", "copy hint")
 eq(edit.text, transport, "copy text")
 eq(edit.highlighted, transport, "copy selection")
 edit.scripts.OnEscapePressed(edit)
@@ -507,7 +507,20 @@ SlashCmdList.ROSETTA("export")
 eq(close.text, "Close", "close label")
 close.scripts.OnClick(close)
 assert(not exportFrame.shown)
-report("PASS export saves, selects, and closes")
+SlashCmdList.ROSETTA("export")
+edit.scripts.OnKeyDown(edit, "C")
+advance(0)
+assert(exportFrame.shown, "plain C does not close")
+for _, modifier in ipairs({ "IsControlKeyDown", "IsMetaKeyDown" }) do
+    SlashCmdList.ROSETTA("export")
+    _G[modifier] = function() return true end
+    edit.scripts.OnKeyDown(edit, "C")
+    assert(exportFrame.shown, modifier .. ": copy happens before the frame closes")
+    advance(0)
+    assert(not exportFrame.shown, modifier .. ": copy closes the frame")
+    _G[modifier] = nil
+end
+report("PASS export saves, selects, and closes, including on copy")
 
 local labels = journal.summaryIndex.labels
 local counts = labels["1426:19:1"]
