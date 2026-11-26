@@ -837,6 +837,24 @@ summary { cursor: pointer; min-height: 40px; padding-block: 8px; }
 }
 .button:hover { border-color: #a08648; }
 
+.atlas-update {
+  position: fixed;
+  z-index: 4;
+  inset: auto 12px 12px auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(340px, calc(100% - 24px));
+  padding: 5px 5px 5px 12px;
+  border: 1px solid #70603b;
+  border-radius: 5px;
+  background: var(--panel);
+  color: var(--heading);
+  box-shadow: 0 5px 18px #000a;
+  font-size: .875rem;
+}
+.atlas-update .button { color: var(--soft-gold); white-space: nowrap; }
+
 .panel-bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 10px; }
 .panel-bar a { display: inline-flex; align-items: center; min-height: 40px; }
 .panel-close { margin-left: auto; }
@@ -901,6 +919,7 @@ dialog > .eyebrow, #dialog-title { padding-right: 44px; }
   .map-switches { flex: 1 0 100%; order: 1; }
   .header-tools { gap: 4px; }
   .continent-select select, .journey-toggle { font-size: .875rem; }
+  .atlas-update { bottom: 58px; }
 
   #atlas { display: block; --sheet-height: 52px; }
   #atlas[data-snap="half"] { --sheet-height: min(47%, 430px); }
