@@ -549,10 +549,16 @@ def rank_chains(profiles, continents, journey=None):
     return chains
 
 
-def markdown(chains, journey=False):
+def read_picks(path=TOOLS / "data/chain_picks.json"):
+    picks = json.loads(path.read_text(encoding="utf-8"))["picks"]
+    return {pick["firstQuest"]: pick["id"] for pick in picks}
+
+
+def markdown(chains, journey=False, picks=None):
+    picks = picks or {}
     yield ("| Rank | First quest | Faction | Restriction | Steps | Quests | Level | Maps | Continents | "
-           "Elite / Rare elite / Boss | Dungeon steps | Touched | Done / Total |")
-    yield "| ---: | --- | --- | --- | ---: | ---: | --- | ---: | --- | --- | ---: | --- | --- |"
+           "Elite / Rare elite / Boss | Dungeon steps | Touched | Done / Total | Pick |")
+    yield "| ---: | --- | --- | --- | ---: | ---: | --- | ---: | --- | --- | ---: | --- | --- | --- |"
     for chain in chains:
         signals, first = chain["signals"], chain["firstQuest"]
         title = first["name"].get("enUS", "Unknown quest").replace("|", r"\|").replace("\n", " ")
@@ -565,7 +571,7 @@ def markdown(chains, journey=False):
         yield (f'| {chain["rank"]} | {title} ({first["id"]}) | {signals["faction"]} | {restriction} | '
                f'{signals["stepCount"]} | {signals["questCount"]} | {level} | {len(signals["maps"])} | '
                f'{continents} | {ranks} | {signals["dungeonSteps"]} | '
-               f'{touched} | {progress} |')
+               f'{touched} | {progress} | {picks.get(first["id"], "—")} |')
 
 
 def main():
@@ -588,7 +594,7 @@ def main():
                 output.write("\n")
     except (ValueError, OSError, subprocess.CalledProcessError) as error:
         parser.exit(1, f"atlas_chains: {error}\n")
-    for line in markdown(chains, args.journey is not None):
+    for line in markdown(chains, args.journey is not None, read_picks()):
         print(line)
 
 

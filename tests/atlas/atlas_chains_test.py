@@ -1,9 +1,10 @@
 import base64
+import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 
-from tools.atlas_chains import markdown, rank_chains, read_journey
+from tools.atlas_chains import markdown, rank_chains, read_journey, read_picks
 
 
 def quest(quest_id, **fields):
@@ -20,6 +21,18 @@ def profile(quests, **data):
 
 
 class AtlasChainsTest(unittest.TestCase):
+    def test_picks_are_unique_and_explained(self):
+        picks = json.loads((Path(__file__).parents[2] / "tools/data/chain_picks.json").read_text())["picks"]
+        self.assertEqual(len({pick["id"] for pick in picks}), len(picks))
+        self.assertEqual(len(read_picks()), len(picks))
+        for pick in picks:
+            self.assertIsInstance(pick["firstQuest"], int)
+            self.assertTrue(pick["why"].strip())
+
+    def test_table_names_the_pick(self):
+        chains = rank_chains([profile([quest(5, nextQuestInChain=7), quest(7)])], {})
+        self.assertTrue(list(markdown(chains, picks={5: "five"}))[-1].endswith("| five |"))
+
     def test_linear_chain_uses_prerequisite_and_next_links(self):
         chains = rank_chains([profile([quest(9), quest(5, nextQuestInChain=7),
                                        quest(7), quest(2, preQuestSingle=[7])])], {})
@@ -194,7 +207,7 @@ class AtlasChainsTest(unittest.TestCase):
         self.assertEqual(chain["signals"]["questCount"], 3)
         self.assertEqual(chain["done"], 2)
         self.assertEqual(chain["inLog"], 0)
-        self.assertIn("| Yes | 2/2 |", list(markdown([chain], journey=True))[-1])
+        self.assertIn("| Yes | 2/2 | — |", list(markdown([chain], journey=True))[-1])
 
     def test_ranking_uses_score_and_touched_quests_first(self):
         quests = [quest(1, nextQuestInChain=2), quest(2), quest(10, nextQuestInChain=11),
@@ -215,7 +228,7 @@ class AtlasChainsTest(unittest.TestCase):
         chain, = rank_chains([profile([quest(6, nextQuestInChain=7), quest(7)])], {}, journey)
         self.assertTrue(chain["touched"])
         self.assertEqual(chain["done"], 1)
-        self.assertIn("| Yes | 1/2 |", list(markdown([chain], journey=True))[-1])
+        self.assertIn("| Yes | 1/2 | — |", list(markdown([chain], journey=True))[-1])
 
     def test_saved_variables_include_log_and_journal(self):
         data = '''
