@@ -1,0 +1,107 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { test } from 'node:test';
+import { createContext, runInContext } from 'node:vm';
+
+const context = createContext({});
+for (const file of ['data/world.js', 'data/geo.js', 'i18n.js']) {
+  const source = readFileSync(new URL('../../lore/atlas/' + file, import.meta.url), 'utf8');
+  runInContext(source, context, { filename: file });
+}
+const { WORLD, GEO, LORE_UI, LORE_ZONE_NAMES } = runInContext(
+  '({ WORLD, GEO, LORE_UI, LORE_ZONE_NAMES })', context
+);
+
+test('every map zone has complete bilingual lore and a matching brief', () => {
+  const problems = [];
+  for (const [id, geo] of Object.entries(GEO.zones)) {
+    // The renderer routes these continent frames to the continent view.
+    if (id === '1463' || id === '1464') continue;
+    const zone = WORLD.zones[id];
+    if (!zone) {
+      problems.push(`Zone ${id} has no lore entry`);
+      continue;
+    }
+    if (zone.complete !== true) problems.push(`Zone ${id} is incomplete`);
+    if (zone.map !== geo.image) problems.push(`Zone ${id} does not match the map image`);
+    for (const language of ['en', 'zh']) {
+      if (!zone.name[language] || zone.name[language] !== LORE_ZONE_NAMES[id]?.[language]) {
+        problems.push(`Zone ${id} does not match its ${language} display name`);
+      }
+    }
+    const brief = WORLD.briefs[id];
+    if (!brief || (brief.levels && ['en', 'zh'].some(language => brief.levels[language] !== zone.levels[language]))) {
+      problems.push(`Zone ${id} is missing its brief or has conflicting levels`);
+    }
+    for (const field of ['overview', 'places', 'history', 'storylines', 'sourceIds']) {
+      if (!zone[field]?.length) problems.push(`Zone ${id} has no ${field}`);
+    }
+  }
+  assert.deepEqual(problems, []);
+});
+
+const references = {
+  beatIds: WORLD.beats,
+  figureIds: WORLD.figures,
+  factionIds: WORLD.factions,
+  sagaIds: WORLD.sagas,
+  relatedSagaIds: WORLD.sagas,
+  sourceIds: WORLD.sources,
+  zoneIds: WORLD.zones,
+  relatedZoneIds: WORLD.zones,
+  glossaryId: WORLD.glossary,
+  glossaryIds: WORLD.glossary
+};
+const glossaryNames = new Set(Object.values(WORLD.glossary).flatMap(entry =>
+  [entry.name.en, entry.name.zh].map(name => name.replaceAll('’', "'"))
+));
+
+function checkData(value, path, problems) {
+  if (value === null || typeof value !== 'object') return;
+
+  if (Object.hasOwn(value, 'en') || Object.hasOwn(value, 'zh')) {
+    for (const language of ['en', 'zh']) {
+      const translation = value[language];
+      if (typeof translation !== 'string' || !translation.trim()) {
+        problems.push(`${path} has an empty ${language} translation`);
+      } else if (path.startsWith('WORLD.')) {
+        for (const [, term] of translation.matchAll(/\{([^{}]+)\}/g)) {
+          if (!glossaryNames.has(term.replaceAll('’', "'"))) {
+            problems.push(`${path}.${language} has an unknown glossary term ${term}`);
+          }
+        }
+      }
+    }
+  }
+
+  for (const [field, child] of Object.entries(value)) {
+    const fieldPath = `${path}.${field}`;
+    if (Object.hasOwn(references, field) && child != null) {
+      for (const id of Array.isArray(child) ? child : [child]) {
+        if (!Object.hasOwn(references[field], id)) problems.push(`${fieldPath} references unknown ID ${id}`);
+      }
+    }
+    checkData(child, fieldPath, problems);
+  }
+}
+
+test('lore and interface translations are nonempty and all lore references resolve', () => {
+  const problems = [];
+  for (const [name, table] of Object.entries({ WORLD, LORE_UI, LORE_ZONE_NAMES })) {
+    checkData(table, name, problems);
+  }
+  assert.deepEqual(problems, []);
+});
+
+test('places with coordinates have both axes inside the map', () => {
+  const problems = [];
+  for (const zone of Object.values(WORLD.zones)) {
+    for (const place of zone.places) {
+      if (place.x === undefined && place.y === undefined) continue;
+      if (![place.x, place.y].every(axis => Number.isFinite(axis) && axis >= 0 && axis <= 100)) {
+        problems.push(`Zone ${zone.id}, place ${place.id}: invalid point (${place.x}, ${place.y})`);
+      }
+    }
+  }
+  assert.deepEqual(problems, []);
+});
