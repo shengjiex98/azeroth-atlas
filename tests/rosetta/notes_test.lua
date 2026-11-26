@@ -181,43 +181,44 @@ local function dayChip(day)
     return "|cff66bbff|Haddon:Rosetta:date:" .. day .. "|h" .. day .. "|h|r"
 end
 
-eq(notes.moneyChip(12005), money(12005, "1g 20s 5c"), "money chip format")
-eq(notes.moneyChip(20005), money(20005, "2g 5c"), "zero units omitted")
+eq(notes.moneyChip(12005), money(12005, "1g20s5c"), "money chip format")
+eq(notes.moneyChip(20005), money(20005, "2g5c"), "zero units omitted")
 eq(notes.moneyChip(0), money(0, "0c"), "zero price chip")
-eq(notes.moneyChip(9007199254740991), money("9007199254740991", "900719925474g 9s 91c"), "large payload stays exact")
+eq(notes.moneyChip(9007199254740991), money("9007199254740991", "900719925474g9s91c"), "large payload stays exact")
 eq(notes.dateChip(now), dayChip("2023-11-14"), "date chip from timestamp")
 eq(notes.dateChip(), dayChip(localDay), "date chip from stubbed local date")
 
 local protected = "|cff1eff00|Hitem:2589:0:0|h[Linen 30s @today ||h 5c roll]|h|r"
-local mixed = protected .. " 5c. 30S, 1g; 2g5c)\n@TODAY 1g20s5c"
+local mixed = protected .. " $5c. $30S, $1g; $2g5c)\n@TODAY $1g20s5c"
 local expanded = protected .. " " .. money(5, "5c") .. ". " .. money(3000, "30s") .. ", "
-    .. money(10000, "1g") .. "; " .. money(20005, "2g 5c") .. ")\n" .. dayChip(localDay) .. " "
-    .. money(12005, "1g 20s 5c")
+    .. money(10000, "1g") .. "; " .. money(20005, "2g5c") .. ")\n" .. dayChip(localDay) .. " "
+    .. money(12005, "1g20s5c")
 eq(notes.expandText(mixed), expanded, "punctuation, case, end token and protected links")
-local invalid = "x30s 5sec (30s) 30s! 30s,cost 150s @yesterday x@today " .. protected .. "30s"
+local invalid = "30s 1g20s $ x$30s $5sec ($30s) $30s! $30s,cost $150s @yesterday x@today " .. protected .. "$30s"
 eq(notes.expandText(invalid), invalid, "attached characters and unsupported tokens stay literal")
 localDay = "2026-11-27"
 eq(notes.expandText(expanded), expanded, "existing chips are unchanged on a later date")
 localDay = "2026-11-26"
 
 local prefix = "Café " .. protected .. "\n"
-local start, stop, chip = notes.editChipAtCursor(prefix .. "30s, rest", #prefix + 4)
+local start, stop, chip = notes.editChipAtCursor(prefix .. "$30s, rest", #prefix + 5)
 eq(start, #prefix, "selection start counts UTF-8 bytes and link escapes")
-eq(stop, #prefix + 3, "selection excludes trailing punctuation")
+eq(stop, #prefix + 4, "selection excludes trailing punctuation")
 eq(chip, money(3000, "30s"), "detected price chip")
 start, stop, chip = notes.editChipAtCursor("@ToDaY\nnext", 7)
 eq(start, 0, "first token starts at byte offset zero")
 eq(stop, 6, "selection excludes newline")
 eq(chip, dayChip(localDay), "detected local date chip")
-start, stop = notes.editChipAtCursor("30s\r\n", 5)
+start, stop = notes.editChipAtCursor("$30s\r\n", 6)
 eq(start, 0, "CRLF token start")
-eq(stop, 3, "selection excludes both newline bytes")
+eq(stop, 4, "selection excludes both newline bytes")
 eq(notes.editChipAtCursor(protected, protected:find("30s ", 1, true) + 3), nil, "delimiter inside a link ignored")
-eq(notes.editChipAtCursor("30s", 3), nil, "editor waits for delimiter")
-eq(notes.editChipAtCursor("30s,extra", 4), nil, "punctuation in the middle of a token ignored")
+eq(notes.editChipAtCursor("$30s", 4), nil, "editor waits for delimiter")
+eq(notes.editChipAtCursor("30s ", 4), nil, "price without $ stays text")
+eq(notes.editChipAtCursor("$30s,extra", 5), nil, "punctuation in the middle of a token ignored")
 report("PASS chip syntax, formats, expansion and byte spans")
 
-SlashCmdList.ROSETTANOTE(link .. " Sells for 30s")
+SlashCmdList.ROSETTANOTE(link .. " Sells for $30s")
 local store = RosettaDB.notes
 local first = store.list[1]
 local firstLine = link .. " Sells for " .. money(3000, "30s")
@@ -319,7 +320,7 @@ eq(GameTooltip.owner, nil, "bad hyperlink skips tooltip")
 
 local moneyLink = "addon:Rosetta:money:12005"
 edit.scripts.OnHyperlinkEnter(edit, moneyLink)
-eq(GameTooltip.text, "1g 20s 5c", "money tooltip falls back to the display")
+eq(GameTooltip.text, "1g20s5c", "money tooltip falls back to the display")
 assert(GameTooltip.shown, "fallback tooltip is shown")
 function SetTooltipMoney(tooltip, copper, style)
     eq(style, "STATIC", "native money tooltip style")
@@ -342,21 +343,21 @@ localDay = "2026-11-26"
 
 local clicked
 function SetItemRef(linkData) clicked = linkData end
-edit.scripts.OnHyperlinkClick(edit, moneyLink, "1g 20s 5c", "LeftButton")
+edit.scripts.OnHyperlinkClick(edit, moneyLink, "1g20s5c", "LeftButton")
 eq(clicked, nil, "clicking a chip skips SetItemRef")
 edit.scripts.OnHyperlinkClick(edit, "item:2589", "[Linen Cloth]", "LeftButton")
 eq(clicked, "item:2589", "ordinary links use SetItemRef")
 
 edit.insertIsUserInput = true
-edit:SetCursorPosition(#prefix + 3)
-edit:SetText(prefix .. "30s continued", true)
-local beforeInsert = edit.insertions
 edit:SetCursorPosition(#prefix + 4)
-edit:SetText(prefix .. "30s, continued", true)
+edit:SetText(prefix .. "$30s continued", true)
+local beforeInsert = edit.insertions
+edit:SetCursorPosition(#prefix + 5)
+edit:SetText(prefix .. "$30s, continued", true)
 local price = money(3000, "30s")
 eq(first.text, prefix .. price .. ", continued", "editor saves only the token replacement")
 eq(edit.lastHighlight[1], #prefix, "selection begins after multibyte text and a link")
-eq(edit.lastHighlight[2], #prefix + 3, "selection stops before the delimiter")
+eq(edit.lastHighlight[2], #prefix + 4, "selection stops before the delimiter")
 eq(edit.cursor, #prefix + #price, "cursor follows the inserted chip")
 eq(edit.insertions, beforeInsert + 1, "nested text change inserts once")
 
@@ -365,21 +366,21 @@ edit:SetText("@todayZZ", true)
 edit:SetCursorPosition(7)
 edit:SetText("@today\n", true)
 eq(first.text, dayChip(localDay) .. "\n", "newline inserts date chip while replacing a selection")
+edit:SetCursorPosition(6)
+edit:SetText("$30s  x", true)
 edit:SetCursorPosition(5)
-edit:SetText("30s  x", true)
-edit:SetCursorPosition(4)
-edit:SetText("30s x", true)
-eq(first.text, "30s x", "deleting next to an existing space does not expand")
+edit:SetText("$30s x", true)
+eq(first.text, "$30s x", "deleting next to an existing space does not expand")
 
-edit:SetCursorPosition(9)
-edit:SetText("Price 30s", true)
+edit:SetCursorPosition(10)
+edit:SetText("Price $30s", true)
 local highlight = edit.HighlightText
 function edit:HighlightText(start, stop) highlight(self, start - 1, stop) end
-edit:SetCursorPosition(10)
-edit:SetText("Price 30s ", true)
-eq(edit.text, "Price 30s ", "client selection mismatch restores the typed text")
+edit:SetCursorPosition(11)
+edit:SetText("Price $30s ", true)
+eq(edit.text, "Price $30s ", "client selection mismatch restores the typed text")
 eq(first.text, edit.text, "client selection mismatch saves the typed text")
-eq(edit.cursor, 10, "client selection mismatch restores the cursor")
+eq(edit.cursor, 11, "client selection mismatch restores the cursor")
 edit.HighlightText, edit.insertIsUserInput = nil, nil
 report("PASS chip tooltips, clicks, editor replacement and fallback")
 

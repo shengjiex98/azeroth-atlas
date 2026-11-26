@@ -133,7 +133,7 @@ local function moneyDisplay(copper)
     if gold > 0 then parts[#parts + 1] = ("%.0fg"):format(gold) end
     if silver > 0 then parts[#parts + 1] = silver .. "s" end
     if remainder > 0 or #parts == 0 then parts[#parts + 1] = remainder .. "c" end
-    return table.concat(parts, " ")
+    return table.concat(parts)
 end
 
 function notes.moneyChip(copper)
@@ -148,7 +148,7 @@ end
 
 local function chipForToken(token)
     if token:lower() == "@today" then return notes.dateChip() end
-    local copper = notes.parseMoney(token)
+    local copper = notes.parseMoney(token:match("^%$(.+)$"))
     if copper then return notes.moneyChip(copper) end
 end
 

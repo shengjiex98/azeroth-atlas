@@ -57,7 +57,7 @@ local function text()
     add("/rosetta opens this page. /rosetta snap or /csnap rebuilds the snapshot sections.")
     add("/rosetta journal off, on, or status controls the journal and shows its status.")
     add("/rn or /rosetta note toggles Notes. Add text after either command to append a line to the selected note.")
-    add("Use 1g20s for a price or @today for the date. Both become chips in slash appends or before a space in the editor.")
+    add("Use $1g20s for a price or @today for the date. Both become chips in slash appends or before a space in the editor.")
     add(GREY .. "Exported data reaches disk on /reload, logout or exit.|r")
     return table.concat(out, "\n")
 end
