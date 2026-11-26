@@ -56,6 +56,7 @@ local function text()
     add(GOLD .. "Commands|r")
     add("/rosetta opens this page. /rosetta snap or /csnap rebuilds the snapshot sections.")
     add("/rosetta journal off, on, or status controls the journal and shows its status.")
+    add("/rn or /rosetta note toggles Notes. Add text after either command to append a line to the selected note.")
     add(GREY .. "Exported data reaches disk on /reload, logout or exit.|r")
     return table.concat(out, "\n")
 end

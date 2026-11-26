@@ -2,7 +2,7 @@
 ## Title: Rosetta
 ## Notes: Bridge between the game and outside tools: exports character data for AI tools to read.
 ## Author: shengjiex98
-## Version: 1.4.2
+## Version: 1.5.0
 ## SavedVariables: RosettaDB
 ## OptionalDeps: RXPGuides, QuestieDB
 
@@ -13,4 +13,5 @@ Summary.lua
 Journal.lua
 Backfill.lua
 Export.lua
+Notes.lua
 Settings.lua
