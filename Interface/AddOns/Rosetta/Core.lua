@@ -153,6 +153,9 @@ end
 
 SLASH_ROSETTA1 = "/rosetta"
 SlashCmdList.ROSETTA = function(msg)
+    if issecretvalue and issecretvalue(msg) then return end
+    local command, args = (msg or ""):match("^%s*(%S+)%s?(.*)$")
+    if command and command:lower() == "note" and ns.noteCommand then return ns.noteCommand(args) end
     msg = strtrim(msg or ""):lower()
     if msg == "snap" then return snapshot() end
     if msg == "export" then return export() end

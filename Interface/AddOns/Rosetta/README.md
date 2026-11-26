@@ -1,6 +1,6 @@
 # Rosetta
 
-Version 1.4.2
+Version 1.5.0
 
 Exports the logged-in character's data to the account SavedVariables file
 `WTF/Account/<account>/SavedVariables/Rosetta.lua`, under `RosettaDB.characters["<Name>-<Realm>"]`.
@@ -25,6 +25,7 @@ Exports the logged-in character's data to the account SavedVariables file
 | `journal` | recent character events, time and XP totals by map cell | gameplay events and position samples |
 | `summary` | compact journey export for the Azeroth Atlas | `/rosetta export`, `/reload`, and logout |
 | `maps` | each zone's rectangle on its continent map and its world corners (for the lore atlas) | login |
+| `notes` | account-wide notes shared by all characters | edits and slash appends |
 
 Each snapshot section is rebuilt only when one of its events fires, at most once per second (`DEBOUNCE_SECONDS` in `Core.lua`).
 A section that fails stores its error in `errors.<section>`; `costMs.<section>` records the last rebuild time.
@@ -59,3 +60,13 @@ located.
 
 To add a section, call `collector(name, events, collect, onLogout)` in `Collectors.lua`.
 Set `onLogout` only for a section with no refresh event: on a real logout most game APIs already return empty values.
+
+## Notes
+
+Use `/rn` or `/rosetta note` to toggle the notes window. Add text after either
+command to append a line to the selected note, creating one if needed. With the
+editor focused, shift-click an item, spell, recipe, or quest to insert its link
+at the cursor. Notes are stored in `RosettaDB.notes` in the account SavedVariables
+file, so they follow all characters and sync with that file between computers.
+Type `1g20s5c` for a price or `@today` for the local date. Add the token to a slash append, or follow it with a space, newline, or one of `.` `,` `;` `)` in the editor. Chips are fixed at entry time.
+In `RosettaDB.notes`, chips are stored inline as hyperlinks with payloads `addon:Rosetta:money:<copper>` and `addon:Rosetta:date:<YYYY-MM-DD>` using the local date.
