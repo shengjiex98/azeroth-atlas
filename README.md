@@ -85,6 +85,9 @@ their spawns belong to the representative cluster. Steps with an instance
 objective earn two points, and raid-flagged steps earn one (up to ten combined).
 Ties use the first quest ID.
 
+Chains picked for the atlas are listed in `tools/data/chain_picks.json`, keyed by
+first quest, with the reason for each pick. The table's Pick column names them.
+
 Only representative points contribute maps, continents and instance locations.
 Points use Forever UiMaps and integer coordinates from 0 to 1000. The tool
 chooses the map with the most spawns, then the centroid of the largest cluster

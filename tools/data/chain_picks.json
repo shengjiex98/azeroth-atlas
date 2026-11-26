@@ -1,0 +1,26 @@
+{
+  "picks": [
+    { "id": "missing-diplomat", "firstQuest": 1274, "title": "The Missing Diplomat",
+      "why": "17 steps over levels 28–38 across both continents; a political mystery from Stormwind to Theramore." },
+    { "id": "on-guard-in-stonetalon", "firstQuest": 1070, "title": "On Guard in Stonetalon",
+      "why": "16 steps through 7 maps on both continents, ending with an audience with Tyrande." },
+    { "id": "welcome-to-the-jungle", "firstQuest": 583, "title": "Welcome to the Jungle",
+      "why": "19 steps of Nesingwary's safari, with King Bangalash and other elites, and the Green Hills of Stranglethorn." },
+    { "id": "claws-from-the-deep", "firstQuest": 279, "title": "Claws from the Deep",
+      "why": "15 steps from the Wetlands coast to Stormwind, following the shamed lieutenant." },
+    { "id": "howling-vale", "firstQuest": 1022, "title": "The Howling Vale",
+      "why": "Ashenvale, the Barrens, Booty Bay and Duskwood, ending with the Scythe of Elune." },
+    { "id": "unsent-letter", "firstQuest": 373, "title": "The Unsent Letter",
+      "why": "12 steps of the Stormwind conspiracy, ending with an audience with the king." },
+    { "id": "deliveries-to-sven", "firstQuest": 164, "title": "Deliveries to Sven",
+      "why": "16 steps of Sven's revenge in Duskwood, ending with Morbent Fel." },
+    { "id": "the-hermit", "firstQuest": 165, "title": "The Hermit",
+      "why": "15 steps of Abercrombie's work in Duskwood, ending with the Bride of the Embalmer." },
+    { "id": "legend-of-stalvan", "firstQuest": 66, "title": "The Legend of Stalvan",
+      "why": "13 steps through Elwynn, Westfall, Duskwood and Stormwind, uncovering Stalvan's past." },
+    { "id": "defias-brotherhood", "firstQuest": 65, "title": "The Defias Brotherhood",
+      "why": "Westfall's story, ending at VanCleef in the Deadmines." },
+    { "id": "onyxia-alliance", "firstQuest": 4182, "title": "Dragonkin Menace",
+      "why": "The Alliance Onyxia attunement: 18 steps over levels 54–60, 5 elites, a boss and 4 dungeon steps." }
+  ]
+}
