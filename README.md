@@ -26,7 +26,7 @@ character picker to switch journeys or **Remove** to delete the selected summary
 | --- | --- |
 | `/rosetta` | Opens the addon info page and shows export status. |
 | `/rosetta snap` or `/csnap` | Rebuilds the character snapshot and prints timing and errors. |
-| `/rosetta export` | Opens the journey summary for copying; Ctrl+C (Cmd+C on a Mac) copies it and closes the window. |
+| `/rosetta export` or `/rx` | Opens the journey summary for copying (or bind a key under Key Bindings > AddOns > Rosetta); Ctrl+C (Cmd+C on a Mac) copies it and closes the window. |
 | `/rosetta journal off` or `/rosetta journal on` | Pauses or resumes journey recording. |
 | `/rosetta journal status` or `/rosetta journal` | Shows the journal status. |
 

@@ -520,7 +520,14 @@ for _, modifier in ipairs({ "IsControlKeyDown", "IsMetaKeyDown" }) do
     assert(not exportFrame.shown, modifier .. ": copy closes the frame")
     _G[modifier] = nil
 end
-report("PASS export saves, selects, and closes, including on copy")
+SlashCmdList.ROSETTAEXPORT("")
+assert(exportFrame.shown, "/rx opens the export")
+exportFrame:Hide()
+eq(SLASH_ROSETTAEXPORT1, "/rx", "export shortcut")
+RosettaExport()
+assert(exportFrame.shown, "key binding opens the export")
+exportFrame:Hide()
+report("PASS export saves, selects, and closes, including on copy; /rx and the key binding open it")
 
 local labels = journal.summaryIndex.labels
 local counts = labels["1426:19:1"]
