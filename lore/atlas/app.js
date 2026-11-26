@@ -52,6 +52,8 @@
       get available() { return Boolean(J); },
       onSelect: () => { state.journey = true; }
     },
+    lines: { param: 'lines', values: ['current', 'ink', 'dashed', 'footsteps'], default: 'ink',
+      get available() { return Boolean(J); } },
     crest: { param: 'crest', values: badgeStyles, default: 'medallion' },
     numbers: { param: 'numbers', values: badgeStyles, default: 'ink', get available() { return Boolean(J); } }
   };
@@ -538,34 +540,99 @@
   const camera = { x: 50, y: 50, width: 0 };
   let viewport = { width: 0, height: 0, fit: 0 };
   let mapKey, drawnZone, drawnContinent, cityNodes = [], badgeNodes = [], pinNodes = [];
+  let travelPath;
   let paintPending = false, hotZone = null, tipZone = null;
 
   function rectStyle([left, top, right, bottom]) {
     return `left:${left}%;top:${top}%;width:${right - left}%;height:${bottom - top}%`;
   }
 
-  function pathLayer(positions, className) {
-    const segments = positions.slice(1).map((point, index) => {
-      const previous = positions[index];
-      return point && previous ? `M${previous.join(' ')}L${point.join(' ')}` : '';
-    }).join(' ');
-    return segments ? `<svg class="map-path ${className}" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-      <path class="path-halo" d="${segments}"/><path d="${segments}"/>
-    </svg>` : '';
+  function pathLayer(positions, style, width, height) {
+    const segments = [], marks = [];
+    const passes = new Map();
+    const coords = (x, y) => `${x.toFixed(2)} ${y.toFixed(2)}`;
+    const dashed = style === 'dashed';
+    for (let i = 1; i < positions.length; i++) {
+      const from = positions[i - 1], to = positions[i];
+      if (!from || !to) continue;
+      const x = from[0] * width / 100, y = from[1] * height / 100;
+      const endX = to[0] * width / 100, endY = to[1] * height / 100;
+      const start = `M${coords(x, y)}`, end = coords(endX, endY);
+      if (style === 'current') {
+        segments.push(`${start}L${end}`);
+        continue;
+      }
+
+      const dx = endX - x, dy = endY - y;
+      const length = Math.hypot(dx, dy);
+      if (!length) continue;
+
+      // Returning legs bow to the opposite side. Separate the first three passes
+      // in each direction, then reuse the outermost lane to limit the ink at junctions.
+      const key = `${from}>${to}`;
+      const pass = passes.get(key) ?? 0;
+      if (pass >= 3) continue;
+      passes.set(key, pass + 1);
+      const bow = Math.min(28, length * .14) + pass * Math.min(13, length * .08);
+      const bendX = -dy / length * bow, bendY = dx / length * bow;
+      const pointAt = t => [x + dx * t + 2 * bendX * t * (1 - t), y + dy * t + 2 * bendY * t * (1 - t)];
+
+      if (style === 'footsteps') {
+        const inset = Math.min(8, length / 4);
+        const span = length - 2 * inset;
+        const count = Math.max(1, Math.round(span / 9));
+        for (let dot = 0; dot < count; dot++) {
+          const progress = (dot + .5) / count;
+          const [cx, cy] = pointAt((inset + span * progress) / length);
+          const radius = 1.25 + .7 * progress;
+          marks.push(`<circle cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${radius.toFixed(2)}"/>`);
+        }
+        continue;
+      }
+
+      segments.push(`${start}Q${coords(x + dx / 2 + bendX, y + dy / 2 + bendY)} ${end}`);
+      // Stagger marks on repeat passes and leave room for badges at each end.
+      const stagger = pass * 8;
+      if (length < 48 + 2 * stagger) continue;
+      const count = dashed ? 1 : Math.ceil((length - 40) / 84);
+      for (let mark = 1; mark <= count; mark++) {
+        const progress = dashed ? 1 - 20 / length : mark / (count + 1);
+        const t = progress - stagger / length;
+        const [tipX, tipY] = pointAt(t);
+        const tx = dx + 2 * bendX * (1 - 2 * t), ty = dy + 2 * bendY * (1 - 2 * t);
+        const tangent = Math.hypot(tx, ty);
+        const ux = tx / tangent, uy = ty / tangent;
+        const depth = dashed ? 7 : 5.5;
+        const halfWidth = dashed ? 3.6 : 4;
+        const backX = tipX - ux * depth, backY = tipY - uy * depth;
+        const left = coords(backX - uy * halfWidth, backY + ux * halfWidth);
+        const right = coords(backX + uy * halfWidth, backY - ux * halfWidth);
+        marks.push(`M${left}L${coords(tipX, tipY)}L${right}${dashed ? 'Z' : ''}`);
+      }
+    }
+
+    if (style === 'footsteps') return marks.join('');
+    if (!segments.length) return '';
+    const trace = segments.join('');
+    const direction = marks.join('');
+    return `<path class="path-trace path-halo" d="${trace}"/>
+      ${direction && !dashed ? `<path class="path-chevron path-halo" d="${direction}"/>` : ''}
+      <path class="path-trace path-ink" d="${trace}"/>
+      ${direction ? `<path class="${dashed ? 'path-arrow' : 'path-chevron path-ink'}" d="${direction}"/>` : ''}`;
   }
 
   const zoneAnchor = id => G.zones[id].anchor || G.zones[id].center;
 
-  function continentPath(id) {
+  function continentRoutePoints(id) {
     const visits = state.fullSequence ? routeVisits : firstVisits;
-    return pathLayer(visits.map(zone => G.zones[zone]?.continent === id ? zoneAnchor(zone) : null), 'continent-path');
+    return visits.map(zone => G.zones[zone]?.continent === id ? zoneAnchor(zone) : null);
   }
 
-  function zoneLines(id) {
-    if (!state.journey || !state.paths.has(id)) return '';
+  function zoneRoutePoints(id) {
+    if (!state.journey || !state.paths.has(id)) return [];
     const journey = zonesVisited.get(id);
     const locations = new Map(journey.places.map(place => [place.n, [place.x, place.y]]));
-    return pathLayer(journey.visits.map(n => locations.get(n)), 'zone-path');
+    return journey.visits.map(n => locations.get(n));
   }
 
   function zonePins(id) {
@@ -639,14 +706,18 @@
     if (key !== mapKey) {
       const name = zone ? zoneName(zone) : continentName(continent);
       map.setAttribute('aria-label', u('mapLabel', { zone: name }));
+      const points = zone ? zoneRoutePoints(zone) :
+        state.journey && journeyStyle === 'order' ? continentRoutePoints(continent) : [];
+      const path = points.length > 1 ? `<svg class="map-path ${zone ? 'zone-path' : 'continent-path'}" aria-hidden="true"></svg>` : '';
       const tile = zone && !local ? `<div class="zone-tile ${geo.image ? '' : 'missing-tile'}" style="${rectStyle(layout)}">
-        ${geo.image ? `<img src="${asset(geo.image)}" alt="" draggable="false">` : ''}${zoneLines(zone)}</div>` : '';
+        ${geo.image ? `<img src="${asset(geo.image)}" alt="" draggable="false">` : ''}${path}</div>` : '';
       const source = asset(local || G.continents[continent].image);
       const artwork = $('map-art');
       if (artwork.getAttribute('src') !== source) artwork.setAttribute('src', source);
       artwork.hidden = false;
-      $('map-overlays').innerHTML = zone ? tile + (local ? zoneLines(zone) : '') :
-        (state.journey && journeyStyle === 'order' ? continentPath(continent) : '') + zoneShapes(continent, journeyStyle);
+      const overlays = $('map-overlays');
+      overlays.innerHTML = zone ? (tile || path) : path + zoneShapes(continent, journeyStyle);
+      travelPath = path ? { element: overlays.querySelector('.map-path'), points, layout } : null;
       if ((drawnZone !== zone || drawnContinent !== continent) &&
           !matchMedia('(prefers-reduced-motion: reduce)').matches) {
         frame.getAnimations().forEach(animation => animation.cancel());
@@ -716,6 +787,19 @@
       viewport.height / 2 + (y - camera.y) * camera.width / aspect / 100];
   }
 
+  function positionPath() {
+    if (!travelPath) return;
+    const { element, points, layout: [left, top, right, bottom] } = travelPath;
+    const style = experimentValue(experiments.lines);
+    if (travelPath.width === camera.width && element.dataset.style === style) return;
+    travelPath.width = camera.width;
+    element.dataset.style = style;
+    // The SVG has no viewBox. Its user units are CSS pixels, even within a fallback zone tile.
+    const width = camera.width * (right - left) / 100;
+    const height = camera.width / aspect * (bottom - top) / 100;
+    element.innerHTML = pathLayer(points, style, width, height);
+  }
+
   function requestPaint() {
     if (paintPending) return;
     paintPending = true;
@@ -726,6 +810,7 @@
       frame.style.width = camera.width + 'px';
       frame.style.height = camera.width / aspect + 'px';
       frame.style.transform = `translate(${left}px, ${top}px)`;
+      positionPath();
       positionMarkers();
       positionPopover();
     });

@@ -259,10 +259,34 @@ summary { cursor: pointer; min-height: 40px; padding-block: 8px; }
   box-shadow: 0 1px 22px #291a1277;
 }
 .missing-tile { outline: 2px solid #fff2bb88; box-shadow: none; }
-.map-path { --path-width: 1.5px; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.map-path path {
-  fill: none;
+.map-path {
+  --path-width: 1.5px;
+  --path-halo-extra: 1.5px;
+  --path-halo-opacity: .38;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.map-path[data-style="current"].continent-path { --path-width: 1.2px; }
+.map-path[data-style="ink"] {
+  --path-width: 3.2px;
+  --path-halo-extra: 3.2px;
+  --path-halo-opacity: .76;
+}
+.map-path[data-style="dashed"] {
+  --path-width: 2.8px;
+  --path-halo-extra: 2.8px;
+  --path-halo-opacity: .76;
+}
+.map-path[data-style="footsteps"] { --path-halo-opacity: .76; }
+.map-path :is(path, circle) {
   vector-effect: non-scaling-stroke;
+  stroke-linejoin: round;
+}
+.map-path :is(.path-ink, .path-halo) {
+  fill: none;
   stroke: var(--journey-ink);
   stroke-width: var(--path-width);
   stroke-opacity: .9;
@@ -270,10 +294,18 @@ summary { cursor: pointer; min-height: 40px; padding-block: 8px; }
 }
 .map-path .path-halo {
   stroke: var(--journey-wash);
-  stroke-width: calc(var(--path-width) + 1.5px);
-  stroke-opacity: .38;
+  stroke-width: calc(var(--path-width) + var(--path-halo-extra));
+  stroke-opacity: var(--path-halo-opacity);
 }
-.continent-path { --path-width: 1.2px; }
+.map-path .path-chevron { --path-width: 1.7px; --path-halo-extra: 2.2px; }
+.map-path[data-style="dashed"] .path-trace { stroke-dasharray: 7px 8px; }
+.map-path :is(.path-arrow, circle) {
+  fill: var(--journey-ink);
+  stroke: var(--journey-wash);
+  stroke-width: 2.6px;
+  stroke-opacity: var(--path-halo-opacity);
+  paint-order: stroke;
+}
 
 /* Continent zones: the painted patches light up under the pointer, as on the in-game world map. */
 .zone-shapes { inset: 0; width: 100%; height: 100%; overflow: visible; }
