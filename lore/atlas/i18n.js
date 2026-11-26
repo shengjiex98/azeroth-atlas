@@ -147,7 +147,9 @@
     1451: L('Silithus', '希利苏斯'), 1452: L('Winterspring', '冬泉谷'),
     1453: L('Stormwind City', '暴风城'), 1454: L('Orgrimmar', '奥格瑞玛'),
     1455: L('Ironforge', '铁炉堡'), 1456: L('Thunder Bluff', '雷霆崖'),
-    1457: L('Darnassus', '达纳苏斯'), 1458: L('Undercity', '幽暗城')
+    1457: L('Darnassus', '达纳苏斯'), 1458: L('Undercity', '幽暗城'),
+    2482: L('Mount Hyjal', '海加尔山'), 2548: L('Riverglades', '河林'),
+    2652: L("Shen'dralas", '辛德拉')
   };
 
   let language = 'en';
