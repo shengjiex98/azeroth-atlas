@@ -1635,7 +1635,8 @@
   /* Chain retellings: second person, past tense, in story order. Each chapter groups consecutive
      steps from chains.js; `recap` is the one-line version used in the session recap. Text paraphrases
      the quest text; quotes are short. `meaning` places the chain in the wider story;
-     `links` names related chains, and cast IDs link the same person across chains. */
+     `links` names related chains; cast IDs link the same person across chains, and `chapter` is where
+     each person first appears, so the cast never names someone from a chapter still hidden. */
   const quote = (text, by) => ({ quote: text, by });
   const untold = { hook: null, chapters: [], meaning: null, cast: [], links: [], sourceIds: [] };
   const chains = {
@@ -1707,15 +1708,15 @@
         ]
       },
       cast: [
-        { id: 'bishop-delavey', name: L('Bishop DeLavey', '德拉维主教'), role: L('Keeps the kingdom’s quiet business quiet.', '替王国处理不宜声张的事务。') },
-        { id: 'elling-trias', name: L('Elling Trias', '埃林·提亚斯'), role: L('A cheesemonger who is more than he seems.', '一个不简单的奶酪商。') },
-        { id: 'watcher-backus', name: L('Watcher Backus', '守夜人巴库斯'), role: L('Trias’s contact on Darkshire’s north road.', '提亚斯在夜色镇北路的联络人。') },
-        { id: 'dashel-stonefist', name: L('Dashel Stonefist', '达舍尔·石拳'), role: L('Old Town brawler, the “Fist” in the docket.', '旧城区的打手，记事本里的“拳头”。') },
-        { id: 'mikhail', name: L('Mikhail', '米克哈尔'), role: L('Retired from Stormwind’s underground, now a Menethil bartender.', '从暴风城地下行当退休，如今在米奈希尔当酒保。') },
-        { id: 'slim', name: L('Tapoke “Slim” Jahn', '“干柴”塔伯克·贾恩'), role: L('The Defias inside man in Menethil.', '迪菲亚在米奈希尔的内应。') },
-        { id: 'private-hendel', name: L('Private Hendel', '亨德尔下士'), role: L('The Kul Tiras marine who got the Defias aboard the king’s ship.', '把迪菲亚的人送上国王座船的库尔提拉斯陆战队员。') },
-        { id: 'jaina-proudmoore', name: L('Lady Jaina Proudmoore', '吉安娜·普罗德摩尔'), role: L('Ruler of Theramore, whom the king was sailing to meet.', '塞拉摩的统治者，国王此行要会见的人。') },
-        { id: 'katrana-prestor', name: L('Lady Katrana Prestor', '卡特拉娜·普瑞斯托女伯爵'), role: L('Royal councilor beside the throne.', '王座旁的皇家顾问。') }
+        { id: 'bishop-delavey', chapter: 1, name: L('Bishop DeLavey', '德拉维主教'), role: L('Keeps the kingdom’s quiet business quiet.', '替王国处理不宜声张的事务。') },
+        { id: 'elling-trias', chapter: 1, name: L('Elling Trias', '埃林·提亚斯'), role: L('A cheesemonger who is more than he seems.', '一个不简单的奶酪商。') },
+        { id: 'watcher-backus', chapter: 2, name: L('Watcher Backus', '守夜人巴库斯'), role: L('Trias’s contact on Darkshire’s north road.', '提亚斯在夜色镇北路的联络人。') },
+        { id: 'dashel-stonefist', chapter: 3, name: L('Dashel Stonefist', '达舍尔·石拳'), role: L('Old Town brawler, the “Fist” in the docket.', '旧城区的打手，记事本里的“拳头”。') },
+        { id: 'mikhail', chapter: 4, name: L('Mikhail', '米克哈尔'), role: L('Retired from Stormwind’s underground, now a Menethil bartender.', '从暴风城地下行当退休，如今在米奈希尔当酒保。') },
+        { id: 'slim', chapter: 4, name: L('Tapoke “Slim” Jahn', '“干柴”塔伯克·贾恩'), role: L('The Defias inside man in Menethil.', '迪菲亚在米奈希尔的内应。') },
+        { id: 'private-hendel', chapter: 5, name: L('Private Hendel', '亨德尔下士'), role: L('The Kul Tiras marine who got the Defias aboard the king’s ship.', '把迪菲亚的人送上国王座船的库尔提拉斯陆战队员。') },
+        { id: 'jaina-proudmoore', chapter: 5, name: L('Lady Jaina Proudmoore', '吉安娜·普罗德摩尔'), role: L('Ruler of Theramore, whom the king was sailing to meet.', '塞拉摩的统治者，国王此行要会见的人。') },
+        { id: 'katrana-prestor', chapter: 5, name: L('Lady Katrana Prestor', '卡特拉娜·普瑞斯托女伯爵'), role: L('Royal councilor beside the throne.', '王座旁的皇家顾问。') }
       ],
       links: ['unsent-letter'],
       sourceIds: ['md-start']
@@ -1784,12 +1785,12 @@
         ]
       },
       cast: [
-        { id: 'baros-alexston', name: L('Baros Alexston', '巴隆斯·阿历克斯顿'), role: L('City Architect, and the letter’s addressee.', '城市建筑师，那封信的收信人。') },
-        { id: 'mathias-shaw', name: L('Mathias Shaw', '马迪亚斯·肖尔'), role: L('Master of SI:7, Stormwind’s spies.', '暴风城间谍组织军情七处的首领。') },
-        { id: 'elling-trias', name: L('Elling Trias', '埃林·提亚斯'), role: L('The cheesemonger who arranges justice that is “not legal”.', '安排“不合法”正义的奶酪商。') },
-        { id: 'gregor-lescovar', name: L('Lord Gregor Lescovar', '葛瑞格·莱斯科瓦公爵'), role: L('A noble who worked with the Defias.', '与迪菲亚勾结的贵族。') },
-        { id: 'marzon', name: L('Marzon the Silent Blade', '沉默之刃马尔松'), role: L('Lescovar’s assassin, known to the Defias as Maelik.', '莱斯科瓦的刺客，迪菲亚称他为梅里克。') },
-        { id: 'katrana-prestor', name: L('Lady Katrana Prestor', '卡特拉娜·普瑞斯托女伯爵'), role: L('Royal councilor beside the throne.', '王座旁的皇家顾问。') }
+        { id: 'baros-alexston', chapter: 1, name: L('Baros Alexston', '巴隆斯·阿历克斯顿'), role: L('City Architect, and the letter’s addressee.', '城市建筑师，那封信的收信人。') },
+        { id: 'mathias-shaw', chapter: 3, name: L('Mathias Shaw', '马迪亚斯·肖尔'), role: L('Master of SI:7, Stormwind’s spies.', '暴风城间谍组织军情七处的首领。') },
+        { id: 'elling-trias', chapter: 3, name: L('Elling Trias', '埃林·提亚斯'), role: L('The cheesemonger who arranges justice that is “not legal”.', '安排“不合法”正义的奶酪商。') },
+        { id: 'gregor-lescovar', chapter: 3, name: L('Lord Gregor Lescovar', '葛瑞格·莱斯科瓦公爵'), role: L('A noble who worked with the Defias.', '与迪菲亚勾结的贵族。') },
+        { id: 'marzon', chapter: 3, name: L('Marzon the Silent Blade', '沉默之刃马尔松'), role: L('Lescovar’s assassin, known to the Defias as Maelik.', '莱斯科瓦的刺客，迪菲亚称他为梅里克。') },
+        { id: 'katrana-prestor', chapter: 5, name: L('Lady Katrana Prestor', '卡特拉娜·普瑞斯托女伯爵'), role: L('Royal councilor beside the throne.', '王座旁的皇家顾问。') }
       ],
       links: ['missing-diplomat', 'onyxia-alliance'],
       sourceIds: ['ul-chain', 'ul-onyxia']
