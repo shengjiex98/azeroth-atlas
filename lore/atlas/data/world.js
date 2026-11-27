@@ -18,6 +18,9 @@
     'jungle-book': { title: L('The Green Hills of Stranglethorn', '荆棘谷的青山'), url: 'https://warcraft.wiki.gg/wiki/The_Green_Hills_of_Stranglethorn', note: L('The text of Hemet’s book.', '赫米特那本书的原文。') },
     'vale-velinde': { title: L('Velinde Starsong', '维琳德·星歌'), url: 'https://warcraft.wiki.gg/wiki/Velinde_Starsong', note: L('The vanished Sentinel and how she died.', '失踪的哨兵及其死因。') },
     'vale-scythe': { title: L('Scythe of Elune', '月神镰刀'), url: 'https://warcraft.wiki.gg/wiki/Scythe_of_Elune', note: L('The relic, the worgen, and who hunted it.', '这件圣物、狼人，以及追寻它的人。') },
+    'dm-wiki': { title: L('Dun Modr', '丹莫德'), url: 'https://warcraft.wiki.gg/wiki/Dun_Modr', note: L('The town, its fall to the Dark Irons, and Balgaras the Foul.', '这座小镇、它落入黑铁矮人之手的经过，以及邪恶的巴尔加拉斯。') },
+    'dm-span': { title: L('Thandol Span', '萨多尔大桥'), url: 'https://warcraft.wiki.gg/wiki/Thandol_Span', note: L('Why the bridges were built and what crosses them.', '这些桥为何而建，又有什么从桥上经过。') },
+    'dm-deepfury': { title: L('Kam Deepfury', '卡姆·深怒'), url: 'https://warcraft.wiki.gg/wiki/Kam_Deepfury', note: L('The Dark Iron prisoner in the Stockade and his part in the attack.', '暴风城监狱里的黑铁囚犯及其在袭击中扮演的角色。') },
     questiedb: { title: L('QuestieDB', 'QuestieDB'), url: 'https://github.com/Questie/QuestieDB', note: L('Quest links, names, and representative locations for the picked Forever quest chains.', '提供无限服精选任务链的任务关联、名称和代表性地点。') },
     'hy-forever': { title: L('Mount Hyjal in Forever', '无限服的海加尔山'), url: 'https://www.wowhead.com/forever/zone=616/mount-hyjal', note: L('The zone and its Forever inhabitants and quests.', '无限服这一区域的居民和任务。') },
     'hy-zones': { title: L('Forever’s new zones', '无限服的新区域'), url: 'https://www.wowhead.com/forever/guide/zones-maps-locations-rewards', note: L('The aftermath at Hyjal, and Shen’dralas’s ties to the centaur and Dire Maul.', '海加尔山战后的局势，以及辛德拉与半人马和厄运之槌的关系。') },
@@ -2116,7 +2119,89 @@
       sourceIds: ['stalvan-chain', 'stalvan-wiki']
     },
     'defias-brotherhood': untold,
-    'onyxia-alliance': untold
+    'onyxia-alliance': untold,
+    'dun-modr': {
+      hook: L('The Dark Irons have blown up a bridge, taken a dwarven town, and left a handful of survivors to hold the road north.',
+        '黑铁矮人炸毁了一座桥，攻占了一座矮人城镇，只留下寥寥几个幸存者守着北上的道路。'),
+      chapters: [
+        { title: L('The Fall of Dun Modr', '丹莫德的陷落'), stepIds: [472, 631, 632, 633, 634],
+          recap: L('You found Ol’ Rustlocke dead on the Thandol Span with Deepfury’s orders, and saved the last bridge.',
+            '你在萨多尔大桥上找到了老拉斯洛克的尸体和深怒的命令，保住了最后一座桥。'),
+          text: [
+            L('A wounded soldier woke in Menethil with terrible news: Dun Modr had fallen to the Dark Iron dwarves. His regiment had been ambushed at the Thandol Span, the bridges that carry Ironforge’s road north into Arathi, and Longbraid the Grim had sounded the retreat.',
+              '一名伤兵在米奈希尔醒来，带来了可怕的消息：丹莫德已落入黑铁矮人之手。他的部队在萨多尔大桥遭到伏击，那几座桥承载着铁炉堡北上阿拉希的道路，布莱德·长须只得下令撤退。'),
+            L('Outside the fallen town, Rhag Garmason had sent old Ebenezer Rustlocke to scout the eastern bridge, and he had never come back. You found him dead on the Span, a parchment in his clenched fist: Deepfury’s orders. Kam Deepfury, who had planned the first attack, had stashed explosives just across the bridge in Arathi. If they reached the last bridge, the dwarves’ main supply line to the north would be cut. You destroyed the cache.',
+              '在陷落的小镇外，拉格·加玛森派老伊贝尼瑟·拉斯洛克去侦察东桥，他却再也没有回来。你在大桥上找到了他的尸体，他紧握的拳头里有一张羊皮纸：深怒的命令。策划了第一次袭击的卡姆·深怒，在桥对面的阿拉希藏了一批炸药。一旦它们被运到最后一座桥上，矮人北上的主要补给线就会被切断。你摧毁了那批炸药。'),
+            quote(L('The remaining bridge is saved!', '最后一座桥保住了！'), L('Rhag Garmason', '拉格·加玛森')),
+            L('Then Rhag asked one more favor: cross into the Highlands and ask the Alliance at Refuge Pointe for soldiers. But Stromgarde had fallen, and honor bound its last forces to the Highlands. No help was coming to Dun Modr.',
+              '随后拉格又请你帮一个忙：越过大桥，向避难谷地的联盟军请求援兵。但激流堡已经陷落，荣誉让它最后的部队无法离开高地。丹莫德等不来任何援助。')
+          ] },
+        { title: L('The Fury Runs Deep', '深怒'), stepIds: [303, 378],
+          recap: L('You pushed back the Dark Iron camp and brought Motley the head of Kam Deepfury from the Stockade.',
+            '你击退了黑铁营地，并从暴风城监狱为莫特雷带回了卡姆·深怒的头颅。'),
+          text: [
+            L('Motley Garmason’s orders were to hold until the reserves arrived, and he needed the front pushed back. You went into the Dark Iron camp, its dwarves, tunnelers, saboteurs and demolitionists, and thinned it out.',
+              '莫特雷·加玛森奉命坚守到援军抵达，他需要有人把战线推回去。你冲进了黑铁营地，对付那里的矮人、隧道工、破坏者和爆破手，削弱了他们的力量。'),
+            L('Then Motley asked for something personal. Roggo Harlbarrow’s intelligence proved that Kam Deepfury had conspired in the attack on the Span that killed Longbraid’s kin. Deepfury was alive, held “for political reasons” in the Stockade in Stormwind, and Motley, bound by honor to stay at Longbraid’s side, could not go himself.',
+              '接着莫特雷提出了一个私人的请求。罗戈·哈巴隆的情报证明，卡姆·深怒参与策划了大桥袭击，正是那次袭击夺去了布莱德亲人的性命。深怒还活着，“出于政治原因”被关在暴风城监狱里。莫特雷出于荣誉必须守在布莱德身边，无法亲自前往。'),
+            quote(L('I want him dead.', '我要他死。'), L('Motley Garmason', '莫特雷·加玛森')),
+            L('You went down into Stormwind’s prison and brought back his head.',
+              '你潜入暴风城的监狱，带回了他的头颅。')
+          ] },
+        { title: L('Fire and Powder', '烈火与火药'), stepIds: [88756, 87491],
+          recap: L('You turned the Dark Irons’ own weapons against them: their stolen powder and their caged fire elemental.',
+            '你让黑铁矮人自食其果：夺回他们偷走的火药，放出他们囚禁的火元素。'),
+          text: [
+            L('The Dark Irons had stolen barrels of explosives from the dwarves’ construction site and hauled them to their camps on Direforge Hill, east of town. Ashlan Stonesmirk wanted them back before they became bomb-carts and trebuchet shot.',
+              '黑铁矮人从矮人的工地上偷走了几桶炸药，运到了镇东恐炉山的营地。阿什兰·暗石想在它们变成炸弹车和投石机弹药之前把它们夺回来。'),
+            L('Inside Dun Modr, beside their fire pit, the Dark Irons kept a fire elemental they had summoned, caged. You led it out of the town, and once free it set their installations ablaze.',
+              '在丹莫德城内的火坑旁，黑铁矮人关着一只他们召唤来的火元素。你带它逃出小镇，它一获自由，就把他们的设施付之一炬。'),
+            quote(L('Fire must run wild, run free! Release me!', '火焰必须肆意燃烧，自由燃烧！放我出去！'), L('The captive fire elemental', '被囚禁的火元素'))
+          ] },
+        { title: L('The Lost', '失散的人'), stepIds: [87318, 88757, 88758],
+          recap: L('You found Essene Villard alive behind Dark Iron lines and carried her note to Corma.',
+            '你在黑铁防线后找到了还活着的埃森·维拉德，并把她的字条带给了科尔玛。'),
+          text: [
+            L('Corma Villard had been separated from her partner, Essene, in the ambush at the Span, and did not know whether she was alive.',
+              '科尔玛·维拉德在大桥伏击中与伴侣埃森失散了，不知道她是否还活着。'),
+            quote(L('I don’t even know if she’s alive!', '我连她是不是还活着都不知道！'), L('Corma Villard', '科尔玛·维拉德')),
+            L('You found Essene past the Dark Irons, alive, her gear dropped along the way she had fled. You gathered her necklace, spellbook and waterskin, and carried her note back to Corma.',
+              '你在黑铁矮人的防线后找到了埃森，她还活着，逃跑时把随身物品丢了一路。你找回了她的项链、法术书和水袋，又把她的字条带回给了科尔玛。')
+          ] },
+        { title: L('Balgaras the Foul', '邪恶的巴尔加拉斯'), stepIds: [304],
+          recap: L('You killed Balgaras the Foul, the warlock who led the Dark Irons at Dun Modr.',
+            '你杀死了率领丹莫德黑铁矮人的术士——邪恶的巴尔加拉斯。'),
+          text: [
+            L('Longbraid the Grim had lost his brother when the west bridge of the Span was destroyed. Roggo had learned who led the Dark Irons in the Wetlands: the warlock Balgaras the Foul, who hid while his soldiers fought.',
+              '布莱德·长须的兄弟死于大桥西段被炸毁之时。罗戈查明了湿地黑铁矮人的首领：术士邪恶的巴尔加拉斯，他躲在后面，让手下替他卖命。'),
+            quote(L('Aye, the Dark Iron dwarves are a devilish breed.', '没错，黑铁矮人是一群恶魔般的家伙。'), L('Longbraid the Grim', '布莱德·长须')),
+            L('You brought back Balgaras’s ear. With their leader dead, Longbraid said, the rest of the Dark Irons would be easier to clear.',
+              '你带回了巴尔加拉斯的耳朵。布莱德说，首领一死，剩下的黑铁矮人就好对付了。')
+          ] }
+      ],
+      meaning: {
+        title: L('The Bridge to the North', '通往北方的桥'),
+        text: [
+          L('The Thandol Span was built after the War of the Three Hammers so Ironforge could trade with the Wildhammer dwarves of Aerie Peak, and in the Second War the Alliance marched across it. It is still the dwarves’ main road to the human lands. The Dark Irons cut half of it, and with Stromgarde fallen no army is coming. Dun Modr is held by a handful of dwarves, and every quest here is one of them asking you to do what their regiment no longer can.',
+            '萨多尔大桥建于三锤之战之后，让铁炉堡得以与鹰巢山的蛮锤矮人通商；第二次大战中，联盟大军也是从这里跨过去的。如今它仍是矮人通往人类领土的主要道路。黑铁矮人炸断了一半，而激流堡已经陷落，不会有援军前来。守着丹莫德的只剩寥寥几个矮人，这里的每个任务，都是他们在请你去做整个部队已经做不到的事。'),
+          L('The Stockade thread is the strangest: Stormwind held the man who planned the attack, alive, “for political reasons” the game never explains.',
+            '暴风城监狱这条线索最耐人寻味：暴风城关押着策划袭击的人，留了他一命，理由是“政治原因”，而游戏从未解释那是什么。')
+        ]
+      },
+      cast: [
+        { id: 'longbraid', chapter: 1, name: L('Longbraid the Grim', '布莱德·长须'), role: L('Leads the survivors; lost his brother on the Span.', '幸存者的首领，兄弟死在大桥上。') },
+        { id: 'rhag-garmason', chapter: 1, name: L('Rhag Garmason', '拉格·加玛森'), role: L('Sent Ol’ Rustlocke to scout the bridge.', '派老拉斯洛克去侦察大桥的人。') },
+        { id: 'kam-deepfury', chapter: 1, name: L('Kam Deepfury', '卡姆·深怒'), role: L('The Dark Iron who planned the attack on the Span.', '策划大桥袭击的黑铁矮人。') },
+        { id: 'motley-garmason', chapter: 2, name: L('Motley Garmason', '莫特雷·加玛森'), role: L('Holds the line until the reserves come.', '坚守防线等待援军。') },
+        { id: 'roggo-harlbarrow', chapter: 2, name: L('Roggo Harlbarrow', '罗戈·哈巴隆'), role: L('Rifleman and spy, the source of the dwarves’ intelligence.', '火枪手兼探子，矮人情报的来源。') },
+        { id: 'ashlan-stonesmirk', chapter: 3, name: L('Ashlan Stonesmirk', '阿什兰·暗石'), role: L('Gunsmith who wants his explosives back.', '想夺回炸药的枪匠。') },
+        { id: 'corma-villard', chapter: 4, name: L('Corma Villard', '科尔玛·维拉德'), role: L('Lost her partner in the ambush.', '在伏击中与伴侣失散。') },
+        { id: 'essene-villard', chapter: 4, name: L('Essene Villard', '埃森·维拉德'), role: L('Trapped behind Dark Iron lines.', '被困在黑铁防线之后。') },
+        { id: 'balgaras', chapter: 5, name: L('Balgaras the Foul', '邪恶的巴尔加拉斯'), role: L('The warlock who leads the Dark Irons here.', '率领这里黑铁矮人的术士。') }
+      ],
+      links: ['unsent-letter'],
+      sourceIds: ['dm-wiki', 'dm-span', 'dm-deepfury']
+    },
   };
 
   root.WORLD = { version: 1, title: L('Azeroth, in context', '艾泽拉斯全景'), setting: L('Classic-era world · Forever additions identified', '经典旧世的艾泽拉斯 · 标注无限服新增内容'), zones, briefs, sagas, beats, figures, factions, sources, chains, glossary: {} };

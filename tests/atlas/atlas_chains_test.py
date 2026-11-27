@@ -4,7 +4,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 
-from tools.atlas_chains import markdown, rank_chains, read_journey, read_picks
+from tools.atlas_chains import markdown, pick_labels, rank_chains, read_journey, read_picks, site_chains
 
 
 def quest(quest_id, **fields):
@@ -24,10 +24,18 @@ class AtlasChainsTest(unittest.TestCase):
     def test_picks_are_unique_and_explained(self):
         picks = json.loads((Path(__file__).parents[2] / "tools/data/chain_picks.json").read_text())["picks"]
         self.assertEqual(len({pick["id"] for pick in picks}), len(picks))
-        self.assertEqual(len(read_picks()), len(picks))
+        labels = read_picks()
+        part_count = 0
         for pick in picks:
-            self.assertIsInstance(pick["firstQuest"], int)
+            self.assertNotEqual("firstQuest" in pick, "parts" in pick)
+            parts = pick["parts"] if "parts" in pick else [pick["firstQuest"]]
+            self.assertTrue(parts)
+            for part in parts:
+                self.assertIsInstance(part, int)
+                self.assertEqual(labels[part], pick["id"])
+            part_count += len(parts)
             self.assertTrue(pick["why"].strip())
+        self.assertEqual(len(labels), part_count)
 
     def test_summary_reads_open_quests_and_ignores_accepts(self):
         lines = ["H|1|Lancet", "A|1||||8", "Q|2||||7|", "O|9,10"]
@@ -37,9 +45,72 @@ class AtlasChainsTest(unittest.TestCase):
             path.write_text("RSJ1." + encoded)
             self.assertEqual(read_journey(path, "Lancet"), ({7}, {9, 10}))
 
-    def test_table_names_the_pick(self):
-        chains = rank_chains([profile([quest(5, nextQuestInChain=7), quest(7)])], {})
-        self.assertTrue(list(markdown(chains, picks={5: "five"}))[-1].endswith("| five |"))
+    def test_table_names_the_pick_for_each_candidate_part(self):
+        quests = [quest(5, nextQuestInChain=7), quest(7),
+                  quest(10, nextQuestInChain=11), quest(11), quest(20)]
+        chains = rank_chains([profile(quests)], {})
+        labels = pick_labels([{"id": "story", "parts": [10, 20, 5]}])
+        rows = list(markdown(chains, picks=labels))[2:]
+        self.assertEqual(len(rows), 2)
+        self.assertTrue(all(row.endswith("| story |") for row in rows))
+
+    def test_site_merges_parts_in_story_order_with_each_chain_in_depth_order(self):
+        quests = [
+            quest(5, faction="Alliance", objectives={"1": [[10]]}),
+            quest(7, preQuestSingle=[5]),
+            quest(2, preQuestSingle=[7], questLevel=10),
+            quest(8, preQuestSingle=[5], objectives={"1": [[11]]}),
+            quest(20, nextQuestInChain=21, objectives={"1": [[10]]}),
+            quest(21),
+        ]
+        standalone = quest(4, faction="Horde", questLevel=35, objectives={"1": [[12]]})
+        npcs = {
+            "10": {"rank": 1, "spawns": [{"uiMap": 101, "points": [[50, 50]], "dungeon": "Dungeon"}]},
+            "11": {"rank": 2, "spawns": [{"uiMap": 102, "points": [[50, 50]]}]},
+            "12": {"rank": 3, "spawns": [{"uiMap": 103, "points": [[50, 50]]}]},
+        }
+        profiles = [profile(quests, npcs=npcs), profile([standalone], npcs=npcs, profile="Horde")]
+        candidates = rank_chains(profiles, {101: 1415, 102: 1415, 103: 1414}, min_quests=1)
+        self.assertEqual(next([step["id"] for step in c["steps"]] for c in candidates
+                              if c["firstQuest"]["id"] == 5), [5, 7, 2, 8])
+        story = site_chains(candidates, [{"id": "story", "parts": [20, 4, 5]}])["story"]
+        self.assertEqual([(step["id"], step["after"]) for step in story["steps"]],
+                         [(20, []), (21, [20]), (4, []), (5, []), (7, [5]), (8, [5]), (2, [7])])
+        self.assertEqual(story["zoneIds"], [101, 103, 102])
+        self.assertEqual(story["levels"], [10, 35])
+        self.assertEqual(story["faction"], "Both")
+        self.assertEqual(story["signals"], {"steps": 7, "maps": 3, "continents": 2,
+                                           "elite": 2, "rareElite": 1, "boss": 1, "dungeonSteps": 2})
+
+    def test_site_rejects_a_part_that_is_neither_a_chain_start_nor_standalone(self):
+        chains = rank_chains([profile([quest(5, nextQuestInChain=7), quest(7)])], {}, min_quests=1)
+        for part in (7, 99):
+            with self.subTest(part=part), self.assertRaisesRegex(ValueError, f"Pick story has unknown part {part}"):
+                site_chains(chains, [{"id": "story", "parts": [5, part]}])
+
+    def test_site_rejects_quests_claimed_by_two_picks(self):
+        chains = rank_chains([profile([quest(5, nextQuestInChain=7), quest(7), quest(9)])], {}, min_quests=1)
+        picks = [{"id": "first", "firstQuest": 5}, {"id": "second", "parts": [9, 5]}]
+        with self.assertRaisesRegex(ValueError, "Quest 5 is claimed by picks first and second"):
+            site_chains(chains, picks)
+
+    def test_site_first_quest_pick_keeps_the_single_chain_format(self):
+        first = quest(5, faction="Alliance", nextQuestInChain=7, name={"enUS": "First", "zhCN": "First localized"})
+        chains = rank_chains([profile([first, quest(7, questLevel=25)])], {})
+        legacy = site_chains(chains, [{"id": "story", "firstQuest": 5, "title": "Story"}])
+        self.assertEqual(legacy, site_chains(chains, [{"id": "story", "parts": [5], "title": "Story"}]))
+        self.assertEqual(legacy["story"], {
+            "id": "story", "title": {"en": "Story", "zh": "First localized"}, "faction": "Alliance",
+            "levels": [20, 25], "zoneIds": [],
+            "signals": {"steps": 2, "maps": 0, "continents": 0, "elite": 0,
+                        "rareElite": 0, "boss": 0, "dungeonSteps": 0},
+            "steps": [
+                {"id": 5, "questIds": [5], "after": [], "name": {"en": "First", "zh": "First localized"},
+                 "giver": None, "goals": [], "turnIn": None},
+                {"id": 7, "questIds": [7], "after": [5], "name": {"en": "Quest 7", "zh": "Quest 7"},
+                 "giver": None, "goals": [], "turnIn": None},
+            ],
+        })
 
     def test_linear_chain_uses_prerequisite_and_next_links(self):
         chains = rank_chains([profile([quest(9), quest(5, nextQuestInChain=7),
