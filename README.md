@@ -86,8 +86,10 @@ their spawns belong to the representative cluster. Steps with an instance
 objective earn two points, and raid-flagged steps earn one (up to ten combined).
 Ties use the first quest ID.
 
-Chains picked for the atlas are listed in `tools/data/chain_picks.json`, keyed by
-first quest, with the reason for each pick. The table's Pick column names them.
+Picks in `tools/data/chain_picks.json` include a reason and either a single
+`firstQuest` or a `parts` list in story order. Each part is the first quest of
+a candidate chain or the ID of a standalone quest. The table's Pick column
+lists the pick for each candidate chain used as a part.
 Regenerate the atlas data from those picks with the same cached QuestieDB release.
 
 ```sh

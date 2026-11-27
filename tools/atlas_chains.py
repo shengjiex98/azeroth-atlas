@@ -142,7 +142,7 @@ def restriction_labels(quest, profile):
     return labels
 
 
-def quest_graph(quests):
+def quest_graph(quests, min_quests=2):
     links = defaultdict(set)
     # The Adventurer has one Camping variant per starter zone. An entry from a
     # starter zone unlocks Camping without making the starter arcs one component.
@@ -278,7 +278,7 @@ def quest_graph(quests):
                 seen.add(step)
                 component.add(step)
                 pending.extend(adjacent[step] - seen)
-        if sum(len(members[step]) for step in component) < 2:
+        if sum(len(members[step]) for step in component) < min_quests:
             continue
         ordered, required = [], {step: set() for step in component}
         for step in component:
@@ -468,7 +468,7 @@ def score(signals):
             + min(10, 2 * signals["dungeonSteps"] + signals["raidSteps"]))
 
 
-def rank_chains(profiles, continents, journey=None):
+def rank_chains(profiles, continents, journey=None, *, min_quests=2):
     choices = defaultdict(list)
     for profile in profiles:
         for row in profile["quests"]:
@@ -479,7 +479,7 @@ def rank_chains(profiles, continents, journey=None):
                 choices[row["id"]].append((profile, row))
     completed, active = journey or (set(), set())
     chains = []
-    for steps, conflicts in quest_graph(choices):
+    for steps, conflicts in quest_graph(choices, min_quests):
         factions, restrictions, maps, dungeons, levels = set(), set(), set(), set(), []
         ranks, dungeon_targets, dungeon_steps, raid_steps, party_steps = {}, set(), set(), set(), set()
         done = in_log = quest_count = 0
@@ -553,12 +553,19 @@ def rank_chains(profiles, continents, journey=None):
 
 
 def read_pick_details(path):
-    picks = json.loads(path.read_text(encoding="utf-8"))["picks"]
-    return {pick["firstQuest"]: pick for pick in picks}
+    return json.loads(path.read_text(encoding="utf-8"))["picks"]
+
+
+def pick_parts(pick):
+    return pick["parts"] if "parts" in pick else [pick["firstQuest"]]
+
+
+def pick_labels(picks):
+    return {part: pick["id"] for pick in picks for part in pick_parts(pick)}
 
 
 def read_picks(path=TOOLS / "data/chain_picks.json"):
-    return {first: pick["id"] for first, pick in read_pick_details(path).items()}
+    return pick_labels(read_pick_details(path))
 
 
 # QuestieDB localizes entity names, but these picked objective descriptions are English only.
@@ -593,13 +600,8 @@ def site_chains(chains, picks):
     kinds = {"npc": "kill", "killCredit": "kill", "item": "loot", "object": "use", "spell": "use"}
     # These True Masters steps use an NPC objective to record a conversation.
     talk_objectives = {(4185, 1749), (4224, 9563)}
-    by_first = {chain["firstQuest"]["id"]: chain for chain in chains}
-    published = {}
-    for first, pick in picks.items():
-        if first not in by_first:
-            raise ValueError(f"Picked chain {pick['id']} has no candidate for quest {first}")
-        chain = by_first[first]
-        steps, zones = [], {}
+
+    def part_steps(chain):
         depth = {}
         for step in chain["steps"]:
             depth[step["id"]] = 1 + max((depth[parent] for parent in step["after"]), default=-1)
@@ -622,21 +624,49 @@ def site_chains(chains, picks):
                     goal = {"kind": kind, "label": label, **point(row)}
                     if goal not in goals:
                         goals.append(goal)
-            for location in (giver, *goals, turn_in):
+            yield {"id": step["id"], "questIds": [quest["id"] for quest in quests], "after": step["after"],
+                   "name": localized(quests[0]["name"]), "giver": giver, "goals": goals, "turnIn": turn_in}
+
+    by_first = {chain["firstQuest"]["id"]: chain for chain in chains}
+    published, claimed = {}, {}
+    for pick in picks:
+        pick_id = pick["id"]
+        parts = []
+        for part_id in pick_parts(pick):
+            if part_id not in by_first:
+                raise ValueError(f"Pick {pick_id} has unknown part {part_id}. "
+                                 "Expected a chain's first quest or a standalone quest.")
+            parts.append(by_first[part_id])
+        if not parts:
+            raise ValueError(f"Pick {pick_id} has no parts")
+
+        steps = [step for part in parts for step in part_steps(part)]
+        zones = {}
+        for step in steps:
+            for quest_id in step["questIds"]:
+                if quest_id in claimed:
+                    raise ValueError(f"Quest {quest_id} is claimed by picks {claimed[quest_id]} and {pick_id}")
+                claimed[quest_id] = pick_id
+            for location in (step["giver"], *step["goals"], step["turnIn"]):
                 if location and location["map"] is not None:
                     zones[location["map"]] = None
-            steps.append({"id": step["id"], "questIds": [quest["id"] for quest in quests], "after": step["after"],
-                          "name": localized(quests[0]["name"]), "giver": giver, "goals": goals, "turnIn": turn_in})
-        title = localized(chain["firstQuest"]["name"])
+
+        title = localized(parts[0]["firstQuest"]["name"])
         if isinstance(pick.get("title"), str):
             title["en"] = pick["title"]
         elif pick.get("title"):
             title.update(pick["title"])
-        source = chain["signals"]
-        signals = {"steps": len(steps), "maps": len(zones), "continents": len(source["continents"]),
-                   **{key: source[key] for key in ("elite", "rareElite", "boss", "dungeonSteps")}}
-        published[pick["id"]] = {"id": pick["id"], "title": title, "faction": source["faction"],
-                                 "levels": source["levelSpan"], "zoneIds": list(zones), "signals": signals, "steps": steps}
+        sources = [part["signals"] for part in parts]
+        factions = {source["faction"] for source in sources}
+        faction = next(iter(factions)) if len(factions) == 1 else "Both"
+        levels = [level for source in sources for level in source["levelSpan"] or []]
+        continents = {continent for source in sources for continent in source["continents"]}
+        signals = {"steps": len(steps), "maps": len(zones), "continents": len(continents),
+                   **{key: sum(source[key] for source in sources)
+                      for key in ("elite", "rareElite", "boss", "dungeonSteps")}}
+        published[pick_id] = {"id": pick_id, "title": title, "faction": faction,
+                              "levels": [min(levels), max(levels)] if levels else None,
+                              "zoneIds": list(zones), "signals": signals, "steps": steps}
     return published
 
 
@@ -693,17 +723,20 @@ def main():
         db = questiedb()
         profiles = [json.loads(subprocess.check_output(["lua5.1", TOOLS / "quest_dump.lua", faction], cwd=db))
                     for faction in FACTIONS]
-        chains = rank_chains(profiles, map_continents(), journey)
+        chains = rank_chains(profiles, map_continents(), journey, min_quests=1 if args.site else 2)
         picks = read_pick_details(TOOLS / "data/chain_picks.json")
         if args.site:
             write_site(args.site, site_chains(chains, picks))
+            chains = [chain for chain in chains if chain["signals"]["questCount"] >= 2]
+            for rank, chain in enumerate(chains, 1):
+                chain["rank"] = rank
         if args.json:
             with args.json.open("w", encoding="utf-8") as output:
                 json.dump({"questieDB": VERSION, "chains": chains}, output, ensure_ascii=False, separators=(",", ":"))
                 output.write("\n")
     except (ValueError, OSError, subprocess.CalledProcessError) as error:
         parser.exit(1, f"atlas_chains: {error}\n")
-    for line in markdown(chains, args.journey is not None, {first: pick["id"] for first, pick in picks.items()}):
+    for line in markdown(chains, args.journey is not None, pick_labels(picks)):
         print(line)
 
 

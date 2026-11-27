@@ -21,6 +21,8 @@
     { "id": "defias-brotherhood", "firstQuest": 65, "title": "The Defias Brotherhood",
       "why": "Westfall's story, ending at VanCleef in the Deadmines." },
     { "id": "onyxia-alliance", "firstQuest": 4182, "title": "Dragonkin Menace",
-      "why": "The Alliance Onyxia attunement: 18 steps over levels 54–60, 5 elites, a boss and 4 dungeon steps." }
+      "why": "The Alliance Onyxia attunement: 18 steps over levels 54–60, 5 elites, a boss and 4 dungeon steps." },
+    { "id": "dun-modr", "parts": [472, 631, 303, 88756, 87491, 87318, 304], "title": { "en": "Dun Modr", "zh": "丹莫德" },
+      "why": "The Dark Iron camp at Dun Modr: three short chains and standalone quests at an elite camp, one of them a Stockade prerequisite, that together tell the fall of Dun Modr and the attack on the Thandol Span." }
   ]
 }
