@@ -8,6 +8,16 @@
     'ul-chain': { title: L('Lescovar Incident quest chain', '莱斯科瓦事件任务链'), url: 'https://warcraft.wiki.gg/wiki/Lescovar_Incident_quest_chain', note: L('Each quest of The Unsent Letter, from VanCleef’s letter to the audience in the Keep.', '《未寄出的信》的每个任务，从范克里夫的信到要塞中的觐见。') },
     'ul-onyxia': { title: L('Onyxia', '奥妮克希亚'), url: 'https://warcraft.wiki.gg/wiki/Onyxia', note: L('Onyxia as Lady Katrana Prestor, the Stonemasons’ quarrel, and the king’s abduction.', '化身卡特拉娜·普瑞斯托的奥妮克希亚、石匠之争与国王被掳。') },
     'md-start': { title: L('The Missing Diplomat', '失踪的使节'), url: 'https://www.wowhead.com/classic/quest=1274', note: L('The chain’s quest text, from Bishop DeLavey to Jaina Proudmoore (Wowhead Classic, quests 1274 to 1267).', '这条任务链的任务文本，从德拉维主教到吉安娜·普罗德摩尔（Wowhead 经典旧世，任务 1274 至 1267）。') },
+    'stalvan-chain': { title: L('The Legend of Stalvan', '斯塔文的传说'), url: 'https://warcraft.wiki.gg/wiki/The_Legend_of_Stalvan', note: L('The thirteen quests from Madame Eva’s vision to Stalvan’s cottage.', '从伊瓦夫人的幻象到斯塔文小屋的十三个任务。') },
+    'stalvan-wiki': { title: L('Stalvan Mistmantle', '斯塔文·密斯特曼托'), url: 'https://warcraft.wiki.gg/wiki/Stalvan_Mistmantle', note: L('Stalvan, the Flintridge family and Tilloa, including fan readings of the journal.', '斯塔文、弗林特里奇家族与蒂洛娅，包括玩家对日记的解读。') },
+    'hermit-abercrombie': { title: L('Abercrombie', '亚伯克隆比'), url: 'https://warcraft.wiki.gg/wiki/Abercrombie', note: L('The hermit above Raven Hill and the quests he gives.', '乌鸦岭上的隐士及其任务。') },
+    'hermit-bride': { title: L('Bride of the Embalmer', '藏尸者的妻子'), url: 'https://warcraft.wiki.gg/wiki/Bride_of_the_Embalmer', note: L('Darkshire’s tale of the Embalmer and the end of the chain.', '夜色镇关于藏尸者的故事与任务链的结局。') },
+    'sven-chain': { title: L('Deliveries to Sven', '斯温的货物'), url: 'https://www.wowhead.com/classic/quest=164', note: L('The chain’s quest text, from Sven’s camp to Morbent Fel (Wowhead Classic).', '这条任务链的任务文本，从斯温的营地到摩本特·费尔（Wowhead 经典旧世）。') },
+    'sven-morbent': { title: L('Morbent Fel', '摩本特·费尔'), url: 'https://warcraft.wiki.gg/wiki/Morbent_Fel', note: L('The necromancer and his ties to the Dark Riders.', '这位死灵法师及其与黑暗骑士的关系。') },
+    'jungle-hemet': { title: L('Hemet Nesingwary', '赫米特·奈辛瓦里'), url: 'https://warcraft.wiki.gg/wiki/Hemet_Nesingwary', note: L('The hunter, his companions, and his later hunts.', '这位猎人、他的同伴及其后来的狩猎。') },
+    'jungle-book': { title: L('The Green Hills of Stranglethorn', '荆棘谷的青山'), url: 'https://warcraft.wiki.gg/wiki/The_Green_Hills_of_Stranglethorn', note: L('The text of Hemet’s book.', '赫米特那本书的原文。') },
+    'vale-velinde': { title: L('Velinde Starsong', '维琳德·星歌'), url: 'https://warcraft.wiki.gg/wiki/Velinde_Starsong', note: L('The vanished Sentinel and how she died.', '失踪的哨兵及其死因。') },
+    'vale-scythe': { title: L('Scythe of Elune', '月神镰刀'), url: 'https://warcraft.wiki.gg/wiki/Scythe_of_Elune', note: L('The relic, the worgen, and who hunted it.', '这件圣物、狼人，以及追寻它的人。') },
     questiedb: { title: L('QuestieDB', 'QuestieDB'), url: 'https://github.com/Questie/QuestieDB', note: L('Quest links, names, and representative locations for the picked Forever quest chains.', '提供无限服精选任务链的任务关联、名称和代表性地点。') },
     'hy-forever': { title: L('Mount Hyjal in Forever', '无限服的海加尔山'), url: 'https://www.wowhead.com/forever/zone=616/mount-hyjal', note: L('The zone and its Forever inhabitants and quests.', '无限服这一区域的居民和任务。') },
     'hy-zones': { title: L('Forever’s new zones', '无限服的新区域'), url: 'https://www.wowhead.com/forever/guide/zones-maps-locations-rewards', note: L('The aftermath at Hyjal, and Shen’dralas’s ties to the centaur and Dire Maul.', '海加尔山战后的局势，以及辛德拉与半人马和厄运之槌的关系。') },
@@ -1796,12 +1806,315 @@
       sourceIds: ['ul-chain', 'ul-onyxia']
     },
     'on-guard-in-stonetalon': untold,
-    'welcome-to-the-jungle': untold,
+    'welcome-to-the-jungle': {
+      hook: L('A famous hunter’s camp in Stranglethorn takes you in, tests you on its tigers, panthers and raptors, and saves the best prey for last.',
+        '荆棘谷里一位著名猎人的营地接纳了你，用猛虎、黑豹和迅猛龙考验你，并把最好的猎物留到了最后。'),
+      chapters: [
+        { title: L('Nesingwary’s Camp', '奈辛瓦里的营地'), stepIds: [583, 185, 190, 194, 338],
+          recap: L('You joined Hemet Nesingwary’s safari camp and began its trials.',
+            '你加入了赫米特·奈辛瓦里的狩猎营地，开始接受考验。'),
+          text: [
+            L('Hemet Nesingwary did not welcome strangers, but he took you for a veteran. Before the big hunt you would prove yourself: Ajeck Rouack would teach you tigers, Sir S. J. Erlgadin panthers, and Hemet himself raptors.',
+              '赫米特·奈辛瓦里不欢迎陌生人，但他看出你是个老手。在大狩猎之前，你得先证明自己：艾耶克·罗欧克教你猎虎，埃尔加丁爵士教你猎豹，赫米特亲自教你猎迅猛龙。'),
+            quote(L('I shall teach the ways of raptor killing to you.', '猎杀迅猛龙的门道，我亲自教你。'), L('Hemet Nesingwary', '赫米特·奈辛瓦里')),
+            L('His servant Barnil Stonepot had a smaller disaster. He had been proofreading Hemet’s book, The Green Hills of Stranglethorn, when a gust of wind scattered its pages across the jungle.',
+              '他的仆人巴尼尔·石罐则遇上了一桩小麻烦。他正在校对赫米特的书《荆棘谷的青山》，一阵风把书页吹得满丛林都是。')
+          ] },
+        { title: L('The Long Hunt', '漫长的狩猎'), stepIds: [186, 191, 195, 339, 340, 341, 342, 187, 192, 196],
+          recap: L('You hunted your way up through Stranglethorn’s cats and raptors, and pieced Hemet’s book back together.',
+            '你在荆棘谷的猛兽与迅猛龙中一路猎杀，也把赫米特的书一页页拼了回来。'),
+          text: [
+            L('Each trainer sent you after bigger and older beasts. Along the way you gathered the book’s pages from all over the jungle. Its chapters told the camp’s own stories: Ajeck’s arrow saving Barnil from a crocolisk, and a great white tiger scattering a pack of raptors.',
+              '每位导师都派你去对付更大、更老的猛兽。一路上，你在丛林各处收集回了书页。书里讲的正是营地自己的故事：艾耶克一箭从鳄鱼口中救下巴尼尔，还有一只巨大的白虎冲散了一群迅猛龙。')
+          ] },
+        { title: L('Legends of the Jungle', '丛林的传说'), stepIds: [188, 193, 197],
+          recap: L('You brought back the trophies no other hunter could: Sin’Dall, Bhag’thera and Tethis.',
+            '你带回了其他猎人从未得手的战利品：辛达尔、巴尔瑟拉和泰希斯。'),
+          text: [
+            L('The last trial of each master was a beast with a name. Sin’Dall, the tigress north of Grom’gol, had killed many of the expedition’s hunters. Bhag’thera, the panther, had always escaped them. Tethis, the wily raptor, had been named by Ajeck. No other hunter had brought any of them down.',
+              '每位导师的最后一道考验，都是一只有名字的野兽。格罗姆高以北的母虎辛达尔杀死过远征队的许多猎人；黑豹巴尔瑟拉总能从他们手下逃脱；狡猾的迅猛龙泰希斯是艾耶克起的名字。在你之前，没有哪个猎人拿下过它们。')
+          ] },
+        { title: L('King Bangalash', '邦加拉什国王'), stepIds: [208],
+          recap: L('You killed King Bangalash, the white tiger that had beaten Hemet for years, and joined his hunting party.',
+            '你杀死了多年来一再击败赫米特的白虎邦加拉什国王，成为他狩猎队的一员。'),
+          text: [
+            L('One prize remained: King Bangalash, the great white tiger that had beaten Hemet many times and the villain of his own book. You brought back its head, and Hemet welcomed you as a comrade of the hunting party.',
+              '只剩最后一件战利品：邦加拉什国王，那只多次击败赫米特的巨大白虎，也是他那本书里的反派。你带回了它的头颅，赫米特欢迎你成为狩猎队的伙伴。')
+          ] }
+      ],
+      meaning: {
+        title: L('A Writer’s Safari', '一位作家的狩猎之旅'),
+        text: [
+          L('Hemet Nesingwary is Warcraft’s nod to Ernest Hemingway: the name, the big-game safari, and The Green Hills of Stranglethorn after Hemingway’s Green Hills of Africa. Bhag’thera borrows from Bagheera, the panther of The Jungle Book.',
+            '赫米特·奈辛瓦里是《魔兽世界》向欧内斯特·海明威的致敬：名字、大型狩猎之旅，以及仿照海明威《非洲的青山》写成的《荆棘谷的青山》。巴尔瑟拉的名字则借自《丛林之书》里的黑豹巴希拉。'),
+          L('Sir Erlgadin’s story reaches back to Stormwind: the book says he turned bitter on its nobility after the Stonemasons were betrayed, the same betrayal that made the Defias. Hemet himself later takes his hunt to Outland.',
+            '埃尔加丁爵士的故事可以追溯到暴风城：书中说，石匠们遭到背叛后，他对暴风城的贵族心灰意冷，而正是那次背叛催生了迪菲亚兄弟会。赫米特后来把他的狩猎带到了外域。')
+        ]
+      },
+      cast: [
+        { id: 'hemet-nesingwary', chapter: 1, name: L('Hemet Nesingwary', '赫米特·奈辛瓦里'), role: L('Dwarf marksman, war hero and author.', '矮人神射手、战争英雄兼作家。') },
+        { id: 'ajeck-rouack', chapter: 1, name: L('Ajeck Rouack', '艾耶克·罗欧克'), role: L('Hemet’s student; he fought beside her father.', '赫米特的学生，他曾与她的父亲并肩作战。') },
+        { id: 'erlgadin', chapter: 1, name: L('Sir S. J. Erlgadin', '埃尔加丁爵士'), role: L('A Stormwind noble soured on the nobility.', '对贵族阶层心灰意冷的暴风城贵族。') },
+        { id: 'barnil-stonepot', chapter: 1, name: L('Barnil Stonepot', '巴尼尔·石罐'), role: L('Hemet’s servant and proofreader.', '赫米特的仆人兼校对。') }
+      ],
+      links: ['unsent-letter'],
+      sourceIds: ['jungle-hemet', 'jungle-book']
+    },
     'claws-from-the-deep': untold,
-    'howling-vale': untold,
-    'deliveries-to-sven': untold,
-    'the-hermit': untold,
-    'legend-of-stalvan': untold,
+    'howling-vale': {
+      hook: L('Wolf-men howl at the edge of Ashenvale, and the Sentinel sent to stop them vanished.',
+        '灰谷边缘传来狼人的嚎叫，而派去阻止它们的哨兵却失踪了。'),
+      chapters: [
+        { title: L('The Tome of Mel’Thandris', '梅尔萨迪斯之书'), stepIds: [1022],
+          recap: L('You read the Tome of Mel’Thandris in the Howling Vale and learned the name of a relic: the Scythe of Elune.',
+            '你在狼嚎谷读了梅尔萨迪斯之书，得知了一件圣物的名字：月神镰刀。'),
+          text: [
+            L('Wolf-men had appeared near Ashenvale’s border with Felwood, and their howls gave the vale its name. Sentinel Melyria Frostshadow sent you to the Tome of Mel’Thandris in the vale’s shrine. It was no ordinary book: it showed you events, and one name in them bore further investigation, the Scythe of Elune.',
+              '灰谷与费伍德森林交界处出现了狼人，它们的嚎叫让这座山谷得了名。哨兵梅丽瑞亚·霜影让你去山谷神殿里查阅梅尔萨迪斯之书。那不是一本普通的书：它向你展示了往事，其中有一个名字值得深究：月神镰刀。')
+          ] },
+        { title: L('Velinde’s Trail', '维琳德的足迹'), stepIds: [1037, 1038, 1039, 1040, 1041],
+          recap: L('You followed the vanished Sentinel Velinde Starsong from Darnassus by ship and caravan to Darkshire.',
+            '你追随失踪的哨兵维琳德·星歌的足迹，从达纳苏斯乘船、随商队一路来到夜色镇。'),
+          text: [
+            L('Melyria’s predecessor, Velinde Starsong, had vanished. In Darnassus, Thyn’tel Bladeweaver was evasive until you brought him Velinde’s journal from her chest, and then he admitted her disappearance was more troubling than it seemed.',
+              '梅丽瑞亚的前任维琳德·星歌失踪了。在达纳苏斯，塞恩提尔·刃纹起初闪烁其词，直到你从她的箱子里取来维琳德的日记，他才承认她的失踪远比看上去严重。'),
+            L('The trail crossed the sea. Ratchet’s wharfmaster found her booked to Booty Bay. There a caravaneer remembered she had travelled north with his caravan and split off toward Darkshire.',
+              '线索延伸到了海的另一边。棘齿城的码头管理员查到她订了去藏宝海湾的船票。在那里，一位商队领队记得她随商队北上，在途中转向了夜色镇。')
+          ] },
+        { title: L('The Mine South of Darkshire', '夜色镇以南的矿洞'), stepIds: [1042, 1043],
+          recap: L('With the Carevins’ help you found where the Scythe was lost: a mine south of Darkshire.',
+            '在卡尔文家族的帮助下，你找到了月神镰刀失落的地方：夜色镇以南的一座矿洞。'),
+          text: [
+            L('Darkshire had no record of her. But the Carevin family hunted the wolf-men, and Jonathan Carevin, suspicious of anyone asking about worgen, told you where they had first appeared: a mine to the south. In it, a mound of dirt held the trace of the Scythe.',
+              '夜色镇没有她的记录。但卡尔文家族一直在猎杀狼人。乔纳森·卡尔文对打听狼人的人心存戒备，却还是告诉你狼人最早出现的地方：南边的一座矿洞。在那里，一堆泥土中留着月神镰刀的痕迹。'),
+            quote(L('Dark times these are.', '真是黑暗的年月。'), L('Jonathan Carevin', '乔纳森·卡尔文'))
+          ] },
+        { title: L('Answered Questions', '答案'), stepIds: [1044],
+          recap: L('You told Thyn’tel what became of Velinde, and that the Scythe of Elune had left the Sentinels’ hands.',
+            '你告诉塞恩提尔维琳德的下落，以及月神镰刀已经离开了哨兵的掌控。'),
+          text: [
+            L('Back in Darnassus, Thyn’tel heard what you found. This was Velinde’s fate. She had been a close friend of the high priestess, and the Scythe, granted by Elune, was no longer in the Sentinels’ hands.',
+              '回到达纳苏斯，塞恩提尔听完了你的发现。这就是维琳德的结局。她曾是高阶女祭司的挚友，而艾露恩赐下的镰刀，已不在哨兵手中。')
+          ] }
+      ],
+      meaning: {
+        title: L('Where Duskwood’s Worgen Came From', '暮色森林狼人的来历'),
+        text: [
+          L('The Scythe of Elune was made from one of the wolf ancient Goldrinn’s fangs. Druids who used it to master their rage became worgen, and Malfurion banished them into the Emerald Dream and left the Scythe with Mel’Thandris. Velinde, her niece, found it and summoned worgen to fight the demons in Ashenvale. They multiplied beyond her control.',
+            '月神镰刀由狼之古神戈德林的一颗獠牙制成。想借它驾驭怒火的德鲁伊变成了狼人，玛法里奥把他们放逐进翡翠梦境，并把镰刀交给梅尔萨迪斯保管。她的侄女维琳德找到了它，召唤狼人对抗灰谷的恶魔，狼人却繁衍到她无法控制。'),
+          L('According to the wiki, she crossed to the Eastern Kingdoms seeking the archmage Arugal and died in Duskwood’s Roland’s Doom mine when her torch set off dynamite. The Scythe stayed behind, and the worgen of Duskwood followed. The Dark Riders in Sven’s story were hunting it.',
+            '据维基记载，她渡海前往东部王国寻找大法师阿鲁高，在暮色森林的罗兰之墓矿洞里，她的火把点燃了炸药，她因此丧生。镰刀留在了那里，暮色森林的狼人也随之而来。斯温故事里的黑暗骑士，正是在寻找它。')
+        ]
+      },
+      cast: [
+        { id: 'melyria-frostshadow', chapter: 1, name: L('Sentinel Melyria Frostshadow', '哨兵梅丽瑞亚·霜影'), role: L('Velinde’s successor in Ashenvale.', '维琳德在灰谷的继任者。') },
+        { id: 'velinde-starsong', chapter: 2, name: L('Velinde Starsong', '维琳德·星歌'), role: L('The Sentinel who vanished.', '失踪的哨兵。') },
+        { id: 'thyntel-bladeweaver', chapter: 2, name: L('Thyn’tel Bladeweaver', '塞恩提尔·刃纹'), role: L('Keeps the Sentinels’ secrets in Darnassus.', '在达纳苏斯守护哨兵的秘密。') },
+        { id: 'clerk-daltry', chapter: 2, name: L('Clerk Daltry', '书记员达尔塔'), role: L('Keeps records on Darkshire’s strangers.', '记录夜色镇的外来者。') },
+        { id: 'jonathan-carevin', chapter: 3, name: L('Jonathan Carevin', '乔纳森·卡尔文'), role: L('Head of a family that hunts Duskwood’s wolf-men.', '一个猎杀暮色森林狼人的家族的家长。') }
+      ],
+      links: ['deliveries-to-sven'],
+      sourceIds: ['vale-velinde', 'vale-scythe']
+    },
+    'deliveries-to-sven': {
+      hook: L('Dark Riders killed Sven Yorgen’s family, and a frightened witness knows who they answer to.',
+        '黑暗骑士杀害了斯温·约根的家人，而一个惊恐的目击者知道他们听命于谁。'),
+      chapters: [
+        { title: L('Sven’s Revenge', '斯温的复仇'), stepIds: [164, 95, 230],
+          recap: L('You brought Sven supplies, heard how Dark Riders killed his family, and dug up a witness’s book at his farm.',
+            '你给斯温送去补给，听他讲了黑暗骑士如何杀害他的家人，又在他的农场挖出了一个目击者的书。'),
+          text: [
+            L('You brought supplies to Sven Yorgen’s camp, where he and a few followers were preparing for a fight. While he was away, Dark Riders had raided his farm and slaughtered his family. He had seen a shadowy figure bury something near the barn and could not catch him.',
+              '你把补给送到斯温·约根的营地，他和几个追随者正准备一战。他不在家时，黑暗骑士袭击了他的农场，杀害了他的家人。他看见一个模糊的人影在谷仓附近埋了什么东西，却没能追上。'),
+            quote(L('Dark Riders from Deadwind Pass descended upon my farm and slaughtered my family when I was away!', '逆风小径来的黑暗骑士趁我不在袭击了我的农场，杀了我的家人！'),
+              L('Sven Yorgen', '斯温·约根')),
+            L('In the hastily piled mound you found a book. Reading it, Sven understood: the shadowy figure had witnessed his family’s death.',
+              '你在那堆匆忙堆起的土里找到一本书。读过之后，斯温明白了：那个模糊的人影目睹了他家人的死。')
+          ] },
+        { title: L('The Shadowy Figure', '模糊的人影'), stepIds: [262, 265, 266, 453, 268],
+          recap: L('You followed the book through Darkshire to Jitters, who named the necromancer Morbent Fel.',
+            '你顺着那本书在夜色镇一路追查，找到了基特斯，他说出了死灵法师摩本特·费尔的名字。'),
+          text: [
+            L('Madame Eva sensed the book’s owner was no native of Darkshire. Clerk Daltry had sold it a month before to a nervous, jittery man who kept looking over his shoulder. At the Scarlet Raven, Smitts remembered him writing at the bar every night before he fled west, muttering about being hunted.',
+              '伊瓦夫人感觉到这本书的主人不是夜色镇本地人。书记员达尔塔一个月前把它卖给了一个神经兮兮、总回头张望的男人。在猩红渡鸦旅店，斯密茨记得他每晚都在吧台写东西，后来嘀咕着有东西在追他，往西逃走了。'),
+            L('You found him at Raven Hill. Jitters admitted the book was his.',
+              '你在乌鸦岭找到了他。基特斯承认那本书是他的。'),
+            quote(L('Well if you read that journal… then you only know the half of it!', '你要是读了那本日记……那你只知道一半！'), L('Jitters', '基特斯')),
+            L('His completed journal told the rest: he had seen the Dark Riders meet the wizard Morbent Fel.',
+              '他写完的日记交代了其余的部分：他看见黑暗骑士与巫师摩本特·费尔会面。')
+          ] },
+        { title: L('A Weapon of Holy Truth', '神圣真理之刃'), stepIds: [323, 269, 270, 321, 324, 322, 325],
+          recap: L('You raised Lightforge iron from the wreck of the Third Fleet, and a Stormwind smith forged a weapon against Morbent Fel.',
+            '你从第三舰队的残骸中找回了光铸铁，暴风城的铁匠用它锻造了对付摩本特·费尔的武器。'),
+          text: [
+            L('Morbent Fel was a necromancer, and Sven would not send you after him until you had cut through his skeletons. Then he sent you to Stormwind, which had forsaken Darkshire, to a kind and wise man there: Bishop Farthing.',
+              '摩本特·费尔是个死灵法师。在你砍倒他手下的骷髅之前，斯温不肯派你去对付他。随后他让你前往早已抛弃夜色镇的暴风城，去找那里一位善良而睿智的人：主教法席恩。'),
+            L('Dark enchantments shielded Morbent from physical harm, Farthing said. You would need Lightforge iron, which strikes with holy truth. Some had gone down off the Wetlands coast with the Third Fleet of Kul Tiras, burned by red dragons in the last great war. You found one ingot in the wreck; murlocs had the rest.',
+              '法席恩说，黑暗的魔法护着摩本特，使他不受物理伤害。你需要光铸铁，它能以神圣的真理之力打击敌人。有一批光铸铁随库尔提拉斯第三舰队沉没在湿地沿岸，那支舰队在上一场大战中被红龙焚毁。你在残骸里找到一块铁锭，其余的都被鱼人拿走了。'),
+            L('Grimand Elmore in Stormwind had not worked such metal in years. He forged the weapon and asked you to come back and tell him how the fight went.',
+              '暴风城的格瑞曼德·艾尔默已经多年没碰过这种金属了。他锻好了武器，还嘱咐你回来讲讲那一战的经过。')
+          ] },
+        { title: L('Morbent Fel', '摩本特·费尔'), stepIds: [55],
+          recap: L('Sven got his revenge: you broke Morbent Fel’s protections and killed him.',
+            '斯温报了仇：你破除了摩本特·费尔的护盾，杀死了他。'),
+          text: [
+            L('At his house on the hill, the weapon stripped Morbent Fel’s protective magic, and you killed him. Sven had his revenge, though the Dark Riders were still at large. What you did, he said, would be part of Duskwood’s legends.',
+              '在山丘上的宅子里，那件武器剥去了摩本特·费尔的护身魔法，你杀死了他。斯温报了仇，尽管黑暗骑士仍逍遥在外。他说，你的事迹将成为暮色森林传说的一部分。'),
+            quote(L('Slay him, and save us from his wickedness.', '杀了他，把我们从他的邪恶中解救出来。'), L('Sven Yorgen', '斯温·约根'))
+          ] }
+      ],
+      meaning: {
+        title: L('What the Riders Wanted', '黑暗骑士想要什么'),
+        text: [
+          L('Sven’s revenge ends with Morbent Fel, but the Dark Riders ride on, and the quests never say what they wanted in Duskwood. The wider lore does: they were hunting the Scythe of Elune, the night elf relic that brought the worgen to these woods.',
+            '斯温的复仇以摩本特·费尔之死告终，但黑暗骑士依然在外，任务也从未说明他们来暮色森林想要什么。更大的传说给出了答案：他们在寻找月神镰刀，正是这件暗夜精灵圣物把狼人带进了这片森林。'),
+          L('According to the wiki, Jitters, the frightened witness, had found the Scythe in the Roland’s Doom mine. It is the same relic whose trail you follow in The Howling Vale.',
+            '据维基记载，那个惊恐的目击者基特斯曾在罗兰之墓矿洞里找到了月神镰刀。你在《狼嚎谷》中追寻的，正是这件圣物的下落。')
+        ]
+      },
+      cast: [
+        { id: 'sven-yorgen', chapter: 1, name: L('Sven Yorgen', '斯温·约根'), role: L('A farmer whose family the Dark Riders killed.', '家人被黑暗骑士杀害的农夫。') },
+        { id: 'madame-eva', chapter: 2, name: L('Madame Eva', '伊瓦夫人'), role: L('Reads the book’s owner from its pages.', '从书页中感知到书的主人。') },
+        { id: 'clerk-daltry', chapter: 2, name: L('Clerk Daltry', '书记员达尔塔'), role: L('Sold Jitters the blank book.', '把空白的书卖给了基特斯。') },
+        { id: 'tavernkeep-smitts', chapter: 2, name: L('Tavernkeep Smitts', '旅店老板斯密茨'), role: L('Watched Jitters write at the bar every night.', '每晚看着基特斯在吧台写字。') },
+        { id: 'jitters', chapter: 2, name: L('Jitters', '基特斯'), role: L('The frightened witness at Raven Hill.', '躲在乌鸦岭的惊恐目击者。') },
+        { id: 'bishop-farthing', chapter: 3, name: L('Bishop Farthing', '主教法席恩'), role: L('A Stormwind bishop who knows how to break Morbent’s protections.', '知道如何破除摩本特护盾的暴风城主教。') },
+        { id: 'grimand-elmore', chapter: 3, name: L('Grimand Elmore', '格瑞曼德·艾尔默'), role: L('The Stormwind smith who forges the Lightforge weapon.', '锻造光铸武器的暴风城铁匠。') },
+        { id: 'morbent-fel', chapter: 2, name: L('Morbent Fel', '摩本特·费尔'), role: L('A necromancer allied with the Dark Riders.', '与黑暗骑士结盟的死灵法师。') }
+      ],
+      links: ['howling-vale', 'the-hermit'],
+      sourceIds: ['sven-chain', 'sven-morbent']
+    },
+    'the-hermit': {
+      hook: L('A frail old hermit above Raven Hill asks for small favors, and Darkshire learns too late whom you were helping.',
+        '乌鸦岭上一位体弱的老隐士请你帮些小忙，等夜色镇明白你帮的是谁，已经太迟了。'),
+      chapters: [
+        { title: L('The Old Man Above Raven Hill', '乌鸦岭上的老人'), stepIds: [165, 148, 149, 154, 157],
+          recap: L('You checked on the hermit Abercrombie and fetched him thread spun from a ghost’s hair.',
+            '你去探望了隐士亚伯克隆比，还为他取来了用幽灵头发纺成的线。'),
+          text: [
+            L('An old man who bought supplies in Darkshire had not come to town in a while. You found him in his shack above Raven Hill Cemetery. Nothing was wrong, Abercrombie said; the roads were just dangerous. Maybe you could do an old man some favors?',
+              '一个常来夜色镇采买的老人已经很久没进城了。你在乌鸦岭墓地上方的小屋里找到了他。亚伯克隆比说什么事也没有，只是路上太危险。也许你能帮老人家几个忙？'),
+            L('He wanted ghost hair thread from Madame Eva. To make it, Eva needed the hair of Blind Mary, a spirit in a farmhouse near town. Mary was overjoyed when the comb glided through her hair, then horrified to have it back, sure she was a monster.',
+              '他想要伊瓦夫人那里的幽灵发丝线。为了纺线，伊瓦需要盲眼玛丽的头发，她是镇外农舍里的一个幽灵。梳子顺滑地穿过她的头发时，玛丽欣喜万分；梳子被还回来时，她又惊恐不已，认定自己是个怪物。'),
+            quote(L('It has a thousand uses, from binding evil spirits to sewing life into inanimate objects.', '它的用处多得很，从束缚恶灵，到把生命缝进没有生命的东西里。'),
+              L('Madame Eva, on the thread', '伊瓦夫人，谈到这种线'))
+          ] },
+        { title: L('Favors for a Friend', '帮朋友的忙'), stepIds: [158, 156, 159, 133, 134],
+          recap: L('You brewed Abercrombie his zombie juice, gathered ghoul ribs, and won back his crate from the ogres.',
+            '你为亚伯克隆比弄来了僵尸酒，收集了食尸鬼的肋骨，还从食人魔手里夺回了他的箱子。'),
+          text: [
+            L('The nights were cold, Abercrombie said, and only zombie juice could put fire in his veins. Tavernkeep Smitts rarely got that order, but he brewed it from rot blossoms that grow inside the skulls of Raven Hill’s skeletons.',
+              '亚伯克隆比说夜里太冷，只有僵尸酒能让他的血再热起来。旅店老板斯密茨很少接到这种订单，但还是用乌鸦岭骷髅头颅里长出的腐败之花酿了一批。'),
+            L('Then came ghoul ribs for an “effigy” to scare off the ghouls pounding on his walls, and a crate of tools and herbs the ogres had taken from him in the south. Each time he thanked you a little oddly.',
+              '接着是食尸鬼的肋骨，说是要做一个“假人”吓走敲打他墙壁的食尸鬼；还有一箱工具和草药，是南边的食人魔从他手里抢走的。每一次，他道谢的方式都有点古怪。'),
+            quote(L('Thank the Nec-… well, thank YOU!', '感谢死灵……呃，感谢你！'), L('Abercrombie', '亚伯克隆比'))
+          ] },
+        { title: L('The Note', '那封信'), stepIds: [160, 251, 401, 252],
+          recap: L('Abercrombie’s note to the mayor, once translated, told Darkshire your kindness had doomed the town.',
+            '亚伯克隆比写给镇长的信被翻译出来后，夜色镇才知道你的好心害了整座小镇。'),
+          text: [
+            L('Abercrombie sent you to his old friend, Lord Ello Ebonlocke, with a note. Ello could not read it; the language looked ancient. The historian Sirra Von’Indi could. As she finished, the air grew heavy, as if a black curtain had been drawn over the land.',
+              '亚伯克隆比让你给他的老朋友艾尔罗·埃伯洛克公爵送一封信。艾尔罗读不懂，那文字看起来很古老。历史学家希拉·沃宁迪读得懂。她译完的时候，空气变得沉重，仿佛一块黑幕笼罩了大地。'),
+            quote(L('Although the aid you gave Abercrombie may have been motivated from kindness, your actions have doomed our town.', '你帮助亚伯克隆比也许是出于好心，但你的所作所为已经让我们的小镇在劫难逃。'),
+              L('Lord Ello Ebonlocke', '艾尔罗·埃伯洛克公爵'))
+          ] },
+        { title: L('Bride of the Embalmer', '藏尸者的妻子'), stepIds: [253],
+          recap: L('You took the Embalmer’s heart from his bride’s grave, and Darkshire was protected.',
+            '你从藏尸者妻子的坟墓中取出了他的心脏，夜色镇因此得到了庇护。'),
+          text: [
+            L('Darkshire tells its children a story about the Embalmer: a kindly alchemist driven mad by his wife’s death, who put his own heart in her to bring her back. She returned hungry for human flesh, so he kept her buried.',
+              '夜色镇给孩子们讲过一个藏尸者的故事：一位和善的炼金术士因妻子之死而发疯，把自己的心脏放进她体内让她复活。她回来了，却渴望人肉，于是他把她埋在了地下。'),
+            L('The story was true, and you had been running his errands. Ello sent you to the bride’s grave for the heart, still beating. Its magic would guard Darkshire against the Embalmer.',
+              '这个故事是真的，而你一直在替他跑腿。艾尔罗派你去那位妻子的坟墓取回心脏，它仍在跳动。它的魔力将保护夜色镇免受藏尸者的侵害。')
+          ] }
+      ],
+      meaning: {
+        title: L('The Hermit Was the Embalmer', '隐士就是藏尸者'),
+        text: [
+          L('Abercrombie was the Embalmer of Darkshire’s bedtime story. The thread that sews life into objects, the ghoul ribs, the herbs and tools were parts of his work, and you carried every one up the hill. Darkshire never learned what the note said word for word, only enough to know the town was in danger.',
+            '亚伯克隆比就是夜色镇睡前故事里的藏尸者。能把生命缝进物件的线、食尸鬼的肋骨、草药和工具，都是他那门手艺的材料，而你把它们一件件背上了山。夜色镇从未逐字知道那封信写了什么，只知道小镇大难临头。'),
+          L('Duskwood’s other stories run through the same people: Madame Eva and Tavernkeep Smitts appear in Stalvan’s and Sven’s stories too.',
+            '暮色森林的其他故事也绕着同一群人展开：伊瓦夫人和旅店老板斯密茨，同样出现在斯塔文和斯温的故事里。')
+        ]
+      },
+      cast: [
+        { id: 'abercrombie', chapter: 1, name: L('Abercrombie', '亚伯克隆比'), role: L('A frail old hermit above Raven Hill.', '乌鸦岭上体弱的老隐士。') },
+        { id: 'madame-eva', chapter: 1, name: L('Madame Eva', '伊瓦夫人'), role: L('Darkshire’s seer, who spins the ghost hair thread.', '夜色镇的先知，纺出了幽灵发丝线。') },
+        { id: 'blind-mary', chapter: 1, name: L('Blind Mary', '盲眼玛丽'), role: L('A spirit who believes she is a monster.', '一个认定自己是怪物的幽灵。') },
+        { id: 'tavernkeep-smitts', chapter: 2, name: L('Tavernkeep Smitts', '旅店老板斯密茨'), role: L('Brews the zombie juice.', '酿出了僵尸酒。') },
+        { id: 'ello-ebonlocke', chapter: 3, name: L('Lord Ello Ebonlocke', '艾尔罗·埃伯洛克公爵'), role: L('Mayor of Darkshire, Abercrombie’s old friend.', '夜色镇镇长，亚伯克隆比的老朋友。') },
+        { id: 'sirra-von-indi', chapter: 3, name: L('Sirra Von’Indi', '希拉·沃宁迪'), role: L('Darkshire’s historian, who reads the ancient note.', '夜色镇的历史学家，读懂了那封古老的信。') }
+      ],
+      links: ['legend-of-stalvan', 'deliveries-to-sven'],
+      sourceIds: ['hermit-abercrombie', 'hermit-bride']
+    },
+    'legend-of-stalvan': {
+      hook: L('A seer’s vision names a man, and old letters lead you across three zones to what he did.',
+        '一位先知的幻象说出了一个名字，几封旧信带你穿越三个地区，查明了他的所作所为。'),
+      chapters: [
+        { title: L('Death in the Cards', '牌面上的死亡'), stepIds: [66, 67, 68],
+          recap: L('Madame Eva’s cards showed Death and a name, Stalvan; you traced him to an old footlocker in Moonbrook.',
+            '伊瓦夫人的牌面显示出死亡和一个名字：斯塔文。你一路追查到月溪镇的一只旧提箱。'),
+          text: [
+            L('Madame Eva feared for her granddaughter, Alyssa. She laid out her cards, and Death looked back at her. After a dark trance, a name came to her: Stalvan.',
+              '伊瓦夫人为孙女艾丽莎担忧。她摊开纸牌，死亡牌正对着她。在一阵黑暗的恍惚之后，一个名字浮现出来：斯塔文。'),
+            quote(L('Death stared up at me from the table.', '死亡从桌面上抬头盯着我。'), L('Madame Eva', '伊瓦夫人')),
+            L('Clerk Daltry, who likes to keep his records clean, found a Mr. Stalvan Mistmantle in the town registry, last recorded at the Moonbrook schoolhouse in Westfall. In an old footlocker there you found a letter that was never sent.',
+              '喜欢把档案整理得一丝不苟的书记员达尔塔在镇上的登记簿里找到了一位斯塔文·密斯特曼托先生，最后的记录地址是西部荒野月溪镇的学校。你在那里的一只旧提箱里找到了一封从未寄出的信。')
+          ] },
+        { title: L('The Letter Nobody Delivered', '没人送达的信'), stepIds: [69, 70, 72],
+          recap: L('A letter left behind in Goldshire led you to a Stormwind house where a family had been massacred.',
+            '一封遗落在闪金镇的信，把你引向暴风城里一户惨遭屠戮的人家。'),
+          text: [
+            L('A second, half-scratched address pointed to the Lion’s Pride Inn in Goldshire. Innkeeper Farley remembered a messenger on a stormy night who ran downstairs near midnight in his bedclothes, terrified, and never came back for his letters. One was still in the chest upstairs, addressed to the Canal District in Stormwind.',
+              '另一个被划掉一半的地址指向闪金镇的狮王之傲旅店。旅店老板法雷记得，一个暴风雨之夜，有个信使在午夜前后穿着睡衣惊恐地跑下楼，再也没回来取他的信。楼上的箱子里还留着一封，寄往暴风城的运河区。'),
+            L('Caretaker Folsom did not want it. His father had been caretaker before him and had cleaned up after the massacre. The family’s trust had run out of money, and what they left behind was going to auction. He let you search one sealed crate.',
+              '管理员弗索姆并不想收下这封信。他的父亲曾是这里的管理员，当年收拾了那场屠杀的残局。这户人家的信托资金已经耗尽，留下的东西即将拍卖。他让你搜查了一只密封的箱子。'),
+            quote(L('You’ve got some nerve bringing this here.', '你居然敢把这东西带到这儿来。'), L('Caretaker Folsom', '管理员弗索姆'))
+          ] },
+        { title: L('The Handwriting', '笔迹'), stepIds: [74, 75, 78, 79],
+          recap: L('Old journal pages, a half-blind marshal and a tavernkeeper’s memory tied the handwriting to the madman in the woods.',
+            '几页旧日记、一位半盲的治安官和一个旅店老板的记忆，把这笔迹与林中的疯子联系了起来。'),
+          text: [
+            L('Under a vase in the crate lay a torn journal page. Marshal Haggard, once head of the Stormwind Guard and now nearly blind, could barely read it, but the hand looked familiar. A faded page in the chest upstairs in his house matched it.',
+              '箱子里的一只花瓶下压着一页撕破的日记。治安官哈迦德曾统领暴风城卫兵，如今几乎失明，勉强能辨认字迹，却觉得这笔迹似曾相识。他家楼上箱子里的一页褪色日记与之吻合。'),
+            L('Haggard sent you to his old drinking friend, Tavernkeep Smitts in Darkshire. Smitts knew the hand at once. Years ago, when visiting nobles were slaughtered, he and Haggard had found muddy journal pages but could never tie them to “that crazy man in the woods.” Now they could.',
+              '哈迦德让你去找他的老酒友，夜色镇的旅店老板斯密茨。斯密茨一眼就认出了这笔迹。多年前来访的贵族惨遭屠杀时，他和哈迦德找到过几页沾满泥土的日记，却始终无法把它们与“林子里那个疯子”联系起来。如今终于可以了。'),
+            quote(L('By the Light! You bet I recognize that handwriting.', '圣光在上！我当然认得这笔迹。'), L('Tavernkeep Smitts', '旅店老板斯密茨'))
+          ] },
+        { title: L('Justice for Darkshire', '夜色镇的正义'), stepIds: [80, 97, 98],
+          recap: L('The registry matched the handwriting, and you ended Stalvan Mistmantle at his cottage north of Darkshire.',
+            '登记簿上的签名与笔迹吻合，你在夜色镇北边的小屋里终结了斯塔文·密斯特曼托。'),
+          text: [
+            L('Commander Althea Ebonlocke had been watching Stalvan for a long time. Clerk Daltry compared a bloodstained page with the signatures in his registry, and they matched. “I knew it!” said Ebonlocke, and sent you to the cottage north of town.',
+              '指挥官阿尔泰娅·埃伯洛克盯着斯塔文已经很久了。书记员达尔塔把一页沾血的日记与登记簿上的签名对照，二者完全吻合。“我就知道！”埃伯洛克说，随即派你前往镇北的小屋。'),
+            L('You killed Stalvan Mistmantle there and brought his family ring to Madame Eva. She already knew.',
+              '你在那里杀死了斯塔文·密斯特曼托，把他的家族戒指带给伊瓦夫人。她早已知道了。'),
+            quote(L('I sensed a wave of hope ripple through the tainted forest.', '我感到一股希望的涟漪荡过这片被玷污的森林。'), L('Madame Eva', '伊瓦夫人'))
+          ] }
+      ],
+      meaning: {
+        title: L('Just Her Tutor', '只是她的家庭教师'),
+        text: [
+          L('The quests never spell it out, but the letters and pages you carried were Stalvan’s own words. He had tutored the Flintridge children in Stormwind and became obsessed with his student, Tilloa. When she called him “just my tutor, Uncle Stalvan,” his despair turned to murder at the family’s house in the Canal District, the massacre Folsom’s father cleaned up.',
+            '任务从未明说，但你一路带着的信件和日记，都是斯塔文自己的文字。他曾在暴风城为弗林特里奇家的孩子当家庭教师，并迷恋上了自己的学生蒂洛娅。当她称他为“只是我的家庭教师，斯塔文叔叔”时，他的绝望变成了杀戮，发生在运河区那户人家的宅子里，也就是弗索姆的父亲收拾残局的那场屠杀。'),
+          L('Some of this comes from fan reading of the journal pages rather than quest text. What the quests do say is enough: a tutor became the madman of Duskwood’s woods, and Darkshire only proved it through his handwriting.',
+            '其中一部分来自玩家对日记内容的解读，而非任务文本。但任务明确交代的已经足够：一位家庭教师变成了暮色森林里的疯子，而夜色镇最终只是凭他的笔迹才证实了这一点。')
+        ]
+      },
+      cast: [
+        { id: 'madame-eva', chapter: 1, name: L('Madame Eva', '伊瓦夫人'), role: L('Darkshire’s seer, who saw the name in her cards.', '夜色镇的先知，在牌中看见了那个名字。') },
+        { id: 'clerk-daltry', chapter: 1, name: L('Clerk Daltry', '书记员达尔塔'), role: L('Keeper of Darkshire’s town registry.', '夜色镇登记簿的保管者。') },
+        { id: 'innkeeper-farley', chapter: 2, name: L('Innkeeper Farley', '旅店老板法雷'), role: L('Remembers the messenger who fled at midnight.', '记得那个午夜出逃的信使。') },
+        { id: 'caretaker-folsom', chapter: 2, name: L('Caretaker Folsom', '管理员弗索姆'), role: L('Keeps the house where the massacre happened.', '看守着发生屠杀的那座宅子。') },
+        { id: 'marshal-haggard', chapter: 3, name: L('Marshal Haggard', '治安官哈迦德'), role: L('Former head of the Stormwind Guard, nearly blind.', '前暴风城卫兵统领，几乎失明。') },
+        { id: 'tavernkeep-smitts', chapter: 3, name: L('Tavernkeep Smitts', '旅店老板斯密茨'), role: L('Darkshire’s tavernkeeper, who knows the local lore.', '夜色镇的旅店老板，熟知当地掌故。') },
+        { id: 'althea-ebonlocke', chapter: 4, name: L('Commander Althea Ebonlocke', '指挥官阿尔泰娅·埃伯洛克'), role: L('Commander of Darkshire’s Night Watch.', '夜色镇守夜人的指挥官。') }
+      ],
+      links: [],
+      sourceIds: ['stalvan-chain', 'stalvan-wiki']
+    },
     'defias-brotherhood': untold,
     'onyxia-alliance': untold
   };
