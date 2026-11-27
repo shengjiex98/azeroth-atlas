@@ -5,6 +5,9 @@
   'use strict';
   const L = (en, zh = '') => ({ en, zh });
   const sources = {
+    'ul-chain': { title: L('Lescovar Incident quest chain', '莱斯科瓦事件任务链'), url: 'https://warcraft.wiki.gg/wiki/Lescovar_Incident_quest_chain', note: L('Each quest of The Unsent Letter, from VanCleef’s letter to the audience in the Keep.', '《未寄出的信》的每个任务，从范克里夫的信到要塞中的觐见。') },
+    'ul-onyxia': { title: L('Onyxia', '奥妮克希亚'), url: 'https://warcraft.wiki.gg/wiki/Onyxia', note: L('Onyxia as Lady Katrana Prestor, the Stonemasons’ quarrel, and the king’s abduction.', '化身卡特拉娜·普瑞斯托的奥妮克希亚、石匠之争与国王被掳。') },
+    'md-start': { title: L('The Missing Diplomat', '失踪的使节'), url: 'https://www.wowhead.com/classic/quest=1274', note: L('The chain’s quest text, from Bishop DeLavey to Jaina Proudmoore (Wowhead Classic, quests 1274 to 1267).', '这条任务链的任务文本，从德拉维主教到吉安娜·普罗德摩尔（Wowhead 经典旧世，任务 1274 至 1267）。') },
     questiedb: { title: L('QuestieDB', 'QuestieDB'), url: 'https://github.com/Questie/QuestieDB', note: L('Quest links, names, and representative locations for the picked Forever quest chains.', '提供无限服精选任务链的任务关联、名称和代表性地点。') },
     'hy-forever': { title: L('Mount Hyjal in Forever', '无限服的海加尔山'), url: 'https://www.wowhead.com/forever/zone=616/mount-hyjal', note: L('The zone and its Forever inhabitants and quests.', '无限服这一区域的居民和任务。') },
     'hy-zones': { title: L('Forever’s new zones', '无限服的新区域'), url: 'https://www.wowhead.com/forever/guide/zones-maps-locations-rewards', note: L('The aftermath at Hyjal, and Shen’dralas’s ties to the centaur and Dire Maul.', '海加尔山战后的局势，以及辛德拉与半人马和厄运之槌的关系。') },
@@ -1629,18 +1632,177 @@
     2652: Z('', 'A temple whose fading crystals sustain the Shen’dralar.', '逐渐黯淡的水晶维系着神殿里的辛德拉族人。')
   };
 
+  /* Chain retellings: second person, past tense, in story order. Each chapter groups consecutive
+     steps from chains.js; `recap` is the one-line version used in the session recap. Text paraphrases
+     the quest text; quotes are short. `meaning` places the chain in the wider story;
+     `links` names related chains, and cast IDs link the same person across chains. */
+  const quote = (text, by) => ({ quote: text, by });
+  const untold = { hook: null, chapters: [], meaning: null, cast: [], links: [], sourceIds: [] };
   const chains = {
-    'missing-diplomat': { story: [], notes: {} },
-    'on-guard-in-stonetalon': { story: [], notes: {} },
-    'welcome-to-the-jungle': { story: [], notes: {} },
-    'claws-from-the-deep': { story: [], notes: {} },
-    'howling-vale': { story: [], notes: {} },
-    'unsent-letter': { story: [], notes: {} },
-    'deliveries-to-sven': { story: [], notes: {} },
-    'the-hermit': { story: [], notes: {} },
-    'legend-of-stalvan': { story: [], notes: {} },
-    'defias-brotherhood': { story: [], notes: {} },
-    'onyxia-alliance': { story: [], notes: {} }
+    'missing-diplomat': {
+      hook: L('A Stormwind envoy to Lady Jaina Proudmoore never reached Theramore, and the Bishop wants it kept quiet.',
+        '一位派往塞拉摩面见吉安娜·普罗德摩尔的暴风城使节始终没有抵达，主教希望此事秘而不宣。'),
+      chapters: [
+        { title: L('A Discreet Matter', '不可声张的事'), stepIds: [1274, 1241, 1242],
+          recap: L('Bishop DeLavey told you a diplomat bound for Theramore had vanished, and sent you to his quiet allies.',
+            '德拉维主教告诉你，一位前往塞拉摩的使节失踪了，并让你去找他暗中的帮手。'),
+          text: [
+            L('It began with a quiet word from a man named Thomas: Bishop DeLavey needed someone who could keep a secret. In Stormwind Keep the Bishop explained why. A diplomat sent to Theramore to meet Lady Jaina Proudmoore had never arrived. He suspected the Defias, and he did not want anyone to learn the kingdom had lost its envoy.',
+              '一切始于一个叫托马斯的人悄悄递来的话：德拉维主教需要一个守得住秘密的人。在暴风要塞里，主教说明了原委。一位派往塞拉摩面见吉安娜·普罗德摩尔的使节始终没有抵达。他怀疑是迪菲亚兄弟会干的，也不想让任何人知道王国弄丢了自己的使节。'),
+            L('He sent you to Jorgen, who agreed to help only reluctantly, and Jorgen’s sealed note sent you on to an unlikely contact: Elling Trias, who sells cheese in the Trade District.',
+              '他让你去找乔贞。乔贞勉强答应帮忙，又用一封密封的便笺把你引向一个意想不到的联络人：在贸易区卖奶酪的埃林·提亚斯。')
+          ] },
+        { title: L('The Docket at Addle’s Stead', '艾德尔农场的记事本'), stepIds: [1243, 1244, 1245],
+          recap: L('You found a Defias docket at Addle’s Stead that named the plot’s “Fist”.',
+            '你在艾德尔农场找到一本迪菲亚记事本，上面提到了阴谋中的“拳头”。'),
+          text: [
+            L('Trias’s lead pointed south. Watcher Backus, on Darkshire’s north road, read the note and asked what Trias needed. The answer lay west, at Addle’s Stead, where you found a Defias docket. It looked official. The Brotherhood keeps careful records.',
+              '提亚斯的线索指向南方。夜色镇北路上的守夜人巴库斯读过便笺，问提亚斯需要什么。答案在西边的艾德尔农场，你在那里找到了一本迪菲亚记事本。它看起来像是正式文件。兄弟会的记录一向一丝不苟。'),
+            L('Back in Stormwind, Trias read it closely. The kidnapping had been planned, and one name stood out: Fist.',
+              '回到暴风城，提亚斯仔细读了一遍。这起绑架是预谋好的，其中一个名字格外显眼：“拳头”。')
+          ] },
+        { title: L('Fist', '拳头'), stepIds: [1246, 1447, 1247],
+          recap: L('You beat the truth out of Dashel Stonefist. The trail now leads to a man called Slim in Menethil.',
+            '你打得达舍尔·石拳说了实话。线索如今指向米奈希尔港一个叫“干柴”的人。'),
+          text: [
+            L('The man called Fist was Dashel Stonefist, a brawler in Old Town. He would not discuss his affairs, so the conversation became a fight. Beaten, he finally talked.',
+              '“拳头”就是旧城区的打手达舍尔·石拳。他不肯谈自己的事，于是谈话变成了一场架。被打服之后，他终于开了口。'),
+            L('It was not enough. Trias learned the plan Dashel served had already failed, and the Defias had a backup: an inside man called Slim, working out of Menethil Harbor.',
+              '但这还不够。提亚斯得知，达舍尔参与的计划早已失败，而迪菲亚还有后手：一个叫“干柴”的内应，在米奈希尔港活动。')
+          ] },
+        { title: L('Slim', '干柴'), stepIds: [1248, 1249, 1250],
+          recap: L('You caught Slim in Menethil’s tavern and learned the truth: the missing diplomat was the King of Stormwind.',
+            '你在米奈希尔的酒馆里抓住了“干柴”，并得知了真相：失踪的使节正是暴风城的国王。'),
+          text: [
+            L('Trias’s contact in Menethil Harbor was Mikhail, a Stormwind man retired from the underground to pour ale. He welcomed you loudly, then dropped his voice at Trias’s name.',
+              '提亚斯在米奈希尔港的联络人是米克哈尔，一个从地下行当退下来、在酒馆倒麦酒的暴风城人。他大声招呼你，听到提亚斯的名字后立刻压低了声音。'),
+            quote(L('Keep your voice down, my friend. This isn’t something for the whole tavern to hear about.', '小声点，朋友。这事可不能让整个酒馆都听见。'),
+              L('Mikhail', '米克哈尔')),
+            L('The man by the exit was listening too closely. That was Tapoke Jahn, and you subdued him before he could slip away. Even Mikhail was surprised: that was Slim.',
+              '门口那个人听得太仔细了。他叫塔伯克·贾恩，你在他溜走之前制服了他。连米克哈尔都很意外：原来他就是“干柴”。'),
+            L('Then the case changed. The Defias had not taken a minor envoy. They had taken the King of Stormwind, on his way to meet Jaina Proudmoore in secret. Slim’s part had been getting their man aboard the king’s ship while it lay in the harbor. The man’s name was Hendel.',
+              '接着，整件事变了样。迪菲亚劫走的不是什么小使节，而是暴风城的国王：他正要去秘密会见吉安娜·普罗德摩尔。“干柴”的任务是趁国王的船停在港口时，把他们的人送上船。那个人叫亨德尔。')
+          ] },
+        { title: L('Theramore', '塞拉摩'), stepIds: [1264, 1265, 1266, 1324, 1267],
+          recap: L('You subdued Private Hendel in Dustwallow Marsh, and Jaina Proudmoore thanked you in private.',
+            '你在尘泥沼泽制服了亨德尔下士，吉安娜·普罗德摩尔私下向你道谢。'),
+          text: [
+            L('Hendel was a Kul Tiras marine, and the marines spent their pay in Theramore’s tavern. Mikhail sent you to Commander Samaul, who leads Lady Proudmoore’s forces there. Samaul was wary of anyone Elling sent, but he helped. Hendel was not at Sentry Point, the first tower outside the city.',
+              '亨德尔是一名库尔提拉斯陆战队员，陆战队员领了军饷都会去塞拉摩的酒馆。米克哈尔让你去找统领普罗德摩尔女士部队的指挥官萨穆尔。萨穆尔对埃林派来的人心存戒备，但还是帮了忙。亨德尔并不在城外的第一座哨塔警戒哨岗。'),
+            L('Back in Theramore, Archmage Tervosh explained that other sources had already told Lady Proudmoore what you knew, and she wanted you to have help. He sent you to the tents along the western road, where Hendel guarded the scouts watching the Horde at Brackenwall.',
+              '回到塞拉摩，大法师特沃什告诉你，别的消息来源早已把你知道的事告诉了普罗德摩尔女士，她希望有人协助你。他把你派往西边路旁的帐篷，亨德尔在那里守卫着监视蕨墙村部落的侦察兵。'),
+            quote(L('You come here accusing me of allying with the Defias, and think I’ll just stand here while you insult me?!', '你跑来指控我勾结迪菲亚，还以为我会站着任你侮辱？！'),
+              L('Private Hendel', '亨德尔下士')),
+            L('Theramore needed him alive, so you subdued him. Hendel was taken to the city for questioning. Then Lady Jaina Proudmoore thanked you herself. She could not thank you openly, she said, but she meant it, and she gave you her signet ring.',
+              '塞拉摩需要活口，所以你制服了他。亨德尔被押回城里审问。随后吉安娜·普罗德摩尔亲自向你道谢。她说她无法公开感谢你，但这份谢意是真诚的，并把她的印戒送给了你。')
+          ] }
+      ],
+      meaning: {
+        title: L('The King Is Missing', '国王失踪了'),
+        text: [
+          L('The diplomat was King Varian Wrynn. He sailed from Menethil for a secret meeting with Jaina Proudmoore and never arrived. The Defias took him, with help from a man aboard his own ship, and his young son Anduin was crowned in his place.',
+            '那位使节就是国王瓦里安·乌瑞恩。他从米奈希尔出海，准备秘密会见吉安娜·普罗德摩尔，却再也没有抵达。迪菲亚在他自己船上的内应帮助下劫走了他，他年幼的儿子安度因随后加冕。'),
+          L('Catching Hendel gives Theramore a lead, not a rescue. When this story ends, the king is still missing, and in Stormwind, Lady Katrana Prestor tells visitors he is “away on a diplomatic mission.”',
+            '抓到亨德尔只是给塞拉摩留下了一条线索，并不是营救。故事结束时，国王依然下落不明；而在暴风城，卡特拉娜·普瑞斯托女伯爵对来访者说，他“正在外执行外交任务”。')
+        ]
+      },
+      cast: [
+        { id: 'bishop-delavey', name: L('Bishop DeLavey', '德拉维主教'), role: L('Keeps the kingdom’s quiet business quiet.', '替王国处理不宜声张的事务。') },
+        { id: 'elling-trias', name: L('Elling Trias', '埃林·提亚斯'), role: L('A cheesemonger who is more than he seems.', '一个不简单的奶酪商。') },
+        { id: 'watcher-backus', name: L('Watcher Backus', '守夜人巴库斯'), role: L('Trias’s contact on Darkshire’s north road.', '提亚斯在夜色镇北路的联络人。') },
+        { id: 'dashel-stonefist', name: L('Dashel Stonefist', '达舍尔·石拳'), role: L('Old Town brawler, the “Fist” in the docket.', '旧城区的打手，记事本里的“拳头”。') },
+        { id: 'mikhail', name: L('Mikhail', '米克哈尔'), role: L('Retired from Stormwind’s underground, now a Menethil bartender.', '从暴风城地下行当退休，如今在米奈希尔当酒保。') },
+        { id: 'slim', name: L('Tapoke “Slim” Jahn', '“干柴”塔伯克·贾恩'), role: L('The Defias inside man in Menethil.', '迪菲亚在米奈希尔的内应。') },
+        { id: 'private-hendel', name: L('Private Hendel', '亨德尔下士'), role: L('The Kul Tiras marine who got the Defias aboard the king’s ship.', '把迪菲亚的人送上国王座船的库尔提拉斯陆战队员。') },
+        { id: 'jaina-proudmoore', name: L('Lady Jaina Proudmoore', '吉安娜·普罗德摩尔'), role: L('Ruler of Theramore, whom the king was sailing to meet.', '塞拉摩的统治者，国王此行要会见的人。') },
+        { id: 'katrana-prestor', name: L('Lady Katrana Prestor', '卡特拉娜·普瑞斯托女伯爵'), role: L('Royal councilor beside the throne.', '王座旁的皇家顾问。') }
+      ],
+      links: ['unsent-letter'],
+      sourceIds: ['md-start']
+    },
+    'unsent-letter': {
+      hook: L('A letter found on VanCleef’s body leads to a traitor in the House of Nobles, and to the throne room.',
+        '范克里夫尸体上的一封信，牵出了贵族院里的叛徒，也把你带到了王座之前。'),
+      chapters: [
+        { title: L('A Letter on a Dead Man', '死者身上的信'), stepIds: [373, 389],
+          recap: L('You carried VanCleef’s letter to the City Architect and learned why the Stonemasons turned on Stormwind.',
+            '你把范克里夫的信交给城市建筑师，得知了石匠们为何与暴风城反目。'),
+          text: [
+            L('Edwin VanCleef died in the Deadmines with a sealed letter on him, addressed to Baros Alexston, City Architect of Stormwind. Alexston was surprised to hear VanCleef was dead, but not by what he read.',
+              '艾德温·范克里夫死在死亡矿井，身上带着一封封好的信，收信人是暴风城的城市建筑师巴隆斯·阿历克斯顿。听说范克里夫死了，阿历克斯顿很意外；信里的内容却没让他意外。'),
+            quote(L('An idealist as ever, and a romantic. Revenge has consumed him.', '还是那个理想主义者，那个浪漫的人。复仇已经吞噬了他。'),
+              L('Baros Alexston', '巴隆斯·阿历克斯顿')),
+            L('Then he told you the story behind the Defias. VanCleef and Bazil Thredd were Stonemasons who rebuilt Stormwind, and the nobles refused to pay them. VanCleef led a riot and left the city. Thredd was still here, in the Stockade, and might know what VanCleef had planned.',
+              '随后他讲起了迪菲亚兄弟会的来历。范克里夫和巴基尔·斯瑞德都是重建暴风城的石匠，贵族们却拒绝付给他们工钱。范克里夫带头暴动，离开了这座城市。斯瑞德还在城里，关在监狱中，也许知道范克里夫的计划。')
+          ] },
+        { title: L('Riot in the Stockade', '监狱暴动'), stepIds: [391, 392],
+          recap: L('You ended the Stockade riot with Bazil Thredd’s head, and learned of his quiet visitor.',
+            '你带回巴基尔·斯瑞德的头颅平息了监狱暴动，也得知了他那位沉默的访客。'),
+          text: [
+            L('Warden Thelwater did not trust you. Thredd had turned his prison into a riot, and only Thredd’s head would end it. You went into the cells and brought it back.',
+              '典狱官塞尔沃特并不信任你。斯瑞德把他的监狱变成了暴动现场，只有斯瑞德的人头才能平息这一切。你走进牢房，把它带了回来。'),
+            L('That earned you one more secret: for months a quiet visitor had come to see Thredd. He gave his name as Maelik.',
+              '这为你换来了另一个秘密：几个月来，一直有个沉默的访客来探望斯瑞德。他自称梅里克。')
+          ] },
+        { title: L('Maelik', '梅里克'), stepIds: [393, 350],
+          recap: L('SI:7 put a name to the visitor: Marzon, an assassin working for Lord Gregor Lescovar.',
+            '军情七处查明了访客的身份：为葛瑞格·莱斯科瓦公爵效力的刺客马尔松。'),
+          text: [
+            L('Alexston did not know the name, but SI:7 might. Master Mathias Shaw did. Maelik was an alias of Marzon the Silent Blade, an assassin who now worked for Lord Gregor Lescovar of the House of Nobles.',
+              '阿历克斯顿没听过这个名字，但军情七处也许知道。马迪亚斯·肖尔大师果然知道：梅里克是沉默之刃马尔松的化名，这个刺客如今为贵族院的葛瑞格·莱斯科瓦公爵效力。'),
+            L('With VanCleef and Thredd dead, no witness was left to convict a lord. So Shaw sent you to a man he did not like: Elling Trias, the cheesemonger.',
+              '范克里夫和斯瑞德都已死去，再没有证人能让一位公爵定罪。于是肖尔把你派去找一个他并不喜欢的人：奶酪商埃林·提亚斯。')
+          ] },
+        { title: L('The Garden', '花园'), stepIds: [2745, 2746, 434],
+          recap: L('You overheard Lescovar and Marzon in the Keep’s garden, and killed them both.',
+            '你在要塞花园里偷听了莱斯科瓦和马尔松的密谈，并杀死了他们两人。'),
+          text: [
+            L('Justice here, Trias said, would not be legal. His partner Tyrion, a gnome hiding in the bushes of the Keep’s garden, had been watching Lescovar. He needed a disguise for his Spybot: silk cloth and fresh apples from Clara’s farm.',
+              '提亚斯说，这一次的正义不会是合法的。他的搭档泰里恩是个躲在要塞花园灌木丛里的侏儒，一直在监视莱斯科瓦。他需要给自己的侦察机器人做一身伪装：丝绸，再加上克拉拉农场的新鲜苹果。'),
+            L('Dressed as a priestess, the Spybot went into Lescovar’s library. Soon Lescovar came out to the garden to meet Marzon, and you listened as they spoke of the Defias.',
+              '扮成女牧师的侦察机器人走进了莱斯科瓦的书房。不久，莱斯科瓦来到花园与马尔松碰头，你听着他们谈论迪菲亚兄弟会。'),
+            quote(L('The Defias shall succeed! No meek adventurer will stop us!', '迪菲亚必将成功！没有哪个软弱的冒险者能阻止我们！'),
+              L('Marzon the Silent Blade, moments before you killed him', '沉默之刃马尔松，在你杀死他之前'))
+          ] },
+        { title: L('Quiet Justice', '无声的正义'), stepIds: [394, 395, 396],
+          recap: L('You delivered the report on the Defias to the throne, and Lady Prestor received it.',
+            '你把关于迪菲亚兄弟会的报告送到王座前，由普瑞斯托女伯爵收下。'),
+          text: [
+            L('“Your justice was swift,” Shaw told you, and asked you never to speak of Trias. Alexston had heard Lescovar was found dead. He thanked you for stopping VanCleef’s revenge and wrote a report on the Defias Brotherhood for the king.',
+              '“你的正义来得真快。”肖尔对你说，并叮嘱你永远别提起提亚斯。阿历克斯顿听说莱斯科瓦被发现死了。他感谢你阻止了范克里夫的复仇，并为国王写了一份关于迪菲亚兄弟会的报告。'),
+            L('But King Varian was “away on a diplomatic mission,” so the report went to the royal councilor beside the throne, Lady Katrana Prestor. She said you were to be commended, and gave you the Seal of Wrynn.',
+              '然而瓦里安国王“正在外执行外交任务”，于是报告交到了王座旁的皇家顾问卡特拉娜·普瑞斯托女伯爵手中。她说你理应受到嘉奖，并授予你乌瑞恩之印。')
+          ] }
+      ],
+      meaning: {
+        title: L('The Report Went to the Dragon', '报告落入了巨龙之手'),
+        text: [
+          L('Lady Katrana Prestor was Onyxia, the black dragon, in human form. In the wider story she fed the quarrel between the Stonemasons and the nobles that gave birth to the Defias, and the king she called “away” had been taken by the Defias on her plan.',
+            '卡特拉娜·普瑞斯托女伯爵其实是化身人形的黑龙奥妮克希亚。在更大的故事里，正是她煽动了石匠与贵族之间的争端，催生了迪菲亚兄弟会；而她口中“在外”的国王，也是按她的计划被迪菲亚掳走的。'),
+          L('You ended VanCleef’s conspiracy and handed its report to the one who had used it. The quest never says so. The truth comes out in Dragonkin Menace.',
+            '你终结了范克里夫的阴谋，却把报告交给了利用这场阴谋的人。任务本身从未点破这一点。真相要到“黑龙的威胁”才会揭开。')
+        ]
+      },
+      cast: [
+        { id: 'baros-alexston', name: L('Baros Alexston', '巴隆斯·阿历克斯顿'), role: L('City Architect, and the letter’s addressee.', '城市建筑师，那封信的收信人。') },
+        { id: 'mathias-shaw', name: L('Mathias Shaw', '马迪亚斯·肖尔'), role: L('Master of SI:7, Stormwind’s spies.', '暴风城间谍组织军情七处的首领。') },
+        { id: 'elling-trias', name: L('Elling Trias', '埃林·提亚斯'), role: L('The cheesemonger who arranges justice that is “not legal”.', '安排“不合法”正义的奶酪商。') },
+        { id: 'gregor-lescovar', name: L('Lord Gregor Lescovar', '葛瑞格·莱斯科瓦公爵'), role: L('A noble who worked with the Defias.', '与迪菲亚勾结的贵族。') },
+        { id: 'marzon', name: L('Marzon the Silent Blade', '沉默之刃马尔松'), role: L('Lescovar’s assassin, known to the Defias as Maelik.', '莱斯科瓦的刺客，迪菲亚称他为梅里克。') },
+        { id: 'katrana-prestor', name: L('Lady Katrana Prestor', '卡特拉娜·普瑞斯托女伯爵'), role: L('Royal councilor beside the throne.', '王座旁的皇家顾问。') }
+      ],
+      links: ['missing-diplomat', 'onyxia-alliance'],
+      sourceIds: ['ul-chain', 'ul-onyxia']
+    },
+    'on-guard-in-stonetalon': untold,
+    'welcome-to-the-jungle': untold,
+    'claws-from-the-deep': untold,
+    'howling-vale': untold,
+    'deliveries-to-sven': untold,
+    'the-hermit': untold,
+    'legend-of-stalvan': untold,
+    'defias-brotherhood': untold,
+    'onyxia-alliance': untold
   };
 
   root.WORLD = { version: 1, title: L('Azeroth, in context', '艾泽拉斯全景'), setting: L('Classic-era world · Forever additions identified', '经典旧世的艾泽拉斯 · 标注无限服新增内容'), zones, briefs, sagas, beats, figures, factions, sources, chains, glossary: {} };
