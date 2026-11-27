@@ -40,3 +40,12 @@ character's journey in the atlas. `atlas/journey.js` decodes it and builds the
 layer in the browser. `atlas/app.js` stores imported summaries per character in
 browser storage and lets the player switch or remove them. A fresh import
 updates the journey.
+
+With a journey loaded, the reading panel opens on the latest session recap.
+The recap links to the chapters touched in that session. Authored chain pages
+pair chapter prose with turn-in map crops and keep the quest cards in
+disclosures. The next chapter and the story's meaning unlock with progress.
+See `journeySessions`, `sessionStories`, `chapterProgress`, and
+`chapterInterludes` in [atlas/journey.js](atlas/journey.js) for the journal
+rules, and `sessionRecap` and `chainStory` in [atlas/app.js](atlas/app.js) for
+the reading views.

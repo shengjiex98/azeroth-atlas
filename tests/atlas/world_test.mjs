@@ -157,11 +157,43 @@ test('the picked chains and their authored lore share valid IDs', () => {
   const ids = picks.map(pick => pick.id).sort();
   assert.deepEqual(Object.keys(CHAINS).sort(), ids);
   assert.deepEqual(Object.keys(WORLD.chains).sort(), ids);
-  for (const [id, { notes }] of Object.entries(WORLD.chains)) {
-    const stepIds = new Set(CHAINS[id].steps.map(step => String(step.id)));
-    for (const step of Object.keys(notes)) {
-      assert.ok(stepIds.has(step), `${id} notes refer to unknown step ${step}`);
+  function localized(value, path) {
+    for (const language of ['en', 'zh']) {
+      assert.ok(typeof value?.[language] === 'string' && value[language].trim(), `${path} is missing ${language}`);
     }
+  }
+  for (const [id, { hook, chapters, meaning, cast, links, sourceIds }] of Object.entries(WORLD.chains)) {
+    if (hook !== null) localized(hook, `${id} hook`);
+    if (chapters.length) {
+      assert.deepEqual(Array.from(chapters.flatMap(chapter => chapter.stepIds)),
+        Array.from(CHAINS[id].steps, step => step.id), `${id} chapters must partition its steps in order`);
+    }
+    for (const chapter of chapters) {
+      assert.ok(chapter.stepIds.length, `${id} has a chapter with no steps`);
+      localized(chapter.title, `${id} chapter title`);
+      localized(chapter.recap, `${id} chapter recap`);
+      for (const paragraph of chapter.text) {
+        if (Object.hasOwn(paragraph, 'quote')) {
+          localized(paragraph.quote, `${id} quote`);
+          localized(paragraph.by, `${id} quote attribution`);
+        } else {
+          localized(paragraph, `${id} chapter paragraph`);
+        }
+      }
+    }
+    if (meaning !== null) {
+      localized(meaning.title, `${id} meaning title`);
+      for (const paragraph of meaning.text) localized(paragraph, `${id} meaning paragraph`);
+    }
+    assert.equal(new Set(cast.map(person => person.id)).size, cast.length, `${id} repeats a cast ID`);
+    for (const person of cast) {
+      assert.ok(person.id, `${id} has a cast member with no ID`);
+      assert.ok(Number.isInteger(person.chapter) && person.chapter >= 1 && person.chapter <= chapters.length, `${id} cast ${person.id} needs a first chapter`);
+      localized(person.name, `${id} cast name`);
+      localized(person.role, `${id} cast role`);
+    }
+    for (const link of links) assert.ok(Object.hasOwn(CHAINS, link), `${id} links to unknown chain ${link}`);
+    for (const source of sourceIds) assert.ok(Object.hasOwn(WORLD.sources, source), `${id} cites unknown source ${source}`);
   }
 });
 

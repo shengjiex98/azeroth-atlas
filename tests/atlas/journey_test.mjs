@@ -7,9 +7,11 @@ for (const file of ['data/ui_map_bounds.js', 'journey.js']) {
   const source = readFileSync(new URL('../../lore/atlas/' + file, import.meta.url), 'utf8');
   runInThisContext(source, { filename: file });
 }
-const { decodeSummary, buildJourney, chainProgress } = globalThis.ROSETTA_JOURNEY;
+const { decodeSummary, buildJourney, chainProgress, journeySessions, sessionStories,
+  chapterProgress, chapterInterludes } = globalThis.ROSETTA_JOURNEY;
 const encode = (...lines) => 'RSJ1.' + Buffer.from(lines.join('\n'), 'utf8').toString('base64url');
 const header = 'H|1|Zoë|Testrealm|Gnome|Mage|Alliance|12|1700000000|1.2.3';
+const journal = (...lines) => buildJourney(decodeSummary(encode(header, ...lines)));
 
 test('v1 round-trip with UTF-8, old cells, backfilled quests, zone visits and events', () => {
   const summary = encode(
@@ -55,9 +57,17 @@ test('v1 round-trip with UTF-8, old cells, backfilled quests, zone visits and ev
     route: [1432, 1429, 1432],
     events: {
       deaths: [{ zone: 1429, x: 83, y: 82, t: 115, level: 4 }],
-      levels: [{ zone: 1429, x: 83, y: 82, t: 160, level: 6 }, { zone: 1432, x: 17, y: 24, t: 250, level: 7 }]
+      levels: [{ zone: 1429, x: 83, y: 82, t: 160, level: 6 }, { zone: 1432, x: 17, y: 24, t: 250, level: 7 }],
+      timed: [
+        { type: 'R', map: 1429, t: 100 },
+        { type: 'D', t: 115, map: 1429, x: 830, y: 820, level: 4 },
+        { type: 'L', t: 160, map: 1429, x: 830, y: 820, level: 6 },
+        { type: 'R', map: 1432, t: 250 },
+        { type: 'L', t: 250, map: 1432, x: 170, y: 240, level: 7 }
+      ]
     },
-    quests: { completed: new Map([[123, { t: null, flags: 'b' }]]), accepted: new Map(), open: new Set() }
+    quests: { completed: new Map([[123, { t: null, flags: 'b', map: 1429, x: 500, y: 500 }]]),
+      accepted: new Map(), open: new Set() }
   });
 });
 
@@ -123,7 +133,7 @@ test('A and O records expose quest activity separately from map observations', (
   const journey = buildJourney(records);
   assert.deepEqual(journey.zones, []);
   assert.deepEqual(journey.quests, {
-    completed: new Map([[101, { t: 9, flags: null }]]),
+    completed: new Map([[101, { t: 9, flags: null, map: null, x: null, y: null }]]),
     accepted: new Map([[102, { t: 6 }]]),
     open: new Set([102, 103])
   });
@@ -136,7 +146,7 @@ const chain = { faction: 'Alliance', steps: [
   { id: 4, questIds: [104], after: [2, 3] },
   { id: 5, questIds: [105], after: [2] }
 ] };
-const progress = (...lines) => chainProgress(chain, buildJourney(decodeSummary(encode(header, ...lines))));
+const progress = (...lines) => chainProgress(chain, journal(...lines));
 const statuses = result => [...result.steps.values()].map(step => step.status);
 
 test('chain progress uses variants, the open log and every prerequisite, with level at turn-in', () => {
@@ -161,8 +171,109 @@ test('chain status requires every ending and hides only the other faction', () =
   const completed = progress('Q|10||||104|', 'Q|||||105|b');
   assert.equal(completed.status, 'completed');
   assert.equal(completed.done, 2);
+  assert.equal(completed.finishedAt, 10);
+  assert.equal(progress('Q|10||||104|', 'Q|20||||105|').finishedAt, 20);
+  assert.equal(progress('Q|||||104|b', 'Q|||||105|b').finishedAt, null);
   const horde = buildJourney(decodeSummary(encode(header.replace('Alliance', 'Horde'))));
   assert.equal(chainProgress(chain, horde).visible, false);
   assert.equal(chainProgress({ ...chain, faction: 'Both' }, horde).visible, true);
   assert.equal(chainProgress(chain, null).visible, true);
+});
+
+test('sessions split on gaps over an hour using every timed event and report the zones with activity, levels and quests', () => {
+  const journey = journal(
+    'L|50|1429|100|200|10',
+    'L|5000|1429|100|200|11',
+    'A|8600|1432|120|220|101',
+    'D|8700|1432|||11',
+    'Q|8800|1433|150|250|101|',
+    'R|1429:,1429:5000,1429:8650,1432:9200,1429:10100',
+    'Q||1433|160|260|102|b',
+    'C|1432|1|2|180|0|0|0|12500',
+    'Q|13701|1433|160|260|103|'
+  );
+  const sessions = journeySessions(journey);
+  assert.deepEqual(sessions.map(({ events, ...facts }) => facts), [
+    { start: 50, end: 50, questCount: 0, route: [1429], startLevel: null, endLevel: 10 },
+    { start: 5000, end: 10100, questCount: 1, route: [1429, 1432, 1433], startLevel: 10, endLevel: 11 },
+    { start: 13701, end: 13701, questCount: 1, route: [1433], startLevel: 11, endLevel: 11 }
+  ]);
+  assert.deepEqual(sessions[1].events.map(event => event.type), ['L', 'R', 'A', 'R', 'D', 'Q', 'R', 'R']);
+  assert.deepEqual(journeySessions(journal('Q||1433|160|260|102|b')), []);
+});
+
+function linearChain(...ids) {
+  return { faction: 'Alliance', steps: ids.map((id, i) => ({
+    id, questIds: [id], after: i ? [ids[i - 1]] : []
+  })) };
+}
+
+test('session stories use timed turn-ins and accepts, prior completions and the final turn-in', () => {
+  const chains = {
+    advanced: linearChain(11, 12, 13),
+    started: linearChain(21, 22),
+    finished: linearChain(31, 32),
+    accepted: linearChain(41, 42),
+    ignored: linearChain(51, 52),
+    backfilled: linearChain(61, 62, 63),
+    later: linearChain(71, 72, 73)
+  };
+  const authored = { advanced: { chapters: [{ stepIds: [11] }, { stepIds: [12, 13] }] } };
+  const journey = journal(
+    'Q|1|1429|110|210|11|', 'A|2|1429|110|210|21', 'A|3|1429|||41',
+    'Q||1429|110|210|61|b', 'Q||1429|110|210|51|b', 'O|52',
+    'Q|4000|1433|115|215|31|', 'Q|4010|1433|116|216|32|',
+    'Q|4020|1429|120|220|12|', 'A|4030|1432|130|230|13',
+    'Q|4040|1429|140|240|21|', 'A|4050|1432|150|250|41',
+    'Q|4060|1429|160|260|62|', 'Q|4070|1429|170|270|71|',
+    'Q|8000|1429|180|280|73|'
+  );
+  const [, session] = journeySessions(journey);
+  const stories = sessionStories(session, chains, journey, authored);
+  assert.deepEqual(stories.map(({ id, status, questCount }) => [id, status, questCount]), [
+    ['later', 'started', 1], ['backfilled', 'advanced', 1], ['accepted', 'started', 0],
+    ['started', 'started', 1], ['advanced', 'advanced', 1], ['finished', 'finished', 2]
+  ]);
+  assert.deepEqual(stories.find(story => story.id === 'advanced'), {
+    id: 'advanced', status: 'advanced', chapter: 1, latest: { t: 4030, map: 1432, x: 130, y: 230 }, questCount: 1
+  });
+  assert.equal(stories.find(story => story.id === 'accepted').latest.t, 4050);
+});
+
+test('chapters retain timed turn-ins in time order and backfilled positions', () => {
+  const chapters = [{ stepIds: [1, 2, 3] }, { stepIds: [4] }, { stepIds: [5] }];
+  const journey = journal(
+    'Q|150|1433|320|520|102|', 'Q|100|1429|200|400|110|',
+    'L|90||||9', 'L|150||||10',
+    'Q||1433|300|500|103|b', 'Q||1433|0|1000|104|b', 'A|200|1433|400|600|105'
+  );
+  assert.deepEqual(chapterProgress(chain, chapters, journey), [
+    { played: true, timed: [
+      { t: 100, level: 9, map: 1429, x: 200, y: 400 }, { t: 150, level: 10, map: 1433, x: 320, y: 520 }
+    ], backfilled: [{ map: 1433, x: 300, y: 500 }] },
+    { played: true, timed: [], backfilled: [{ map: 1433, x: 0, y: 1000 }] },
+    { played: false, timed: [], backfilled: [] }
+  ]);
+});
+
+test('interludes distinguish endings inside a chapter window from other turn-ins', () => {
+  const chains = {
+    main: linearChain(1, 2),
+    advanced: linearChain(11, 12),
+    ended: linearChain(21, 22),
+    acceptOnly: linearChain(31, 32),
+    backfilled: linearChain(41, 42),
+    outside: linearChain(51, 52)
+  };
+  const journey = journal(
+    'Q|10|1429|100|200|1|', 'Q|30|1433|110|210|2|',
+    'Q|12|1433|130|230|11|', 'Q|35|1433|130|230|12|',
+    'Q|15|1433|120|220|21|', 'Q|30|1433|120|220|22|',
+    'A|17|1433|130|230|31', 'Q||1433|130|230|42|b', 'Q|31|1433|130|230|52|'
+  );
+  const [chapter] = chapterProgress(chains.main, [{ stepIds: [1, 2] }], journey);
+  assert.deepEqual(chapterInterludes(chapter, 'main', chains, journey), [
+    { id: 'advanced', status: 'advanced', t: 12 }, { id: 'ended', status: 'ended', t: 30 }
+  ]);
+  assert.deepEqual(chapterInterludes({ ...chapter, timed: chapter.timed.slice(0, 1) }, 'main', chains, journey), []);
 });

@@ -74,8 +74,14 @@
   const inRange = (value, max) => Number.isInteger(value) && value >= 0 && value <= max;
   const cellIndex = value => Math.min(19, Math.floor(value / 50));
   const timeOrder = (a, b) => (a.t ?? -1) - (b.t ?? -1);
+  const backfilled = entry => Boolean(entry.flags?.includes('b'));
+  const isTimed = entry => Number.isFinite(entry.t) && !backfilled(entry);
   const oneDecimal = value => Number(value.toFixed(1));
   const hasBounds = map => Object.hasOwn(JOURNEY_ZONE_BOUNDS, map);
+
+  function turnInPosition({ map, x, y }) {
+    return { map, x: inRange(x, 1000) ? x : null, y: inRange(y, 1000) ? y : null };
+  }
 
   function observation(record, labels) {
     const { type, map, t, x, y, cx, cy, level } = record;
@@ -257,12 +263,14 @@
     const completed = new Map();
     const accepted = new Map();
     const open = new Set();
-    for (const { type, questID, questIds, t, flags } of records) {
+    for (const record of records) {
+      const { type, questID, questIds, t, flags } = record;
       if (type === 'O') {
         for (const id of questIds) open.add(id);
       } else if (type === 'Q' && questID > 0) {
-        if (!completed.has(questID) || (t !== null && (completed.get(questID).t ?? Infinity) > t)) {
-          completed.set(questID, { t, flags });
+        const previous = completed.get(questID);
+        if (!previous || (isTimed(record) && (!isTimed(previous) || previous.t > t))) {
+          completed.set(questID, { t, flags, ...turnInPosition(record) });
         }
       } else if (type === 'A' && questID > 0) {
         if (!accepted.has(questID) || (t !== null && (accepted.get(questID).t ?? -1) < t)) {
@@ -271,28 +279,38 @@
       }
     }
 
+    const timed = records.flatMap(record => {
+      if (record.type === 'R') return record.visits.map(visit => ({ type: 'R', ...visit }));
+      return ['Q', 'A', 'L', 'D'].includes(record.type) ? [record] : [];
+    }).filter(isTimed).sort(timeOrder);
     const { name, race, faction, level, exportedAt } = header;
     return {
       character: { name, race, faction, class: header.class, level, updated: exportedAt },
-      sources: ['rosetta-journal'], zones, route, events: { deaths, levels }, quests: { completed, accepted, open }
+      sources: ['rosetta-journal'], zones, route, events: { deaths, levels, timed }, quests: { completed, accepted, open }
     };
   }
+
+  const levelAt = (levels, time) => levels.findLast(event => event.t <= time)?.level ?? null;
+  const levelsIn = journey => (journey?.events.levels || []).filter(event => isTimed(event) && event.level !== null);
+  const inWindow = ({ t }, { start, end }) => start <= t && t <= end;
+  const questIdsFor = steps => new Set(steps.flatMap(step => step.questIds));
+  const isTurnIn = event => event.type === 'Q' && event.questID > 0;
 
   function chainProgress(chain, journey) {
     const faction = journey?.character.faction;
     const otherFaction = faction === 'Alliance' ? 'Horde' : faction === 'Horde' ? 'Alliance' : null;
     const visible = chain.faction !== otherFaction;
     const successors = new Set(chain.steps.flatMap(step => step.after));
-    const levels = (journey?.events.levels || []).filter(event => event.t !== null && event.level !== null);
+    const levels = levelsIn(journey);
     const steps = new Map();
     let done = 0;
     for (const step of chain.steps) {
       const turnIns = step.questIds.map(id => journey?.quests.completed.get(id)).filter(Boolean);
-      const timed = turnIns.filter(entry => entry.t !== null && !entry.flags?.includes('b')).sort(timeOrder)[0];
+      const timed = turnIns.filter(isTimed).sort(timeOrder)[0];
       if (turnIns.length) {
-        const level = timed ? levels.findLast(event => event.t <= timed.t)?.level ?? null : null;
+        const level = timed ? levelAt(levels, timed.t) : null;
         steps.set(step.id, { status: 'done', t: timed?.t ?? null, level,
-          backfilled: !timed && turnIns.some(entry => entry.flags?.includes('b')) });
+          backfilled: !timed && turnIns.some(backfilled) });
         done++;
       } else if (step.questIds.some(id => journey?.quests.open.has(id))) {
         steps.set(step.id, { status: 'active' });
@@ -300,10 +318,92 @@
         steps.set(step.id, { status: step.after.every(id => steps.get(id)?.status === 'done') ? 'next' : 'locked' });
       }
     }
-    const completed = chain.steps.every(step => successors.has(step.id) || steps.get(step.id).status === 'done');
+    const endings = chain.steps.filter(step => !successors.has(step.id)).map(step => steps.get(step.id));
+    const completed = endings.every(step => step.status === 'done');
     const inProgress = done || [...steps.values()].some(step => step.status === 'active');
-    return { visible, status: completed ? 'completed' : inProgress ? 'inProgress' : 'notStarted', done, steps };
+    const finishedAt = completed ? endings.filter(isTimed).sort(timeOrder).at(-1)?.t ?? null : null;
+    return { visible, status: completed ? 'completed' : inProgress ? 'inProgress' : 'notStarted', done, steps, finishedAt };
   }
 
-  root.ROSETTA_JOURNEY = { decodeSummary, buildJourney, chainProgress };
+  function journeySessions(journey) {
+    const sessions = [];
+    for (const event of journey.events.timed) {
+      if (!sessions.length || event.t - sessions.at(-1).end > 3600) {
+        sessions.push({ start: event.t, end: event.t, events: [] });
+      }
+      const session = sessions.at(-1);
+      session.events.push(event);
+      session.end = event.t;
+    }
+    const levels = levelsIn(journey);
+    return sessions.map(session => {
+      // Zone visits include zones only flown or ridden through; the recap route lists zones with activity.
+      const maps = session.events.filter(event => event.type !== 'R' && event.map != null).map(event => event.map);
+      return { ...session, questCount: session.events.filter(isTurnIn).length,
+        route: maps.filter((map, i) => map !== maps[i - 1]),
+        startLevel: levels.findLast(event => event.t < session.start)?.level ?? null,
+        endLevel: levelAt(levels, session.end) };
+    });
+  }
+
+  function sessionStories(session, chains, journey, authored = {}) {
+    const stories = [];
+    for (const [id, chain] of Object.entries(chains)) {
+      const ids = questIdsFor(chain.steps);
+      const activity = session.events.filter(event =>
+        (isTurnIn(event) || event.type === 'A') && ids.has(event.questID));
+      if (!activity.length) continue;
+      const { visible, finishedAt } = chainProgress(chain, journey);
+      if (!visible) continue;
+      const finished = finishedAt !== null && inWindow({ t: finishedAt }, session);
+      const earlier = [...ids].some(quest => {
+        const entry = journey.quests.completed.get(quest);
+        return entry && (backfilled(entry) || (isTimed(entry) && entry.t < session.start));
+      });
+      const latest = activity.at(-1);
+      const step = chain.steps.find(step => step.questIds.includes(latest.questID));
+      const chapter = authored[id]?.chapters.findIndex(chapter => chapter.stepIds.includes(step.id)) ?? -1;
+      stories.push({ id, status: finished ? 'finished' : earlier ? 'advanced' : 'started',
+        chapter, latest: { t: latest.t, ...turnInPosition(latest) },
+        questCount: activity.filter(isTurnIn).length });
+    }
+    return stories.sort((a, b) => b.latest.t - a.latest.t);
+  }
+
+  function chapterProgress(chain, chapters, journey) {
+    if (!journey) return chapters.map(() => ({ played: false, timed: [], backfilled: [] }));
+    const levels = levelsIn(journey);
+    const turnIns = journey.events.timed.filter(isTurnIn);
+    return chapters.map(chapter => {
+      const ids = questIdsFor(chain.steps.filter(step => chapter.stepIds.includes(step.id)));
+      const completed = [...ids].map(id => journey.quests.completed.get(id)).filter(Boolean);
+      return {
+        played: completed.length > 0,
+        timed: turnIns.filter(event => ids.has(event.questID))
+          .map(event => ({ t: event.t, level: levelAt(levels, event.t), ...turnInPosition(event) })),
+        backfilled: completed.filter(backfilled).map(turnInPosition)
+      };
+    });
+  }
+
+  function chapterInterludes(chapter, chainId, chains, journey) {
+    if (!chapter.played || chapter.timed.length < 2) return [];
+    const window = { start: chapter.timed[0].t, end: chapter.timed.at(-1).t };
+    const turnIns = journey.events.timed.filter(event => isTurnIn(event) && inWindow(event, window));
+    const interludes = [];
+    for (const [id, chain] of Object.entries(chains)) {
+      if (id === chainId) continue;
+      const ids = questIdsFor(chain.steps);
+      const latest = turnIns.findLast(event => ids.has(event.questID));
+      if (!latest) continue;
+      const { visible, finishedAt } = chainProgress(chain, journey);
+      if (!visible) continue;
+      const ended = finishedAt !== null && inWindow({ t: finishedAt }, window);
+      interludes.push({ id, status: ended ? 'ended' : 'advanced', t: ended ? finishedAt : latest.t });
+    }
+    return interludes.sort(timeOrder);
+  }
+
+  root.ROSETTA_JOURNEY = { decodeSummary, buildJourney, chainProgress, journeySessions,
+    sessionStories, chapterProgress, chapterInterludes };
 })(globalThis);
