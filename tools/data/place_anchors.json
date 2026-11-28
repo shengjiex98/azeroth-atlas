@@ -1,0 +1,1025 @@
+{
+  "1411": {
+    "senjin": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 3188
+        }
+      ],
+      "note": "Master Gadrin"
+    },
+    "razor-hill": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 6928
+        }
+      ],
+      "note": "Innkeeper Grosk"
+    },
+    "tiragarde": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 3192
+        }
+      ],
+      "note": "Lieutenant Benedict in the keep"
+    }
+  },
+  "1412": {
+    "bloodhoof": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 6747
+        }
+      ],
+      "note": "Innkeeper Kauth"
+    },
+    "red-cloud": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 2981
+        }
+      ],
+      "note": "Chief Hawkwind at Camp Narache"
+    },
+    "venture-mine": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 3051
+        }
+      ],
+      "note": "Supervisor Fizsprocket in the Venture Co. Mine"
+    }
+  },
+  "1413": {
+    "crossroads": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 3934
+        }
+      ],
+      "note": "Innkeeper Boorand Plainswind"
+    },
+    "ratchet": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 3391
+        }
+      ],
+      "note": "Gazlowe at Ratchet"
+    },
+    "wailing-caverns": {
+      "anchors": [
+        {
+          "type": "entrance",
+          "id": 718
+        }
+      ],
+      "note": "Wailing Caverns entrance"
+    }
+  },
+  "1416": {
+    "alterac-ruins": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 2287
+        },
+        {
+          "type": "npc",
+          "id": 2256
+        }
+      ],
+      "note": "Crushridge Warmongers and Enforcers in the ruined capital"
+    },
+    "strahnbrad": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 2242
+        },
+        {
+          "type": "npc",
+          "id": 2319
+        }
+      ],
+      "note": "Syndicate Spies and Wizards at Strahnbrad"
+    },
+    "dalaran-crater": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 32453
+        }
+      ],
+      "note": "Dalaran Citizens inside the old city"
+    }
+  },
+  "1418": {
+    "kargath": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 9356
+        }
+      ],
+      "note": "Innkeeper Shul'kar"
+    },
+    "uldaman": {
+      "anchors": [
+        {
+          "type": "entrance",
+          "id": 1337
+        }
+      ],
+      "note": "Uldaman's northern entrance at the excavation"
+    },
+    "lethlor": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 2725
+        }
+      ],
+      "note": "Scalding Whelps in Lethlor Ravine"
+    }
+  },
+  "1419": {
+    "nethergarde": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 5393
+        }
+      ],
+      "note": "Quartermaster Lungertz"
+    },
+    "dark-portal": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 15563
+        }
+      ],
+      "note": "Elder Bellowrage at the Dark Portal approach"
+    },
+    "tainted-scar": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 12397
+        }
+      ],
+      "note": "Lord Kazzak in the Tainted Scar"
+    }
+  },
+  "1420": {
+    "deathknell": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 1568
+        }
+      ],
+      "note": "Undertaker Mordo at the crypt"
+    },
+    "brill": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 5688
+        }
+      ],
+      "note": "Innkeeper Renee"
+    },
+    "scarlet-monastery": {
+      "anchors": [
+        {
+          "type": "entrance",
+          "id": 796
+        }
+      ],
+      "note": "Scarlet Monastery entrance"
+    }
+  },
+  "1421": {
+    "sepulcher": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 6739
+        }
+      ],
+      "note": "Innkeeper Bates"
+    },
+    "pyrewood": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 3528
+        },
+        {
+          "type": "npc",
+          "id": 3529
+        }
+      ],
+      "note": "The Pyrewood and Moonrage Armorers"
+    },
+    "shadowfang": {
+      "anchors": [
+        {
+          "type": "entrance",
+          "id": 209
+        }
+      ],
+      "note": "Shadowfang Keep entrance"
+    }
+  },
+  "1422": {
+    "andorhal": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 1852
+        }
+      ],
+      "note": "Araj the Summoner"
+    },
+    "felstone": {
+      "anchors": [
+        {
+          "type": "object",
+          "id": 176361
+        }
+      ],
+      "note": "Felstone Field's Scourge Cauldron"
+    },
+    "scholomance": {
+      "anchors": [
+        {
+          "type": "entrance",
+          "id": 2057
+        }
+      ],
+      "note": "Scholomance entrance"
+    },
+    "hearthglen": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 1842
+        }
+      ],
+      "note": "Highlord Taelan Fordring"
+    }
+  },
+  "1423": {
+    "stratholme": {
+      "anchors": [
+        {
+          "type": "entrance",
+          "id": 2017
+        }
+      ],
+      "note": "Stratholme's main gate"
+    },
+    "lights-hope": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 11039
+        }
+      ],
+      "note": "Duke Nicholas Zverenhoff at the chapel"
+    },
+    "darrowshire": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 10926
+        }
+      ],
+      "note": "Pamela Redpath"
+    },
+    "tyrs-hand": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 11898
+        }
+      ],
+      "note": "Crusader Lord Valdelmar"
+    }
+  },
+  "1424": {
+    "durnholde": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 2238
+        },
+        {
+          "type": "npc",
+          "id": 2239
+        }
+      ],
+      "note": "Tog'thar and Drull, prisoners at Durnholde"
+    }
+  },
+  "1425": {
+    "aerie-peak": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 5636
+        }
+      ],
+      "note": "Gryphon Master Talonaxe"
+    },
+    "jintha-alor": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 7995
+        }
+      ],
+      "note": "Vile Priestess Hexx at the upper temple"
+    },
+    "revantusk": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 14736
+        }
+      ],
+      "note": "Primal Torntusk at Revantusk Village"
+    }
+  },
+  "1427": {
+    "thorium-point": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 14624
+        }
+      ],
+      "note": "Master Smith Burninate"
+    },
+    "the-cauldron": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 8566
+        }
+      ],
+      "note": "Dark Iron Lookouts on the south lip of the pit"
+    },
+    "slag-pit": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 14621
+        }
+      ],
+      "note": "Overseer Maltorius in the Slag Pit"
+    }
+  },
+  "1428": {
+    "morgans-vigil": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 9562
+        }
+      ],
+      "note": "Helendis Riverhorn"
+    },
+    "flame-crest": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 9563
+        },
+        {
+          "type": "npc",
+          "id": 9536
+        }
+      ],
+      "note": "Ragged John and Maxwort Uberglint at Flame Crest"
+    },
+    "thaurissan-ruins": {
+      "anchors": [
+        {
+          "type": "object",
+          "id": 153556
+        }
+      ],
+      "note": "Thaurissan Relics in the ruins"
+    },
+    "blackrock-mountain": {
+      "anchors": [
+        {
+          "type": "entrance",
+          "id": 1584
+        }
+      ],
+      "note": "Burning Steppes approach to Blackrock Depths through Blackrock Mountain"
+    }
+  },
+  "1430": {
+    "karazhan": {
+      "anchors": [
+        {
+          "type": "entrance",
+          "id": 3457
+        }
+      ],
+      "note": "Karazhan's front entrance"
+    },
+    "deadwind-ogres": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 7379
+        },
+        {
+          "type": "npc",
+          "id": 7369
+        }
+      ],
+      "note": "Deadwind Ogre Mages and Brutes"
+    }
+  },
+  "1434": {
+    "yojamba": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 14875
+        }
+      ],
+      "note": "Molthor on Yojamba Isle"
+    },
+    "zulgurub": {
+      "anchors": [
+        {
+          "type": "entrance",
+          "id": 1977
+        }
+      ],
+      "note": "Zul'Gurub entrance"
+    }
+  },
+  "1435": {
+    "stonard": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 6930
+        }
+      ],
+      "note": "Innkeeper Karakul"
+    },
+    "pool-of-tears": {
+      "anchors": [
+        {
+          "type": "object",
+          "id": 37099
+        }
+      ],
+      "note": "Atal'ai Tablets on the temple ruins that rise from the pool"
+    },
+    "atal-hakkar": {
+      "anchors": [
+        {
+          "type": "entrance",
+          "id": 1477
+        }
+      ],
+      "note": "Temple of Atal'Hakkar entrance"
+    }
+  },
+  "1438": {
+    "shadowglen": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 2079
+        }
+      ],
+      "note": "Conservator Ilthalaine at Aldrassil"
+    },
+    "dolanaar": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 6736
+        }
+      ],
+      "note": "Innkeeper Keldamyr"
+    },
+    "rutheran": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 3838
+        }
+      ],
+      "note": "Hippogryph master Vesprystus"
+    }
+  },
+  "1441": {
+    "freewind": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 11116
+        }
+      ],
+      "note": "Innkeeper Abeqwa"
+    },
+    "darkcloud": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 10896
+        }
+      ],
+      "note": "Arnak Grimtotem on Darkcloud Pinnacle"
+    },
+    "mirage-raceway": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 4453
+        }
+      ],
+      "note": "Wizzle Brassbolts at the racetrack"
+    }
+  },
+  "1443": {
+    "nijels-point": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 11103
+        }
+      ],
+      "note": "Innkeeper Lyshaerya"
+    },
+    "shadowprey": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 11106
+        }
+      ],
+      "note": "Innkeeper Sikewa"
+    },
+    "maraudon": {
+      "anchors": [
+        {
+          "type": "entrance",
+          "id": 2100
+        }
+      ],
+      "note": "Maraudon entrance"
+    }
+  },
+  "1444": {
+    "feathermoon": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 7736
+        }
+      ],
+      "note": "Innkeeper Shyria"
+    },
+    "camp-mojache": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 7737
+        }
+      ],
+      "note": "Innkeeper Greul"
+    },
+    "dire-maul": {
+      "anchors": [
+        {
+          "type": "entrance",
+          "id": 2557
+        }
+      ],
+      "note": "Dire Maul entrance from the road"
+    }
+  },
+  "1445": {
+    "theramore": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 4968
+        }
+      ],
+      "note": "Lady Jaina Proudmoore"
+    },
+    "brackenwall": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 4500
+        }
+      ],
+      "note": "Overlord Mok'Morokk"
+    },
+    "shady-rest": {
+      "anchors": [
+        {
+          "type": "object",
+          "id": 20992
+        },
+        {
+          "type": "object",
+          "id": 21042
+        }
+      ],
+      "note": "Black Shield and Theramore Guard Badge in the burned inn"
+    },
+    "wyrmbog": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 4334
+        }
+      ],
+      "note": "Firemane Flamecallers in the Wyrmbog"
+    }
+  },
+  "1446": {
+    "gadgetzan": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 7733
+        }
+      ],
+      "note": "Innkeeper Fizzgrimble"
+    },
+    "steamwheedle-port": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 8579
+        }
+      ],
+      "note": "Yeh'kinya"
+    },
+    "zul-farrak": {
+      "anchors": [
+        {
+          "type": "entrance",
+          "id": 1176
+        }
+      ],
+      "note": "Zul'Farrak entrance"
+    },
+    "caverns-of-time": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 15192
+        }
+      ],
+      "note": "Anachronos outside the caverns"
+    }
+  },
+  "1447": {
+    "eldarath": {
+      "anchors": [
+        {
+          "type": "object",
+          "id": 176356
+        }
+      ],
+      "note": "Sacred Highborne Writings in the Ruins of Eldarath"
+    },
+    "bay-of-storms": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 13278
+        }
+      ],
+      "note": "Duke Hydraxis on his island"
+    },
+    "valormok": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 8576
+        }
+      ],
+      "note": "Ag'tor Bloodfist"
+    }
+  },
+  "1448": {
+    "emerald-sanctuary": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 10922
+        }
+      ],
+      "note": "Greta Mosshoof at the sanctuary"
+    },
+    "bloodvenom": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 11900
+        }
+      ],
+      "note": "Wind rider master Brakkar"
+    },
+    "timbermaw-hold": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 11516
+        }
+      ],
+      "note": "Timbermaw Warders in the tunnel"
+    }
+  },
+  "1449": {
+    "marshals-refuge": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 9270
+        },
+        {
+          "type": "npc",
+          "id": 9271
+        }
+      ],
+      "note": "Williden and Hol'anyee Marshal"
+    },
+    "fire-plume": {
+      "anchors": [
+        {
+          "type": "object",
+          "id": 4004
+        }
+      ],
+      "note": "Fire Plume Ridge Lava Lake"
+    },
+    "eastern-pylon": {
+      "anchors": [
+        {
+          "type": "object",
+          "id": 164957
+        }
+      ],
+      "note": "Eastern Crystal Pylon"
+    }
+  },
+  "1450": {
+    "nighthaven": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 12042
+        }
+      ],
+      "note": "Druid trainer Loganaar in Nighthaven"
+    },
+    "remulos-shrine": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 11832
+        }
+      ],
+      "note": "Keeper Remulos"
+    }
+  },
+  "1451": {
+    "cenarion-hold": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 15178
+        }
+      ],
+      "note": "Wind rider master Runk Windtamer"
+    },
+    "hive-regal": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 11734
+        },
+        {
+          "type": "npc",
+          "id": 11732
+        }
+      ],
+      "note": "Hive'Regal Hive Lords and Spitfires"
+    },
+    "scarab-wall": {
+      "anchors": [
+        {
+          "type": "object",
+          "id": 180718
+        }
+      ],
+      "note": "The Scarab Gong at the wall"
+    }
+  },
+  "1452": {
+    "everlook": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 11118
+        }
+      ],
+      "note": "Innkeeper Vizzie"
+    },
+    "frostfire": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 9298
+        }
+      ],
+      "note": "Donova Snowden at Frostfire Hot Springs"
+    },
+    "winterfall-village": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 7439
+        }
+      ],
+      "note": "Winterfall Shamans in the village"
+    }
+  },
+  "1454": {
+    "valley-strength": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 6929
+        }
+      ],
+      "note": "Innkeeper Gryshka next to the bank and auction house"
+    },
+    "valley-wisdom": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 4949
+        }
+      ],
+      "note": "Thrall in Grommash Hold"
+    },
+    "cleft-shadow": {
+      "anchors": [
+        {
+          "type": "entrance",
+          "id": 2437
+        }
+      ],
+      "note": "Ragefire Chasm entrance"
+    }
+  },
+  "1456": {
+    "central-bluff": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 2995
+        }
+      ],
+      "note": "Wind rider master Tal at the central tower"
+    },
+    "elder-rise": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 5769
+        }
+      ],
+      "note": "Arch Druid Hamuul Runetotem"
+    },
+    "spirit-rise": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 3419
+        }
+      ],
+      "note": "Apothecary Zamah at the Pools of Vision"
+    }
+  },
+  "1457": {
+    "warriors-terrace": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 4087
+        },
+        {
+          "type": "npc",
+          "id": 4088
+        }
+      ],
+      "note": "Warrior trainers Arias'ta Bladesinger and Elanaria"
+    }
+  },
+  "1458": {
+    "lordaeron-throne": {
+      "anchors": [
+        {
+          "type": "entrance",
+          "id": 16611
+        }
+      ],
+      "note": "Ruins of Lordaeron entrance in the aboveground complex"
+    },
+    "royal-quarter": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 10181
+        },
+        {
+          "type": "npc",
+          "id": 2425
+        }
+      ],
+      "note": "Lady Sylvanas Windrunner and Varimathras"
+    },
+    "apothecarium": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 2055
+        }
+      ],
+      "note": "Master Apothecary Faranell"
+    }
+  },
+  "2482": {
+    "darkwhisper-gorge": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 249518
+        }
+      ],
+      "note": "Morqhan Arkanev at the crossing, with spawns on both the Hyjal and Winterspring sides"
+    },
+    "dae-gun": {
+      "anchors": [
+        {
+          "type": "object",
+          "id": 650227
+        }
+      ],
+      "note": "Azgalor's Remains"
+    }
+  },
+  "2652": {
+    "sd-temple": {
+      "anchors": [
+        {
+          "type": "npc",
+          "id": 254656
+        }
+      ],
+      "note": "Magister Kirandis in the temple"
+    },
+    "sd-pylon-ruins": {
+      "anchors": [
+        {
+          "type": "object",
+          "id": 577959
+        }
+      ],
+      "note": "Western Shen'dralar Pylon that starts Strange Pylons"
+    }
+  }
+}

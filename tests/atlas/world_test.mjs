@@ -93,11 +93,10 @@ test('lore and interface translations are nonempty and all lore references resol
   assert.deepEqual(problems, []);
 });
 
-test('places with coordinates have both axes inside the map', () => {
+test('every place has both coordinates inside its zone map', () => {
   const problems = [];
   for (const zone of Object.values(WORLD.zones)) {
     for (const place of zone.places) {
-      if (place.x === undefined && place.y === undefined) continue;
       if (![place.x, place.y].every(axis => Number.isFinite(axis) && axis >= 0 && axis <= 100)) {
         problems.push(`Zone ${zone.id}, place ${place.id}: invalid point (${place.x}, ${place.y})`);
       }
