@@ -105,6 +105,17 @@ The JSON also includes party-accept flags, reward item IDs, prerequisite
 alternatives and optional breadcrumbs. QuestieDB supplies no reward item
 quality or group-size field.
 
+## Atlas place pins
+
+`tools/data/place_anchors.json` records the QuestieDB Forever NPCs, objects,
+and entrances that locate places on their zone UiMaps. Regenerate their
+one-decimal map coordinates in `world.js` with the same QuestieDB cache and
+Lua 5.1 setup as the chain tool. The generator updates only the listed places.
+
+```sh
+python3 tools/atlas_places.py
+```
+
 ## Repository layout
 
 - `lore/` contains the static site, map images, illustrations, and

@@ -77,6 +77,15 @@ local function findArea(area, mapping)
     end
 end
 
+local function mappedEntrances(entries)
+    local out = {}
+    for _, entry in ipairs(entries or {}) do
+        local map = findArea(entry[1], areaToMap)
+        if map and map > 0 then out[#out + 1] = {map, entry[2], entry[3]} end
+    end
+    return out
+end
+
 local function mappedSpawns(spawns)
     local out = {}
     for _, area in ipairs(keys(spawns or {})) do
@@ -89,12 +98,7 @@ local function mappedSpawns(spawns)
             if point[1] == -1 and point[2] == -1 then seenEntrance = true end
         end
         if seenEntrance then
-            for _, entry in ipairs(findArea(area, entrances) or {}) do
-                local entranceMap = findArea(entry[1], areaToMap)
-                if entranceMap and entranceMap > 0 then
-                    row.entrances[#row.entrances + 1] = {entranceMap, entry[2], entry[3]}
-                end
-            end
+            row.entrances = mappedEntrances(findArea(area, entrances))
         end
         out[#out + 1] = row
     end
@@ -130,6 +134,27 @@ local function readFields(entity, id, fields)
     for index, field in ipairs(fields) do row[field] = values[index] end
     row.name = row.name and {enUS = row.name} or {}
     return row
+end
+
+if arg[2] == "--places" then
+    local function allSpawns(entity)
+        local out = {}
+        for _, id in ipairs(entity.GetAllIds()) do
+            local row = readFields(entity, id, {"name", "zoneID", "spawns"})
+            if row then
+                row.spawns = mappedSpawns(row.spawns)
+                out[tostring(id)] = row
+            end
+        end
+        return out
+    end
+
+    local instances = {}
+    for area, entry in pairs(zones.dungeons) do
+        instances[tostring(area)] = {name = entry[1], entrances = mappedEntrances(entry[4])}
+    end
+    io.write(json({npcs = allSpawns(db.Npc), objects = allSpawns(db.Object), instances = instances}), "\n")
+    return
 end
 
 local quests, npcs, objects, items = {}, {}, {}, {}
